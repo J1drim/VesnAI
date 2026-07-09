@@ -1,0 +1,33 @@
+VesnAI — Personal Second Brain
+Copyright (c) VesnAI contributors
+
+VesnAI is licensed under the MIT License (see LICENSE).
+
+This NOTICE file lists third-party components whose licenses differ from MIT
+or otherwise deserve attention. The full register lives in docs/LICENSING.md.
+
+Libraries
+---------
+- python-zeroconf (LGPL-2.1): used unmodified as a dynamically imported Python
+  package for mDNS/DNS-SD device discovery. Source:
+  https://github.com/python-zeroconf/python-zeroconf
+
+External services (separate processes, not linked into VesnAI)
+---------------------------------------------------------------
+- SearXNG (AGPL-3.0): optional self-hosted web-search container started via
+  docker compose. VesnAI communicates with it over HTTP only. AGPL obligations
+  apply to whoever offers the SearXNG service to third parties. Source:
+  https://github.com/searxng/searxng
+- Qdrant (Apache-2.0): optional vector database container.
+- TTS sidecar (license depends on the engine you host): VesnAI ships no TTS
+  engine. Users may register any HTTP text-to-speech service (see
+  docs/TTS_SIDECAR.md). Copyleft/GPL engines are intentionally not bundled in
+  this repository.
+
+Model weights
+-------------
+No model weights are committed to this repository. Models downloaded at
+runtime (Ollama models, whisper.cpp weights, FLUX.1-schnell, bge-m3,
+Chatterbox) each carry their own licenses — consult each model card before
+commercial redistribution. Defaults are chosen to be commercial-use-safe;
+see docs/LICENSING.md for the per-model register.

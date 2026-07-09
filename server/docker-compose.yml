@@ -1,0 +1,105 @@
+# One-command run: `docker compose up`.
+# Brings up the VesnAI server (offline mode by default) with persistent storage.
+#
+# Online mode in Docker: start the extra services and point the server at them:
+#   docker compose --profile online up -d
+#   (set VESNAI_OFFLINE_ONLY=false plus the VESNAI_*_URL vars below)
+# In-container bootstrap never shells out: Ollama models are pulled through the
+# API. whisper.cpp STT and FLUX image generation are HOST-MODE features — set
+# stt.mode/image.mode to "none" for a containerized server (the app's on-device
+# dictation still works). See docs/DEPLOYMENT.md.
+services:
+  vesnai:
+    build: .
+    image: vesnai/server:latest
+    # Published loopback-only: the API speaks plain HTTP inside the container,
+    # so it must never be reachable from the LAN/internet directly. To expose
+    # it, terminate TLS in front of it:
+    #   - tunnel: run pinggy/ngrok/cloudflared against http://127.0.0.1:8443
+    #     (they provide public HTTPS) — see docs/REMOTE_ACCESS.md
+    #   - reverse proxy / LAN with your own certs, e.g. override:
+    #       ports: ["8443:8443"]
+    #       volumes: [ ./certs:/certs:ro ]
+    #       command: [serve, --host, 0.0.0.0, --port, "8443",
+    #                 --cert, /certs/server.pem, --key, /certs/server-key.pem,
+    #                 --knowledge-dir, /data/knowledge, --data-dir, /data/state]
+    ports:
+      - "127.0.0.1:8443:8443"
+    volumes:
+      - vesnai-data:/data
+    environment:
+      VESNAI_OFFLINE_ONLY: "true"
+      # For online mode inside Docker, uncomment (and set OFFLINE_ONLY=false):
+      # VESNAI_OLLAMA_HOST: "http://ollama:11434"
+      # VESNAI_QDRANT_URL: "http://qdrant:6333"
+      # VESNAI_SEARXNG_URL: "http://searxng:8080"
+      # VESNAI_STT_ENGINE: "none"    # whisper.cpp is host-mode only
+      # VESNAI_IMAGE_ENGINE: "none"  # mflux/FLUX is host-mode only
+    command:
+      - serve
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8443"
+      - --no-tls
+      - --knowledge-dir
+      - /data/knowledge
+      - --data-dir
+      - /data/state
+    restart: unless-stopped
+
+  # Local LLM daemon for fully-containerized online mode:
+  #   docker compose --profile online up -d
+  ollama:
+    profiles: ["online"]
+    image: ollama/ollama:latest
+    volumes:
+      - ollama-data:/root/.ollama
+    expose:
+      - "11434"
+    restart: unless-stopped
+
+  qdrant:
+    # Pinned digest (v1.18.2, pulled 2026-07-01); see compose-images.lock.yaml + docs/DEPLOYMENT.md.
+    image: qdrant/qdrant@sha256:75eab8c4ba42096724fdcfde8b4de0b5713d529dde32f285a1f86fdcb2c9e50c
+    ports:
+      - "127.0.0.1:6333:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "bash -c 'exec 3<>/dev/tcp/127.0.0.1/6333 && printf \"GET /healthz HTTP/1.0\\r\\n\\r\\n\" >&3 && read -r line <&3 && [[ \"$$line\" == HTTP/1*\\ 200* ]]'",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  searxng:
+    # Pinned digest (pulled 2026-07-01); avoids floating :latest per security audit M18.
+    image: searxng/searxng@sha256:c6d6af406d214a24edee971b98b92d05a83ee9707ff9a59a56471f9cfce5eee2
+    ports:
+      - "127.0.0.1:8888:8080"
+    volumes:
+      - ./config/searxng:/etc/searxng:ro
+    environment:
+      SEARXNG_BASE_URL: http://127.0.0.1:8888/
+      # Per-deploy secret (never committed). The VesnAI bootstrap generates and
+      # persists one automatically; for manual `docker compose up`, set
+      # SEARXNG_SECRET in your shell or a local .env file.
+      SEARXNG_SECRET: ${SEARXNG_SECRET:?generate one, e.g. `openssl rand -hex 32`}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- 'http://localhost:8080/search?q=health&format=json' >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # A local TTS sidecar is intentionally not bundled (see docs/TTS_SIDECAR.md).
+  # Register any HTTP TTS service (self-hosted sidecar or OpenAI-compatible
+  # API) from the app: Settings -> Voice service.
+
+volumes:
+  vesnai-data:
+  qdrant-data:
+  ollama-data:

@@ -1,0 +1,56 @@
+# VesnAI cloud-LLM preset — copy to vesnai.yaml for a minimal setup.
+#
+# Uses an OpenAI-compatible API (OpenAI, OpenRouter, vLLM, LM Studio, …).
+# No Ollama, Docker, Qdrant, SearXNG, whisper, or FLUX required.
+#
+# WARNING: note content is sent to llm.base_url.
+#
+#   cp vesnai.cloud.example.yaml vesnai.yaml
+#   export OPENAI_API_KEY=sk-...          # or edit api_key below
+#   uv run vesnai doctor
+#   uv run vesnai serve --host 0.0.0.0 --no-offline \
+#     --cert ./localhost.pem --key ./localhost-key.pem
+
+paths:
+  knowledge: ./knowledge
+  data: ./data
+
+network:
+  host: 0.0.0.0              # LAN pairing from phones
+  port: 8443
+  mdns: true
+  tls:
+    enabled: true
+    # cert: ./localhost.pem
+    # key: ./localhost-key.pem
+
+offline_only: false
+
+llm:
+  provider: openai_compatible
+  base_url: https://api.openai.com/v1
+  api_key: env:OPENAI_API_KEY
+  models:
+    chat: gpt-4o-mini
+    reasoning: gpt-4o-mini
+    vision: gpt-4o-mini
+    embeddings: { model: text-embedding-3-small, dim: 1536 }
+
+tts:
+  mode: none                 # or openai / sidecar — register in app Settings
+
+stt:
+  mode: none                 # app on-device STT still works
+
+image:
+  mode: none
+  auto_illustrate: false
+
+vector_store:
+  kind: in_memory
+
+search:
+  mode: none
+
+marena:
+  enabled: false             # critic needs search + reasoning stack

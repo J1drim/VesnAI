@@ -1,0 +1,394 @@
+{
+  "@@locale": "en",
+  "appTitle": "VesnAI",
+  "navNotes": "Notes",
+  "navChat": "Chat",
+  "navGraph": "Graph",
+  "navSettings": "Settings",
+  "capture": "Capture",
+  "sync": "Sync",
+  "webSearch": "Web search",
+  "notPaired": "Offline - not paired",
+  "pairedPullToSync": "Paired - pull to sync",
+  "lastSynced": "Last synced {when}",
+  "@lastSynced": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "emptyNotes": "No notes yet. Tap + to capture your first thought.",
+  "onboardingTitle": "Connect to your VesnAI server",
+  "onboardingBody": "Your notes stay on your devices and server. Pair this device to sync, chat, search and more - or continue offline and pair later.",
+  "foundOnNetwork": "Found on your network",
+  "searchingNetwork": "Searching your network...",
+  "serverUrl": "Server URL",
+  "pairingCode": "Pairing code",
+  "scanQr": "Scan QR",
+  "pair": "Pair",
+  "continueOffline": "Continue offline",
+  "unpairDevice": "Unpair this device",
+  "connection": "Connection",
+  "invalidCode": "Invalid or expired pairing code.",
+  "unreachableServer": "Could not reach the server. Check the URL and Wi-Fi.",
+  "pairingErrorTls": "Secure connection failed (certificate not trusted). Use a server address with a trusted certificate, or install the server's certificate on this device.",
+  "pairingErrorServerUnreachable": "Could not reach the server at that address. Check the URL, Wi-Fi, and that the server is running.",
+
+  "typeNote": "Note",
+  "typeIdea": "Idea",
+  "typeTask": "Task",
+  "typePhoto": "Photo",
+  "typeCritique": "Critique",
+
+  "cancel": "Cancel",
+  "retry": "Retry",
+  "open": "Open",
+  "ok": "OK",
+  "skip": "Skip",
+  "delete": "Delete",
+  "save": "Save",
+  "edit": "Edit",
+  "view": "View",
+
+  "dueForReview": "Due for review",
+  "searchNotesHint": "Search notes…",
+  "offlineChangesQueued": "Offline - changes queued for next sync.",
+  "syncedChanges": "Synced ({count, plural, =1{1 change} other{{count} changes}} pushed).",
+  "@syncedChanges": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "notesBusySyncing": "Notes are busy syncing. Try again in a moment.",
+  "couldNotLoadNotes": "Could not load notes.",
+  "noNotesMatchQuery": "No notes match \"{query}\".",
+  "@noNotesMatchQuery": {
+    "placeholders": { "query": { "type": "String" } }
+  },
+  "noNotesMatchTypes": "No notes match the selected types.",
+  "justNow": "just now",
+  "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
+  "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "placeholders": { "hours": { "type": "int" } }
+  },
+  "daysAgo": "{days}d ago",
+  "@daysAgo": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+
+  "noteScreenTitle": "Note",
+  "aiGenerated": "AI-generated",
+  "critiqueByMarena": "Critique by Marena",
+  "critiquedNote": "Critiqued note",
+  "critiques": "Critiques",
+  "markDone": "Mark done",
+  "reopen": "Reopen",
+  "done": "Done",
+  "showDone": "Show done",
+  "markedDone": "Marked as done",
+  "noteReopened": "Reopened",
+  "filterAll": "All",
+  "stopDictation": "Stop dictation",
+  "formatting": "Formatting",
+  "noteTypeSheetTitle": "Note type",
+  "clearFilters": "Clear filters",
+  "untitled": "(untitled)",
+  "titleLabel": "Title",
+  "typeLabel": "Type",
+  "tagsLabel": "Tags (comma-separated)",
+  "bodyHint": "Body",
+  "attachments": "Attachments",
+  "generatedMemoryAid": "Generated memory aid",
+  "enrichWithAi": "Enrich with AI",
+  "noteNotFound": "Note not found.",
+  "savedLocallyWillSync": "Saved locally — will sync when your VesnAI server is back.",
+  "enrichRequested": "Enrichment requested - the generated note will sync in.",
+  "enrichFailed": "Enrichment failed.",
+  "errorWithDetail": "Error: {error}",
+  "@errorWithDetail": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "talkToVesnai": "Talk to VesnAI",
+  "newChat": "New chat",
+  "noConversationsYet": "No conversations yet.",
+  "chatInputHint": "Ask, recall, or create...",
+  "listening": "Listening…",
+  "startingNewChat": "Starting new chat…",
+  "sendingStatus": "Sending…",
+  "vesnaiThinking": "VesnAI is thinking…",
+  "thinking": "Thinking…",
+  "generatingImage": "Generating image…",
+  "imageGenerationFailed": "Image generation failed",
+  "retryImage": "Retry image",
+  "notSent": "Not sent",
+  "attach": "Attach",
+  "speak": "Speak",
+  "stopAndSend": "Stop & send",
+  "replay": "Replay",
+  "camera": "Camera",
+  "gallery": "Gallery",
+  "file": "File",
+  "voiceNote": "Voice note",
+  "noteSaved": "Note saved",
+  "couldNotSendMessage": "Could not send message: {error}",
+  "@couldNotSendMessage": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "speechUnavailable": "Speech recognition is unavailable on this device.",
+
+  "addTag": "Add tag",
+  "suggestTags": "Suggest tags",
+  "photo": "Photo",
+  "attachFile": "Attach file",
+  "draw": "Draw",
+  "uploadingPhoto": "Uploading photo {current} of {total}…",
+  "@uploadingPhoto": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "attachmentsNeedServer": "Attachments need a paired server; saved text only.",
+  "savedLocallyShort": "Saved locally — will sync when your server is back.",
+  "couldNotSaveNote": "Could not save note: {error}",
+  "@couldNotSaveNote": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "tagSuggestionsNeedServer": "Tag suggestions need a paired server.",
+  "couldNotSuggestTags": "Could not suggest tags: {error}",
+  "@couldNotSuggestTags": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "settingsTitle": "Settings",
+  "sectionServer": "Server",
+  "sectionModelsPrivacy": "Models & privacy",
+  "sectionAssistant": "Assistant",
+  "sectionApp": "App",
+  "sectionModels": "Models",
+  "sectionSearch": "Search",
+  "sectionData": "Data",
+  "notPairedShort": "Not paired",
+  "localOnlyMode": "Local-only mode",
+  "loadingServerSettings": "Loading server settings...",
+  "pairToViewPrivacy": "Pair with a server to view privacy settings.",
+  "localOnlySubtitle": "Never call external APIs (configured on the server).",
+  "assistantLanguage": "Assistant language",
+  "assistantLanguageAuto": "Auto (from chat)",
+  "appLanguage": "App language",
+  "appLanguageSystem": "System default",
+  "readRepliesAloud": "Read replies aloud",
+  "readRepliesAloudSubtitle": "When Chat is open and volume is up",
+  "shareLocationWithChat": "Share location with chat",
+  "shareLocationSubtitle": "Approximate GPS for local queries (weather, nearby). Sent per message only when enabled.",
+  "voiceService": "Voice service",
+  "voiceServicePairFirst": "Pair a server to register voice.",
+  "voiceServiceRegistered": "Registered ({provider}) — Speak enabled",
+  "@voiceServiceRegistered": {
+    "placeholders": { "provider": { "type": "String" } }
+  },
+  "voiceServiceNotRegistered": "Register OpenAI or a TTS sidecar to enable Speak",
+  "externalApiKeys": "External API keys",
+  "externalApiKeysSubtitle": "Stored encrypted on the server; never in backups.",
+  "externalApiKeysPairFirst": "Pair a server to manage keys.",
+  "chatModel": "Chat model",
+  "languages": "Languages",
+  "backUpKnowledge": "Back up knowledge",
+  "backUpSubtitle": "Download an encrypted copy of your notes.",
+  "restoreFromBackup": "Restore from backup",
+  "backupFailed": "Backup failed: {error}",
+  "@backupFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "restoreFailed": "Restore failed: {error}",
+  "@restoreFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "restoredFromBackup": "Restored from backup.",
+  "backupPassphraseOptional": "Backup passphrase (optional)",
+  "backupPassphraseRequired": "Backup passphrase (required)",
+  "passphrase": "Passphrase",
+  "unpairQuestion": "Unpair device?",
+  "unpairExplanation": "This removes the saved connection and revokes this device on the server. Your local notes stay on this device.",
+  "unpair": "Unpair",
+  "pairDialogTitle": "Pair with VesnAI server",
+  "pairedWithServer": "Paired with server.",
+  "enterValidServerUrl": "Enter a valid server URL.",
+
+  "newSticky": "New sticky",
+  "newNote": "New note",
+  "noNotesYet": "No notes yet.",
+  "refresh": "Refresh",
+  "unpairedBannerText": "Not paired — pair with your VesnAI server to sync, chat and search.",
+
+  "knowledgeGraph": "Knowledge graph",
+  "graphOffline": "Offline — showing local notes only.",
+  "graphRefreshed": "Graph refreshed ({count, plural, =1{1 change} other{{count} changes}} pushed).",
+  "@graphRefreshed": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "graphNoNotesMatchFilters": "No notes match the current filters.",
+  "graphNoNotes": "No notes to graph yet.",
+  "graphSemantics": "Interactive knowledge graph. Drag to move, pinch to zoom, tap a node to open the note.",
+  "tagsFilterLabel": "Tags",
+  "tagsFilterLabelCount": "Tags ({count})",
+  "@tagsFilterLabelCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "filterMine": "Mine",
+  "showAll": "Show all",
+  "filterByTag": "Filter by tag",
+  "selectedLabel": "Selected",
+  "noTagsYet": "No tags yet",
+  "allTagsSelected": "All tags selected",
+  "clearTags": "Clear tags",
+
+  "searchFailed": "Search failed.",
+  "searchFailedWithError": "Search failed: {error}",
+  "@searchFailedWithError": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "researchReady": "Research ready",
+  "researchReadyBody": "Your search results are saved as a note.",
+  "pairForWebSearch": "Pair with your server to run web searches.",
+  "researchPrompt": "What do you want to research?",
+  "timeBudget": "Time budget: {seconds}s",
+  "@timeBudget": {
+    "placeholders": { "seconds": { "type": "int" } }
+  },
+  "researching": "Researching...",
+  "searchAction": "Search",
+
+  "scanPairingQr": "Scan pairing QR",
+  "cameraPermissionDenied": "Camera permission was denied. Allow camera access in Settings, then tap Retry.",
+  "cameraUnavailable": "Camera unavailable",
+
+  "noApiKeysStored": "No API keys stored.",
+  "addApiKey": "Add API key",
+  "apiKeyNameLabel": "Name (e.g. openai)",
+  "apiKeyValueLabel": "Value",
+
+  "providerTtsSidecar": "TTS sidecar (self-hosted)",
+  "apiKeyRequired": "API key is required.",
+  "sidecarUrlRequired": "Sidecar URL is required.",
+  "voiceIdsRequired": "Voice IDs are required (they depend on your TTS engine).",
+  "voiceServiceRegisteredSnack": "Voice service registered.",
+  "registrationFailed": "Registration failed: {error}",
+  "@registrationFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "voiceServiceRemoved": "Voice service removed.",
+  "removeFailed": "Remove failed: {error}",
+  "@removeFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "voiceServiceIntroConfigured": "Speech (Speak) uses the registered provider below. Switch provider anytime — no server reinstall needed.",
+  "voiceServiceIntroUnconfigured": "Register OpenAI or a self-hosted TTS sidecar to enable Speak in chat.",
+  "providerLabel": "Provider",
+  "sidecarUrl": "Sidecar URL",
+  "sidecarContractHelp": "Any HTTP service implementing the VesnAI TTS contract works (see docs/TTS_SIDECAR.md in the project).",
+  "openaiApiKey": "OpenAI API key",
+  "openaiApiKeyUpdate": "OpenAI API key (re-enter to update)",
+  "sidecarApiKey": "Sidecar API key",
+  "sidecarApiKeyUpdate": "API key (re-enter to update)",
+  "openaiModel": "OpenAI model",
+  "polishVoiceOpenai": "Polish voice (OpenAI id)",
+  "polishVoiceId": "Polish voice id",
+  "englishVoiceOpenai": "English voice (OpenAI id)",
+  "englishVoiceId": "English voice id",
+  "voiceIdHint": "voice ID from your TTS engine",
+  "updateRegistration": "Update registration",
+  "register": "Register",
+  "removeVoiceService": "Remove voice service",
+
+  "deleteNoteQuestion": "Delete note?",
+  "deleteNoteConfirm": "Delete \"{title}\"? This cannot be undone.",
+  "@deleteNoteConfirm": {
+    "placeholders": { "title": { "type": "String" } }
+  },
+  "deleteNoteSyncNote": "This note will be removed from this device and synced to the server when online.",
+
+  "replyDidNotFinish": "This reply did not finish. Send your message again.",
+  "couldNotSendTapRetryStatus": "Could not send message ({status}). Tap Retry on the message.",
+  "@couldNotSendTapRetryStatus": {
+    "placeholders": { "status": { "type": "int" } }
+  },
+  "couldNotSendTapRetry": "Could not send message. Tap Retry on the message.",
+  "connectToSendAttachments": "Connect to your VesnAI server to send attachments.",
+  "connectToChat": "Connect to your VesnAI server to chat.",
+
+  "ttsNeedsServer": "Speech synthesis needs a paired server.",
+  "ttsRegisterFirst": "Register a voice service in Settings to use Speak.",
+  "ttsFailed": "Speech synthesis failed.",
+  "ttsApiKeyRejected": "Voice service rejected the API key. Update it in Settings → Voice service.",
+  "ttsVoiceServiceError": "Speech synthesis failed: {detail}",
+  "@ttsVoiceServiceError": {
+    "placeholders": {
+      "detail": { "type": "String" }
+    }
+  },
+
+  "uploadSessionNotFound": "Chat session not found on the server. Start a new chat and try again.",
+  "uploadTooLarge": "Photo is too large for the server. Try a smaller image.",
+  "uploadConnectionDropped": "Connection dropped while uploading {filename}. Check Wi-Fi and try again.",
+  "@uploadConnectionDropped": {
+    "placeholders": { "filename": { "type": "String" } }
+  },
+  "uploadFailed": "Could not upload {filename}: {error}",
+  "@uploadFailed": {
+    "placeholders": {
+      "filename": { "type": "String" },
+      "error": { "type": "String" }
+    }
+  },
+
+  "notifMarenaCritique": "Marena left a critique",
+  "notifMarenaCritiqueBody": "A critical review of one of your notes is ready.",
+  "notifVesnaiReplied": "VesnAI replied",
+  "notifVesnaiRepliedBody": "A new message is ready in your chat.",
+  "notifChatImageReady": "Chat image ready",
+  "notifChatImageReadyBody": "A generated image was added to your conversation.",
+  "notifImageGenFailedBody": "Could not generate the chat image.",
+  "notifChatReplyFailed": "Chat reply failed",
+  "notifChatReplyFailedBody": "VesnAI could not complete a reply.",
+  "notifImageReady": "Image ready",
+  "notifImageReadyBody": "A generated image was added to your note.",
+  "notifEnrichmentReady": "Enrichment ready",
+  "notifEnrichmentReadyBody": "A generated note was added to your graph.",
+  "dueReviewTitle": "Notes due for review",
+  "dueReviewSingle": "\"{title}\" is due for review.",
+  "@dueReviewSingle": {
+    "placeholders": { "title": { "type": "String" } }
+  },
+  "dueReviewMultiple": "{count, plural, =1{1 note is} other{{count} notes are}} due for review.",
+  "@dueReviewMultiple": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "channelBgJobs": "Background jobs",
+  "channelBgJobsDesc": "Notifies when searches and enrichment finish.",
+  "channelReminders": "Reminders",
+  "channelRemindersDesc": "Scheduled reminders (notes due for review).",
+
+  "openShare": "Open / Share",
+  "shareSave": "Share / Save",
+  "addToNotes": "Add to notes",
+  "connectToSaveToNotes": "Connect to VesnAI to save to notes.",
+  "fullscreen": "Fullscreen",
+  "savedToNotes": "Saved to notes",
+  "couldNotSaveImageToNotes": "Could not save image to notes.",
+  "couldNotOpenLink": "Could not open link: {href}",
+  "@couldNotOpenLink": {
+    "placeholders": { "href": { "type": "String" } }
+  },
+  "clear": "Clear",
+  "removeAttachment": "Remove {name}",
+  "@removeAttachment": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "imageLabel": "Image",
+  "bodyEditorHint": "What do you want to remember?",
+  "yourNote": "Your note",
+  "pendingSyncLabel": "pending sync",
+  "doneLabel": "done",
+  "untitledPlain": "untitled"
+}

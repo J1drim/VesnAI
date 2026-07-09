@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- M3 light tokens from ColorScheme.fromSeed(#2E7D5B) — keep in sync with VesnaiWidgetPalette in theme.dart -->
+<resources>
+    <color name="vesnai_brand_background">#E2E6CE</color>
+    <color name="vesnai_brand_cream">#E8E6D5</color>
+    <color name="ic_launcher_background">#E2E6CE</color>
+    <color name="widget_surface">#FFF5FBF5</color>
+    <color name="widget_on_surface">#FF171D19</color>
+    <color name="widget_on_surface_variant">#FF404943</color>
+    <color name="widget_primary">#FF226A4C</color>
+    <color name="widget_on_primary">#FFFFFFFF</color>
+    <color name="widget_primary_container">#FFAAF2CB</color>
+    <color name="widget_on_primary_container">#FF005236</color>
+    <color name="widget_surface_container_low">#FFF0F5EF</color>
+    <color name="widget_generated_accent">#FF8E6BD6</color>
+    <color name="widget_generated_tint">#2E8E6BD6</color>
+</resources>

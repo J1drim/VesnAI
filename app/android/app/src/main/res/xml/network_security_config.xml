@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android Network Security Configuration (see developer.android.com/training/articles/security-config).
+
+  Release builds trust only system CAs: expose the server with a publicly
+  trusted certificate (tunnel/reverse proxy, see docs/REMOTE_ACCESS.md).
+
+  Debug builds additionally trust user-installed CAs so the dev mkcert root
+  (installed via ./scripts/vesnai.sh setup-https + on-device CA install) works
+  for native/WebView traffic. Flutter's Dart HTTP stack — all API traffic —
+  trusts the mkcert CA from assets/certs/ instead, gated by the
+  TRUST_DEV_MKCERT_CA dart-define (see lib/data/http_client_factory.dart).
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

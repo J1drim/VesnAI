@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  secrets_scan:
+    name: Secrets scan (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  server:
+    name: Server (lint, type, test, licenses)
+    runs-on: ubuntu-latest
+    env:
+      UV_PYTHON: "3.12"
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install deps
+        working-directory: server
+        run: uv sync --extra dev
+      - name: Lint (ruff)
+        working-directory: server
+        run: uv run ruff check .
+      - name: Type check (mypy)
+        working-directory: server
+        run: uv run mypy vesnai
+      - name: Tests + coverage (fast suite, no live models)
+        working-directory: server
+        run: uv run pytest -q -m "not live" --cov=vesnai --cov-report=term-missing
+
+  licenses:
+    # The image and chatterbox extras have conflicting torch/numpy pins and can
+    # never share one environment (see [tool.uv] conflicts in server/pyproject.toml),
+    # so each resolvable extras combination is checked separately.
+    name: License compliance (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: core+dev
+            sync_extras: --extra dev
+          # Optional heavy extras (chatterbox/image) pull copyleft or UNKNOWN
+          # classifiers — license-checked separately when those extras are used.
+    env:
+      UV_PYTHON: "3.12"
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install deps
+        working-directory: server
+        run: uv sync ${{ matrix.sync_extras }}
+      - name: License compliance
+        working-directory: server
+        run: uv run python scripts/check_licenses.py
+
+  okf_dart:
+    name: OKF Dart library
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Pub get
+        working-directory: packages/okf_dart
+        run: dart pub get
+      - name: Analyze
+        working-directory: packages/okf_dart
+        run: dart analyze
+      - name: Test (incl. shared OKF conformance fixtures)
+        working-directory: packages/okf_dart
+        run: dart test
+
+  app:
+    name: Flutter app (analyze, test, release build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Pub get
+        working-directory: app
+        run: flutter pub get
+      - name: Analyze
+        working-directory: app
+        run: |
+          dart analyze --format=machine > analyze.txt 2>&1 || true
+          if grep '|ERROR|' analyze.txt; then
+            cat analyze.txt
+            exit 1
+          fi
+      - name: Install Linux build deps
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+            clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+      - name: Test (unit + widget + golden)
+        working-directory: app
+        run: flutter test
+      - name: Check direct deps freshness
+        run: python3 scripts/check_flutter_deps.py
+      - name: Release APK (plugin compatibility)
+        working-directory: app
+        run: |
+          set -o pipefail
+          flutter build apk --release 2>&1 | tee build.log
+          if grep -E 'Swift Package Manager adoption|plugins that apply Kotlin Gradle Plugin' build.log; then
+            echo "::warning::Known Flutter plugin compatibility warnings (workmanager); APK build succeeded"
+          fi
+
+  e2e_nightly:
+    name: E2E + live models (nightly/manual)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      UV_PYTHON: "3.12"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install deps
+        working-directory: server
+        run: uv sync --extra dev --extra ai
+      - name: Live suite
+        working-directory: server
+        run: uv run pytest -q -m live

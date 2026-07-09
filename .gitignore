@@ -1,0 +1,85 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+coverage.xml
+dist/
+build/
+*.egg
+
+# Local data / secrets
+*.env
+.env
+.env.*
+!.env.example
+knowledge/
+# Runtime data stores only — a bare "data/" would also ignore app source
+# directories like app/lib/data/ and app/test/data/.
+/data/
+server/data/
+services/*/data/
+*.sqlite
+*.sqlite3
+secrets.json
+*.enc
+
+# VesnAI local runtime (PIDs, logs, generated API keys)
+.vesnai-run/
+
+# Cursor IDE — keep shared rules, ignore local agent/session artifacts
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+
+# Locally-generated TLS certs (created by scripts/vesnai.sh setup-https)
+*.pem
+*.key
+localhost*.pem
+app/android/app/src/main/res/raw/mkcert_root_ca.pem
+
+# Flutter / Dart
+.dart_tool/
+.packages
+**/build/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/ios/Pods/
+**/.idea/
+*.iml
+
+# Android
+**/.gradle/
+**/local.properties
+**/key.properties
+**/*.jks
+**/*.keystore
+
+# macOS / Windows / Linux
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs and process files
+*.log
+*.pid
+
+# ML model caches (large binaries; download at runtime)
+/models/
+*.gguf
+*.safetensors
+*.onnx
+*.bin
+*.pt
+
+# Editor / tooling (optional local overrides)
+.vscode/settings.json
+.vscode/launch.json

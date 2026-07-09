@@ -1,0 +1,13 @@
+use_default_settings: true
+
+server:
+  # secret_key is intentionally NOT set here: it is injected per-deploy via
+  # the SEARXNG_SECRET environment variable (see docker-compose.yml), which
+  # overrides settings.yml. Never commit a real secret to this file.
+  port: 8080
+  bind_address: "0.0.0.0"
+
+search:
+  formats:
+    - html
+    - json

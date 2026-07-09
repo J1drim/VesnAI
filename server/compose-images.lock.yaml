@@ -1,0 +1,15 @@
+# Pinned third-party images for docker-compose.yml sidecars (supply-chain audit M18).
+# When bumping a digest, update this file and docker-compose.yml together, then run:
+#   ./scripts/compose-sidecars.sh backup
+#   ./scripts/compose-sidecars.sh upgrade
+images:
+  qdrant:
+    upstream: qdrant/qdrant:v1.18.2
+    digest: sha256:75eab8c4ba42096724fdcfde8b4de0b5713d529dde32f285a1f86fdcb2c9e50c
+    pinned: "2026-07-01"
+    data_volume: qdrant-data
+  searxng:
+    upstream: searxng/searxng:1.2.0-20250404-1e3e3e28c
+    digest: sha256:c6d6af406d214a24edee971b98b92d05a83ee9707ff9a59a56471f9cfce5eee2
+    pinned: "2026-07-01"
+    data_volume: null

@@ -1,0 +1,394 @@
+{
+  "@@locale": "pl",
+  "appTitle": "VesnAI",
+  "navNotes": "Notatki",
+  "navChat": "Czat",
+  "navGraph": "Graf",
+  "navSettings": "Ustawienia",
+  "capture": "Zapisz",
+  "sync": "Synchronizuj",
+  "webSearch": "Wyszukiwanie w sieci",
+  "notPaired": "Offline – niesparowano",
+  "pairedPullToSync": "Sparowano – pociągnij, aby zsynchronizować",
+  "lastSynced": "Ostatnia synchronizacja {when}",
+  "@lastSynced": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "emptyNotes": "Brak notatek. Dotknij +, aby zapisać pierwszą myśl.",
+  "onboardingTitle": "Połącz się ze swoim serwerem VesnAI",
+  "onboardingBody": "Twoje notatki pozostają na Twoich urządzeniach i serwerze. Sparuj to urządzenie, aby synchronizować, rozmawiać, wyszukiwać i więcej – lub kontynuuj offline i sparuj później.",
+  "foundOnNetwork": "Znaleziono w Twojej sieci",
+  "searchingNetwork": "Szukam w Twojej sieci...",
+  "serverUrl": "Adres serwera",
+  "pairingCode": "Kod parowania",
+  "scanQr": "Skanuj kod QR",
+  "pair": "Sparuj",
+  "continueOffline": "Kontynuuj offline",
+  "unpairDevice": "Rozparuj to urządzenie",
+  "connection": "Połączenie",
+  "invalidCode": "Nieprawidłowy lub wygasły kod parowania.",
+  "unreachableServer": "Nie można połączyć się z serwerem. Sprawdź adres i Wi-Fi.",
+  "pairingErrorTls": "Bezpieczne połączenie nie powiodło się (niezaufany certyfikat). Użyj adresu serwera z zaufanym certyfikatem lub zainstaluj certyfikat serwera na tym urządzeniu.",
+  "pairingErrorServerUnreachable": "Nie można połączyć się z serwerem pod tym adresem. Sprawdź adres, Wi-Fi i czy serwer jest uruchomiony.",
+
+  "typeNote": "Notatka",
+  "typeIdea": "Pomysł",
+  "typeTask": "Zadanie",
+  "typePhoto": "Zdjęcie",
+  "typeCritique": "Krytyka",
+
+  "cancel": "Anuluj",
+  "retry": "Spróbuj ponownie",
+  "open": "Otwórz",
+  "ok": "OK",
+  "skip": "Pomiń",
+  "delete": "Usuń",
+  "save": "Zapisz",
+  "edit": "Edytuj",
+  "view": "Podgląd",
+
+  "dueForReview": "Do przejrzenia",
+  "searchNotesHint": "Szukaj w notatkach…",
+  "offlineChangesQueued": "Offline – zmiany zostaną zsynchronizowane później.",
+  "syncedChanges": "Zsynchronizowano ({count, plural, =1{1 zmiana} few{{count} zmiany} other{{count} zmian}}).",
+  "@syncedChanges": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "notesBusySyncing": "Trwa synchronizacja notatek. Spróbuj za chwilę.",
+  "couldNotLoadNotes": "Nie udało się wczytać notatek.",
+  "noNotesMatchQuery": "Brak notatek pasujących do \"{query}\".",
+  "@noNotesMatchQuery": {
+    "placeholders": { "query": { "type": "String" } }
+  },
+  "noNotesMatchTypes": "Brak notatek pasujących do wybranych typów.",
+  "justNow": "przed chwilą",
+  "minutesAgo": "{minutes} min temu",
+  "@minutesAgo": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
+  "hoursAgo": "{hours} godz. temu",
+  "@hoursAgo": {
+    "placeholders": { "hours": { "type": "int" } }
+  },
+  "daysAgo": "{days} dni temu",
+  "@daysAgo": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+
+  "noteScreenTitle": "Notatka",
+  "aiGenerated": "Wygenerowane przez AI",
+  "critiqueByMarena": "Krytyka od Mareny",
+  "critiquedNote": "Krytykowana notatka",
+  "critiques": "Krytyki",
+  "markDone": "Oznacz jako ukończone",
+  "reopen": "Otwórz ponownie",
+  "done": "Ukończone",
+  "showDone": "Pokaż ukończone",
+  "markedDone": "Oznaczono jako ukończone",
+  "noteReopened": "Otwarto ponownie",
+  "filterAll": "Wszystkie",
+  "stopDictation": "Zatrzymaj dyktowanie",
+  "formatting": "Formatowanie",
+  "noteTypeSheetTitle": "Typ notatki",
+  "clearFilters": "Wyczyść filtry",
+  "untitled": "(bez tytułu)",
+  "titleLabel": "Tytuł",
+  "typeLabel": "Typ",
+  "tagsLabel": "Tagi (rozdzielone przecinkami)",
+  "bodyHint": "Treść",
+  "attachments": "Załączniki",
+  "generatedMemoryAid": "Wygenerowana ilustracja",
+  "enrichWithAi": "Wzbogać z AI",
+  "noteNotFound": "Nie znaleziono notatki.",
+  "savedLocallyWillSync": "Zapisano lokalnie — synchronizacja nastąpi, gdy serwer VesnAI wróci.",
+  "enrichRequested": "Zlecono wzbogacenie – wygenerowana notatka pojawi się po synchronizacji.",
+  "enrichFailed": "Wzbogacenie nie powiodło się.",
+  "errorWithDetail": "Błąd: {error}",
+  "@errorWithDetail": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "talkToVesnai": "Porozmawiaj z VesnAI",
+  "newChat": "Nowy czat",
+  "noConversationsYet": "Brak rozmów.",
+  "chatInputHint": "Zapytaj, przypomnij lub utwórz...",
+  "listening": "Słucham…",
+  "startingNewChat": "Rozpoczynam nowy czat…",
+  "sendingStatus": "Wysyłam…",
+  "vesnaiThinking": "VesnAI myśli…",
+  "thinking": "Myślę…",
+  "generatingImage": "Generuję obraz…",
+  "imageGenerationFailed": "Generowanie obrazu nie powiodło się",
+  "retryImage": "Ponów obraz",
+  "notSent": "Nie wysłano",
+  "attach": "Załącz",
+  "speak": "Powiedz",
+  "stopAndSend": "Zatrzymaj i wyślij",
+  "replay": "Odtwórz ponownie",
+  "camera": "Aparat",
+  "gallery": "Galeria",
+  "file": "Plik",
+  "voiceNote": "Notatka głosowa",
+  "noteSaved": "Notatka zapisana",
+  "couldNotSendMessage": "Nie udało się wysłać wiadomości: {error}",
+  "@couldNotSendMessage": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "speechUnavailable": "Rozpoznawanie mowy jest niedostępne na tym urządzeniu.",
+
+  "addTag": "Dodaj tag",
+  "suggestTags": "Zaproponuj tagi",
+  "photo": "Zdjęcie",
+  "attachFile": "Załącz plik",
+  "draw": "Rysuj",
+  "uploadingPhoto": "Przesyłam zdjęcie {current} z {total}…",
+  "@uploadingPhoto": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "attachmentsNeedServer": "Załączniki wymagają sparowanego serwera; zapisano sam tekst.",
+  "savedLocallyShort": "Zapisano lokalnie — synchronizacja nastąpi, gdy serwer wróci.",
+  "couldNotSaveNote": "Nie udało się zapisać notatki: {error}",
+  "@couldNotSaveNote": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "tagSuggestionsNeedServer": "Propozycje tagów wymagają sparowanego serwera.",
+  "couldNotSuggestTags": "Nie udało się zaproponować tagów: {error}",
+  "@couldNotSuggestTags": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "settingsTitle": "Ustawienia",
+  "sectionServer": "Serwer",
+  "sectionModelsPrivacy": "Modele i prywatność",
+  "sectionAssistant": "Asystentka",
+  "sectionApp": "Aplikacja",
+  "sectionModels": "Modele",
+  "sectionSearch": "Wyszukiwanie",
+  "sectionData": "Dane",
+  "notPairedShort": "Niesparowano",
+  "localOnlyMode": "Tryb lokalny",
+  "loadingServerSettings": "Wczytuję ustawienia serwera...",
+  "pairToViewPrivacy": "Sparuj serwer, aby zobaczyć ustawienia prywatności.",
+  "localOnlySubtitle": "Nigdy nie wywołuj zewnętrznych API (konfigurowane na serwerze).",
+  "assistantLanguage": "Język asystentki",
+  "assistantLanguageAuto": "Auto (z czatu)",
+  "appLanguage": "Język aplikacji",
+  "appLanguageSystem": "Domyślny systemu",
+  "readRepliesAloud": "Czytaj odpowiedzi na głos",
+  "readRepliesAloudSubtitle": "Gdy czat jest otwarty i głośność jest włączona",
+  "shareLocationWithChat": "Udostępniaj lokalizację w czacie",
+  "shareLocationSubtitle": "Przybliżony GPS do lokalnych zapytań (pogoda, okolica). Wysyłany z wiadomością tylko gdy włączone.",
+  "voiceService": "Usługa głosowa",
+  "voiceServicePairFirst": "Sparuj serwer, aby zarejestrować głos.",
+  "voiceServiceRegistered": "Zarejestrowano ({provider}) — funkcja mowy włączona",
+  "@voiceServiceRegistered": {
+    "placeholders": { "provider": { "type": "String" } }
+  },
+  "voiceServiceNotRegistered": "Zarejestruj OpenAI lub usługę TTS, aby włączyć funkcję mowy",
+  "externalApiKeys": "Zewnętrzne klucze API",
+  "externalApiKeysSubtitle": "Przechowywane zaszyfrowane na serwerze; nigdy w kopiach zapasowych.",
+  "externalApiKeysPairFirst": "Sparuj serwer, aby zarządzać kluczami.",
+  "chatModel": "Model czatu",
+  "languages": "Języki",
+  "backUpKnowledge": "Kopia zapasowa wiedzy",
+  "backUpSubtitle": "Pobierz zaszyfrowaną kopię swoich notatek.",
+  "restoreFromBackup": "Przywróć z kopii zapasowej",
+  "backupFailed": "Kopia zapasowa nie powiodła się: {error}",
+  "@backupFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "restoreFailed": "Przywracanie nie powiodło się: {error}",
+  "@restoreFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "restoredFromBackup": "Przywrócono z kopii zapasowej.",
+  "backupPassphraseOptional": "Hasło kopii zapasowej (opcjonalne)",
+  "backupPassphraseRequired": "Hasło kopii zapasowej (wymagane)",
+  "passphrase": "Hasło",
+  "unpairQuestion": "Rozparować urządzenie?",
+  "unpairExplanation": "To usunie zapisane połączenie i unieważni to urządzenie na serwerze. Lokalne notatki pozostaną na tym urządzeniu.",
+  "unpair": "Rozparuj",
+  "pairDialogTitle": "Sparuj z serwerem VesnAI",
+  "pairedWithServer": "Sparowano z serwerem.",
+  "enterValidServerUrl": "Podaj prawidłowy adres serwera.",
+
+  "newSticky": "Nowa karteczka",
+  "newNote": "Nowa notatka",
+  "noNotesYet": "Brak notatek.",
+  "refresh": "Odśwież",
+  "unpairedBannerText": "Nie sparowano — sparuj z serwerem VesnAI, aby synchronizować, czatować i wyszukiwać.",
+
+  "knowledgeGraph": "Graf wiedzy",
+  "graphOffline": "Offline — wyświetlane są tylko lokalne notatki.",
+  "graphRefreshed": "Graf odświeżony (wysłano {count, plural, =1{1 zmianę} few{{count} zmiany} other{{count} zmian}}).",
+  "@graphRefreshed": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "graphNoNotesMatchFilters": "Żadne notatki nie pasują do bieżących filtrów.",
+  "graphNoNotes": "Brak notatek do wyświetlenia w grafie.",
+  "graphSemantics": "Interaktywny graf wiedzy. Przeciągnij, aby przesunąć; uszczypnij, aby przybliżyć; dotknij węzła, aby otworzyć notatkę.",
+  "tagsFilterLabel": "Tagi",
+  "tagsFilterLabelCount": "Tagi ({count})",
+  "@tagsFilterLabelCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "filterMine": "Moje",
+  "showAll": "Pokaż wszystko",
+  "filterByTag": "Filtruj po tagu",
+  "selectedLabel": "Wybrane",
+  "noTagsYet": "Brak tagów",
+  "allTagsSelected": "Wszystkie tagi wybrane",
+  "clearTags": "Wyczyść tagi",
+
+  "searchFailed": "Wyszukiwanie nie powiodło się.",
+  "searchFailedWithError": "Wyszukiwanie nie powiodło się: {error}",
+  "@searchFailedWithError": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "researchReady": "Wyniki wyszukiwania gotowe",
+  "researchReadyBody": "Wyniki wyszukiwania zapisano jako notatkę.",
+  "pairForWebSearch": "Sparuj z serwerem, aby wyszukiwać w internecie.",
+  "researchPrompt": "Co chcesz zbadać?",
+  "timeBudget": "Limit czasu: {seconds}s",
+  "@timeBudget": {
+    "placeholders": { "seconds": { "type": "int" } }
+  },
+  "researching": "Wyszukiwanie...",
+  "searchAction": "Szukaj",
+
+  "scanPairingQr": "Zeskanuj kod QR parowania",
+  "cameraPermissionDenied": "Odmówiono dostępu do aparatu. Zezwól na dostęp do aparatu w Ustawieniach, a następnie dotknij Ponów.",
+  "cameraUnavailable": "Aparat niedostępny",
+
+  "noApiKeysStored": "Brak zapisanych kluczy API.",
+  "addApiKey": "Dodaj klucz API",
+  "apiKeyNameLabel": "Nazwa (np. openai)",
+  "apiKeyValueLabel": "Wartość",
+
+  "providerTtsSidecar": "Usługa TTS (self-hosted)",
+  "apiKeyRequired": "Klucz API jest wymagany.",
+  "sidecarUrlRequired": "Adres URL usługi TTS jest wymagany.",
+  "voiceIdsRequired": "Identyfikatory głosów są wymagane (zależą od silnika TTS).",
+  "voiceServiceRegisteredSnack": "Usługa głosowa zarejestrowana.",
+  "registrationFailed": "Rejestracja nie powiodła się: {error}",
+  "@registrationFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "voiceServiceRemoved": "Usługa głosowa usunięta.",
+  "removeFailed": "Usuwanie nie powiodło się: {error}",
+  "@removeFailed": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "voiceServiceIntroConfigured": "Funkcja mowy (Czytaj) korzysta z zarejestrowanego dostawcy poniżej. Dostawcę można zmienić w każdej chwili — bez reinstalacji serwera.",
+  "voiceServiceIntroUnconfigured": "Zarejestruj OpenAI lub własną usługę TTS, aby włączyć funkcję mowy w czacie.",
+  "providerLabel": "Dostawca",
+  "sidecarUrl": "Adres URL usługi TTS",
+  "sidecarContractHelp": "Działa dowolna usługa HTTP realizująca kontrakt TTS VesnAI (zob. docs/TTS_SIDECAR.md w projekcie).",
+  "openaiApiKey": "Klucz API OpenAI",
+  "openaiApiKeyUpdate": "Klucz API OpenAI (wpisz ponownie, aby zaktualizować)",
+  "sidecarApiKey": "Klucz API usługi TTS",
+  "sidecarApiKeyUpdate": "Klucz API (wpisz ponownie, aby zaktualizować)",
+  "openaiModel": "Model OpenAI",
+  "polishVoiceOpenai": "Głos polski (id OpenAI)",
+  "polishVoiceId": "Id głosu polskiego",
+  "englishVoiceOpenai": "Głos angielski (id OpenAI)",
+  "englishVoiceId": "Id głosu angielskiego",
+  "voiceIdHint": "identyfikator głosu z Twojego silnika TTS",
+  "updateRegistration": "Zaktualizuj rejestrację",
+  "register": "Zarejestruj",
+  "removeVoiceService": "Usuń usługę głosową",
+
+  "deleteNoteQuestion": "Usunąć notatkę?",
+  "deleteNoteConfirm": "Usunąć \"{title}\"? Tej operacji nie można cofnąć.",
+  "@deleteNoteConfirm": {
+    "placeholders": { "title": { "type": "String" } }
+  },
+  "deleteNoteSyncNote": "Notatka zostanie usunięta z tego urządzenia i zsynchronizowana z serwerem po połączeniu.",
+
+  "replyDidNotFinish": "Ta odpowiedź nie została ukończona. Wyślij wiadomość ponownie.",
+  "couldNotSendTapRetryStatus": "Nie udało się wysłać wiadomości ({status}). Dotknij Ponów przy wiadomości.",
+  "@couldNotSendTapRetryStatus": {
+    "placeholders": { "status": { "type": "int" } }
+  },
+  "couldNotSendTapRetry": "Nie udało się wysłać wiadomości. Dotknij Ponów przy wiadomości.",
+  "connectToSendAttachments": "Połącz się z serwerem VesnAI, aby wysyłać załączniki.",
+  "connectToChat": "Połącz się z serwerem VesnAI, aby czatować.",
+
+  "ttsNeedsServer": "Synteza mowy wymaga sparowanego serwera.",
+  "ttsRegisterFirst": "Zarejestruj usługę głosową w Ustawieniach, aby używać funkcji mowy.",
+  "ttsFailed": "Synteza mowy nie powiodła się.",
+  "ttsApiKeyRejected": "Usługa głosowa odrzuciła klucz API. Zaktualizuj go w Ustawieniach → Usługa głosowa.",
+  "ttsVoiceServiceError": "Synteza mowy nie powiodła się: {detail}",
+  "@ttsVoiceServiceError": {
+    "placeholders": {
+      "detail": { "type": "String" }
+    }
+  },
+
+  "uploadSessionNotFound": "Nie znaleziono sesji czatu na serwerze. Rozpocznij nowy czat i spróbuj ponownie.",
+  "uploadTooLarge": "Zdjęcie jest zbyt duże dla serwera. Spróbuj użyć mniejszego obrazu.",
+  "uploadConnectionDropped": "Połączenie przerwane podczas przesyłania {filename}. Sprawdź Wi-Fi i spróbuj ponownie.",
+  "@uploadConnectionDropped": {
+    "placeholders": { "filename": { "type": "String" } }
+  },
+  "uploadFailed": "Nie udało się przesłać {filename}: {error}",
+  "@uploadFailed": {
+    "placeholders": {
+      "filename": { "type": "String" },
+      "error": { "type": "String" }
+    }
+  },
+
+  "notifMarenaCritique": "Marena zostawiła krytykę",
+  "notifMarenaCritiqueBody": "Krytyczna recenzja jednej z Twoich notatek jest gotowa.",
+  "notifVesnaiReplied": "VesnAI odpowiedziała",
+  "notifVesnaiRepliedBody": "Nowa wiadomość czeka w czacie.",
+  "notifChatImageReady": "Obraz w czacie gotowy",
+  "notifChatImageReadyBody": "Wygenerowany obraz dodano do rozmowy.",
+  "notifImageGenFailedBody": "Nie udało się wygenerować obrazu w czacie.",
+  "notifChatReplyFailed": "Odpowiedź czatu nie powiodła się",
+  "notifChatReplyFailedBody": "VesnAI nie mogła ukończyć odpowiedzi.",
+  "notifImageReady": "Obraz gotowy",
+  "notifImageReadyBody": "Wygenerowany obraz dodano do notatki.",
+  "notifEnrichmentReady": "Wzbogacenie gotowe",
+  "notifEnrichmentReadyBody": "Wygenerowaną notatkę dodano do grafu.",
+  "dueReviewTitle": "Notatki do przejrzenia",
+  "dueReviewSingle": "\"{title}\" czeka na przejrzenie.",
+  "@dueReviewSingle": {
+    "placeholders": { "title": { "type": "String" } }
+  },
+  "dueReviewMultiple": "{count, plural, =1{1 notatka czeka} few{{count} notatki czekają} other{{count} notatek czeka}} na przejrzenie.",
+  "@dueReviewMultiple": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "channelBgJobs": "Zadania w tle",
+  "channelBgJobsDesc": "Powiadamia o zakończeniu wyszukiwań i wzbogacania.",
+  "channelReminders": "Przypomnienia",
+  "channelRemindersDesc": "Zaplanowane przypomnienia (notatki do przejrzenia).",
+
+  "openShare": "Otwórz / Udostępnij",
+  "shareSave": "Udostępnij / Zapisz",
+  "addToNotes": "Dodaj do notatek",
+  "connectToSaveToNotes": "Połącz się z VesnAI, aby zapisać do notatek.",
+  "fullscreen": "Pełny ekran",
+  "savedToNotes": "Zapisano do notatek",
+  "couldNotSaveImageToNotes": "Nie udało się zapisać obrazu do notatek.",
+  "couldNotOpenLink": "Nie udało się otworzyć linku: {href}",
+  "@couldNotOpenLink": {
+    "placeholders": { "href": { "type": "String" } }
+  },
+  "clear": "Wyczyść",
+  "removeAttachment": "Usuń {name}",
+  "@removeAttachment": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "imageLabel": "Obraz",
+  "bodyEditorHint": "Co chcesz zapamiętać?",
+  "yourNote": "Twoja notatka",
+  "pendingSyncLabel": "oczekuje na synchronizację",
+  "doneLabel": "ukończona",
+  "untitledPlain": "bez tytułu"
+}

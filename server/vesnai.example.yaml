@@ -1,0 +1,116 @@
+# VesnAI server configuration — copy to vesnai.yaml next to where you run
+# `vesnai serve` (or point at it with --config / $VESNAI_CONFIG).
+#
+# Precedence: vesnai.yaml < environment variables (VESNAI_*) < CLI flags.
+# Every setting is optional; delete what you don't need. Secrets can be
+# written literally, referenced from the environment as "env:VAR_NAME",
+# or stored via the app's encrypted secrets screen.
+#
+# Validate with:  uv run vesnai doctor
+
+# Where your knowledge and runtime state live.
+paths:
+  knowledge: ./knowledge     # OKF Markdown bundle — the source of truth
+  data: ./data               # derived indexes, secrets, device registry
+  models_cache: ./models     # downloaded model weights (whisper, …)
+
+network:
+  host: 127.0.0.1            # bind 0.0.0.0 so phones on your LAN can pair
+  port: 8443
+  mdns: true                 # advertise on the LAN for app auto-discovery
+  tls:
+    enabled: true            # HTTPS; generate dev certs: ./scripts/vesnai.sh setup-https
+    # cert: ./certs/localhost.pem
+    # key: ./certs/localhost-key.pem
+
+# true  = fully offline demo mode with deterministic fake AI (no models).
+# false = wire the real providers configured below.
+offline_only: true
+
+llm:
+  # "ollama" runs models locally. "openai_compatible" works with OpenAI,
+  # OpenRouter, vLLM, llama.cpp server, LM Studio, … — but sends note content
+  # to that endpoint.
+  provider: ollama
+  # base_url: https://api.openai.com/v1   # openai_compatible only
+  # api_key: env:OPENAI_API_KEY           # or a literal, or app secrets ("llm")
+
+  # One model per role. Each role accepts either a plain model name or a
+  # mapping with a thinking flag.
+  models:
+    chat: { model: qwen3.6, thinking: false }       # Vesna: interactive chat/voice
+    reasoning: { model: qwen3.6, thinking: true }   # background jobs
+    # marena: { model: qwen3.6, thinking: true }    # adversarial critic; defaults to reasoning
+    vision: qwen3.6                                  # photo captioning (multimodal)
+    embeddings: { model: bge-m3, dim: 1024 }         # semantic search (PL+EN)
+
+  ollama:                     # only used when provider is ollama
+    # host: http://127.0.0.1:11434
+    keep_alive: 30m
+    auto_pull: true           # download missing models on first online start
+
+# Text-to-speech for "Speak" in chat.
+#   none       — disabled
+#   sidecar    — self-hosted HTTP service (see docs/TTS_SIDECAR.md)
+#   openai     — OpenAI (or compatible) speech API
+#   chatterbox — in-process voice cloning (MIT; uv sync --extra ai --extra chatterbox)
+# sidecar/openai settings here only SEED the registration on first start;
+# registering from the app (Settings -> Voice service) always wins afterwards.
+tts:
+  mode: none
+  # url: http://127.0.0.1:59125          # sidecar base URL
+  # api_key: env:VESNAI_TTS_KEY
+  # model: tts-1                          # openai only
+  # voices: { pl: my-voice-pl, en: my-voice-en }   # engine-specific voice IDs
+  # chatterbox:
+  #   reference_wav: ./assets/voices/my_voice.wav
+  #   exaggeration: 0.35
+
+# Server-side speech-to-text (transcribing uploaded audio).
+#   whisper — local whisper.cpp (weights auto-download to paths.models_cache)
+#   none    — skip; the app's on-device dictation still works
+stt:
+  mode: whisper
+  model: large-v3
+  # binary: /opt/homebrew/bin/whisper-cli
+
+# Note auto-illustration via FLUX (Apple-Silicon mflux CLI).
+#   flux — local generation (host mode only; not available in Docker)
+#   none — disabled
+image:
+  mode: flux
+  model: schnell              # HF repo id, builtin name, or local path
+  # hf_token: env:HF_TOKEN    # required for the gated official FLUX repo
+  # base_model: schnell       # when model is a third-party repo/path
+  # quantize: 8
+  auto_illustrate: true
+
+# Semantic index storage.
+#   auto      — qdrant when online, in_memory when offline
+#   qdrant    — Docker container (auto-started on the host)
+#   in_memory — no Docker; rebuilt from notes on each start
+vector_store:
+  kind: auto
+  # url: http://127.0.0.1:6333
+
+# Deep web search (used by chat, enrichment, and Marena).
+#   searxng — self-hosted metasearch container (auto-started on the host)
+#   none    — disabled
+search:
+  mode: searxng
+  # url: http://127.0.0.1:8888
+  max_seconds: 60
+  languages: [en, pl]
+
+# Durable assistant memory.
+memory:
+  disk_max_chars: 100000
+  prompt_max_chars: 32000
+  review_interval_turns: 10
+
+# Marena — the idle adversarial critic of your new notes.
+marena:
+  enabled: true
+  interval_hours: 6
+  max_notes_per_run: 3
+  web_search: true
