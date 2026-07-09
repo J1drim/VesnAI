@@ -1,0 +1,45 @@
+{
+  "_comment": "Not a GitHub Ruleset — apply these manually under repo Settings. Issues/PRs are open; delivery to main requires your review via the branch ruleset + CODEOWNERS.",
+  "general": {
+    "features": {
+      "wikis": false,
+      "issues": true,
+      "projects": false,
+      "discussions": false
+    },
+    "pull_requests": {
+      "allow_merge_commits": true,
+      "allow_squash_merging": true,
+      "allow_rebase_merging": true,
+      "delete_branch_on_merge": true,
+      "allow_auto_merge": false
+    }
+  },
+  "actions": {
+    "fork_pull_request_workflows": {
+      "run_workflows_from_fork_pull_requests": true,
+      "require_approval_for_first_time_contributors": true,
+      "require_approval_for_outside_collaborators": true
+    }
+  },
+  "security": {
+    "dependency_graph": true,
+    "dependabot_alerts": true,
+    "dependabot_security_updates": true,
+    "secret_scanning": true,
+    "secret_scanning_push_protection": true
+  },
+  "collaborators_guidance": {
+    "default_role_for_outside_contributors": "read",
+    "note": "Fork → open PR → CI runs (after your approval for first-time contributors) → you review as CODEOWNER → merge. No direct push to main except admin bypass."
+  },
+  "optional_hardening": {
+    "required_signatures": {
+      "enabled": false,
+      "reason": "Commits are currently unsigned; enable in ruleset (required_signatures) once you set up SSH commit signing."
+    },
+    "tag_ruleset": {
+      "suggestion": "Add a second ruleset on refs/tags/v* with required_signatures before publishing releases."
+    }
+  }
+}
