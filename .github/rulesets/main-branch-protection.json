@@ -1,8 +1,6 @@
 {
   "name": "Protect main — PR + owner review + CI",
   "target": "branch",
-  "source_type": "Repository",
-  "source": "J1drim/VesnAI",
   "enforcement": "active",
   "conditions": {
     "ref_name": {
@@ -12,22 +10,23 @@
   },
   "bypass_actors": [
     {
-      "actor_type": "RepositoryRole",
-      "repository_role_name": "admin"
+      "actor_id": 301057917,
+      "actor_type": "User",
+      "bypass_mode": "always"
     }
   ],
   "rules": [
     {
       "type": "update",
-      "parameters": {}
+      "parameters": {
+        "update_allows_fetch_and_merge": true
+      }
     },
     {
-      "type": "deletion",
-      "parameters": {}
+      "type": "deletion"
     },
     {
-      "type": "non_fast_forward",
-      "parameters": {}
+      "type": "non_fast_forward"
     },
     {
       "type": "pull_request",
