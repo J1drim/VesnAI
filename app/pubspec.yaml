@@ -44,7 +44,7 @@ dependencies:
   mobile_scanner: ^7.0.0
 
   # Phase 2: durable local note mirror (Drift/SQLite)
-  drift: ^2.20.0
+  drift: ^2.34.2
   sqlite3_flutter_libs: ^0.5.24
   path: ^1.9.0
   path_provider: ^2.1.4
