@@ -41,7 +41,7 @@ dependencies:
 
   # Phase 1: pairing + secure connection persistence + QR scan
   flutter_secure_storage: ^10.3.1
-  mobile_scanner: ^7.0.0
+  mobile_scanner: ^7.4.0
 
   # Phase 2: durable local note mirror (Drift/SQLite)
   drift: ^2.20.0
