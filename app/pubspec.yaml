@@ -58,7 +58,7 @@ dependencies:
   # chat so the transcript appears instantly; only text is sent to the server.
   speech_to_text: ^7.4.0
   just_audio: ^0.9.40
-  share_plus: ^13.2.0
+  share_plus: ^13.2.1
 
   # Phase 5: LAN server discovery (mDNS)
   nsd: ^5.0.1
