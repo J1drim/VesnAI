@@ -29,8 +29,10 @@ Dependency migration details and deferred SDK/major-version decisions are in
   check pass. Separate AI environment: 47 focused tests and 76-package license
   check pass. Both installed-set and locked-export vulnerability audits report no
   known findings. Live image/voice model execution is not validated here.
-- Android release APK builds successfully (93 MB); final analysis passes with
-  informational notices only. Workflow YAML parses successfully. Image and voice
+- Android release APK builds successfully (93 MB). A final integration-test import
+  ordering error was discovered after the dependency commit was queued; the next
+  corrective commit fixes it; analysis now exits successfully with informational
+  notices only. Workflow YAML parses successfully. Image and voice
   environment resolution passes dry runs, without installing those model stacks.
   Scheduled emulator execution and Apple/Windows release checks remain pending.
 

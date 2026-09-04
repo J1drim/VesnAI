@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,18 +19,20 @@ void main() {
   testWidgets('capture -> appears in notes list', (tester) async {
     final directory = await Directory.systemTemp.createTemp('vesnai-e2e-');
     addTearDown(() => directory.delete(recursive: true));
-    await tester.pumpWidget(ProviderScope(
-      overrides: [
-        onboardedProvider.overrideWith((ref) => true),
-        attachmentCacheProvider.overrideWith(
-          (ref) => AttachmentCache(Directory('${directory.path}/notes')),
-        ),
-        chatAttachmentCacheProvider.overrideWith(
-          (ref) => ChatAttachmentCache(Directory('${directory.path}/chat')),
-        ),
-      ],
-      child: const VesnaiApp(),
-    ));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          onboardedProvider.overrideWith((ref) => true),
+          attachmentCacheProvider.overrideWith(
+            (ref) => AttachmentCache(Directory('${directory.path}/notes')),
+          ),
+          chatAttachmentCacheProvider.overrideWith(
+            (ref) => ChatAttachmentCache(Directory('${directory.path}/chat')),
+          ),
+        ],
+        child: const VesnaiApp(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     // First-run onboarding: continue without pairing.
@@ -42,8 +46,13 @@ void main() {
     await tester.tap(find.text('Capture'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byKey(const Key('title-field')), 'My first thought');
-    final editor = tester.widget<NoteBodyEditor>(find.byKey(const Key('body-field')));
+    await tester.enterText(
+      find.byKey(const Key('title-field')),
+      'My first thought',
+    );
+    final editor = tester.widget<NoteBodyEditor>(
+      find.byKey(const Key('body-field')),
+    );
     editor.controller!.setMarkdown('a brilliant idea');
     await tester.pump();
     await tester.tap(find.byKey(const Key('save-note')));
@@ -53,4 +62,3 @@ void main() {
     expect(find.text('My first thought'), findsOneWidget);
   });
 }
-import 'dart:io';
