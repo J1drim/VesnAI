@@ -248,13 +248,8 @@ def create_note(
 def list_due_notes(
     state: AppState = Depends(get_state), _=Depends(require_device)
 ) -> list[DueNoteOut]:
-    due_paths = state.resurfacing.due(state.notes.list())[:20]
-    out: list[DueNoteOut] = []
-    for path in due_paths:
-        if state.store.exists(path):
-            c = state.notes.get(path)
-            out.append(DueNoteOut(path=path, title=c.title))
-    return out
+    # Compatibility for older clients: an empty response clears their schedule.
+    return []
 
 
 @notes_router.post("/{path:path}/resurfaced", response_model=ResurfacedResponse)
@@ -264,10 +259,8 @@ def mark_note_resurfaced(
     if not state.store.exists(path):
         raise HTTPException(status_code=404, detail="note not found")
     concept = state.notes.get(path)
-    count = int(concept.vesnai.get("resurface_count", 0)) + 1
-    concept.vesnai["resurface_count"] = count
-    concept.vesnai["last_resurfaced"] = state.clock.now().isoformat()
-    state.notes.store.write_concept(path, concept, message="mark resurfaced")
+    # Retired endpoint: leave existing metadata and note history untouched.
+    count = int(concept.vesnai.get("resurface_count", 0))
     return ResurfacedResponse(path=path, resurface_count=count)
 
 

@@ -1,4 +1,4 @@
-"""Self-tuning loop: classifier, resurfacing, consolidation, skills, user model."""
+"""Self-tuning loop: classifier, consolidation, skills, user model."""
 
 from __future__ import annotations
 
@@ -10,7 +10,6 @@ from vesnai.ai.selftune import (
     FeedbackEvent,
     FeedbackStore,
     MemoryConsolidator,
-    ResurfacingScheduler,
     SkillService,
     TagClassifier,
     TrajectoryLog,
@@ -48,28 +47,6 @@ def test_tag_classifier_trains_and_improves_metric():
     after = clf.evaluate(train)
     assert after >= 0.75
     assert "idea" in clf.predict("another idea for an app")
-
-
-def test_resurfacing_selects_due_notes(notes, fake_clock):
-    rel, _ = notes.create(NoteInput(title="Old note"))
-    sched = ResurfacingScheduler(clock=fake_clock)
-    # Just created -> not due yet (first interval is 1 day).
-    assert rel not in sched.due(notes.list())
-    fake_clock.advance(2 * 86400)
-    assert rel in sched.due(notes.list())
-
-
-def test_resurfacing_skips_done_notes(notes, fake_clock):
-    rel, _ = notes.create(NoteInput(title="Shopping list", body="milk, eggs"))
-    fake_clock.advance(2 * 86400)
-    sched = ResurfacingScheduler(clock=fake_clock)
-    assert rel in sched.due(notes.list())
-    # Marking the note done removes it from the review queue...
-    notes.update(rel, done=True)
-    assert rel not in sched.due(notes.list())
-    # ...and reopening it brings it back.
-    notes.update(rel, done=False)
-    assert rel in sched.due(notes.list())
 
 
 def test_memory_consolidation_creates_linked_memory(notes):

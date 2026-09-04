@@ -21,7 +21,6 @@ from vesnai.ai.search_agent import SearchAgent
 from vesnai.ai.selftune import (
     FeedbackStore,
     MemoryConsolidator,
-    ResurfacingScheduler,
     SkillService,
     TagClassifier,
     TrajectoryLog,
@@ -156,7 +155,6 @@ class AppState:
         # Self-tuning (before chat — chat wires memory + skills)
         self.feedback = FeedbackStore(self.settings.data_dir)
         self.tag_classifier = TagClassifier()
-        self.resurfacing = ResurfacingScheduler(clock=self.clock)
         self.memory = MemoryConsolidator(
             self.notes,
             self.providers.reasoning,
@@ -200,7 +198,6 @@ class AppState:
             get_conversation=self.conversations.get,
             vision_provider=self.providers.vision,
             run_enrich=self._chat_enrich_note,
-            list_due_notes=self._chat_list_due_notes,
         )
         self.tool_policy_review = ToolPolicyReviewAgent(
             self.providers.reasoning,
@@ -275,11 +272,6 @@ class AppState:
         if kind == "photo":
             return self.enrichment.enrich_photo(path)
         return self.enrichment.enrich_idea(path)
-
-    def _chat_list_due_notes(self, limit: int) -> dict:
-        from vesnai.ai.note_tools import list_due_notes_payload
-
-        return list_due_notes_payload(self.notes, self.resurfacing, limit=limit)
 
     def _retrain_tag_classifier(self) -> None:
         examples: list[tuple[str, list[str]]] = []

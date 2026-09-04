@@ -405,7 +405,7 @@ def test_note_done_roundtrip_via_api(client):
     assert marked.json()["done"] is True
     assert marked.json()["done_at"]
 
-    # Done notes never show up in the due-for-review queue.
+    # The retired review endpoint stays empty, including after reopening.
     client.state.clock.advance(30 * 86400)
     due = client.get("/v1/notes/due", headers=headers).json()
     assert all(n["path"] != path for n in due)
@@ -414,7 +414,7 @@ def test_note_done_roundtrip_via_api(client):
     assert reopened.json()["done"] is False
     assert reopened.json()["done_at"] is None
     due = client.get("/v1/notes/due", headers=headers).json()
-    assert any(n["path"] == path for n in due)
+    assert due == []
 
 
 def test_sync_pull_after_create(client):

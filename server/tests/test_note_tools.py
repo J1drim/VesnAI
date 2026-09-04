@@ -8,10 +8,8 @@ from vesnai.ai.index import IndexService
 from vesnai.ai.note_tools import (
     append_to_note_payload,
     attachment_extract_parts,
-    list_due_notes_payload,
     list_notes_payload,
     mark_note_done_payload,
-    mark_note_resurfaced_payload,
     read_chat_attachment_payload,
     read_note_attachment_payload,
     read_note_payload,
@@ -19,7 +17,6 @@ from vesnai.ai.note_tools import (
     resolve_style_reference,
     style_prompt_from_reference,
 )
-from vesnai.ai.selftune import ResurfacingScheduler
 from vesnai.ai.tool_schemas import tool_by_name
 from vesnai.notes import NoteInput, NoteService
 from vesnai.okf.bundle import BundleStore
@@ -140,8 +137,6 @@ def test_new_tool_schemas_registered():
         "delete_note",
         "unlink_notes",
         "enrich_note",
-        "list_due_notes",
-        "mark_note_resurfaced",
         "mark_note_done",
         "append_to_note",
         "read_chat_attachment",
@@ -150,16 +145,6 @@ def test_new_tool_schemas_registered():
     gen = tool_by_name("generate_image")
     assert gen is not None
     assert "style_reference_path" in gen.parameters["properties"]
-
-
-def test_mark_note_resurfaced_payload(tmp_path, fake_clock):
-    store = BundleStore(tmp_path / "kb", clock=fake_clock)
-    notes = NoteService(store, clock=fake_clock)
-    path, _ = notes.create(NoteInput(title="Due", body=""))
-    out = mark_note_resurfaced_payload(notes, path, clock=fake_clock)
-    assert out["path"] == path
-    assert out["resurface_count"] == 1
-    assert notes.get(path).vesnai["last_resurfaced"]
 
 
 def test_mark_note_done_payload_and_reopen(tmp_path, fake_clock):
@@ -255,8 +240,8 @@ def test_chat_dispatch_mark_and_append(tmp_path, fake_clock):
     path, _ = notes.create(NoteInput(title="N", body="start"))
     index.index_concept(path, notes.get(path))
     chat = ChatService(FakeAIProvider(), index, notes, vision_provider=FakeVisionProvider())
-    marked = chat._dispatch("mark_note_resurfaced", {"path": path}, pending_jobs=[])
-    assert marked["resurface_count"] == 1
+    marked = chat._dispatch("mark_note_done", {"path": path}, pending_jobs=[])
+    assert marked["done"] is True
     appended = chat._dispatch(
         "append_to_note",
         {"path": path, "text": "more"},
@@ -264,17 +249,6 @@ def test_chat_dispatch_mark_and_append(tmp_path, fake_clock):
     )
     assert appended["updated"] == path
     assert "more" in notes.get(path).body
-
-
-def test_list_due_notes_payload(tmp_path, fake_clock):
-    store = BundleStore(tmp_path / "kb", clock=fake_clock)
-    notes = NoteService(store, clock=fake_clock)
-    path, concept = notes.create(NoteInput(title="Review me", body=""))
-    concept.vesnai["created"] = "2000-01-01T00:00:00+00:00"
-    store.write_concept(path, concept, message="backdate")
-    sched = ResurfacingScheduler(clock=fake_clock)
-    out = list_due_notes_payload(notes, sched)
-    assert any(n["path"] == path for n in out["due_notes"])
 
 
 class BrokenVision(VisionProvider):

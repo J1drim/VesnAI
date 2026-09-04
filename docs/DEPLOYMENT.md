@@ -180,8 +180,9 @@ the app resyncs notes and refreshes the graph so new notes appear without a rest
 
 - Tag feedback: `POST /v1/feedback/tags` — app sends tag edits; server retrains
   `TagClassifier` and blends it into `POST /v1/notes/suggest-tags`.
-- Spaced resurfacing: `GET /v1/notes/due`, `POST /v1/notes/{path}/resurfaced` —
-  Notes tab shows a “Due for review” section when paired.
+- Age-based note reminders have been retired. `/v1/notes/due` returns an empty
+  list for older clients; `/v1/notes/{path}/resurfaced` no longer changes notes.
+  Upgraded apps cancel previously scheduled reminders locally, including offline.
 - Playbooks: assistant saves procedures via `create_playbook` / `update_playbook`
   chat tools (OKF `Playbook` notes with `#skill` tag).
 - Trajectories: chat turns append compact records to `data_dir/trajectories.jsonl`.

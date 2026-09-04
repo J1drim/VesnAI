@@ -3,6 +3,17 @@
 All notable changes to VesnAI are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## Unreleased
+
+### Removed
+
+- Age-based note reminders, the Due for review section, and assistant resurfacing
+  tools. Upgraded clients cancel legacy schedules locally on launch/resume without
+  requesting notification permission. Task completion, assistant memory review,
+  and background-job notifications remain available.
+- Reminder-only timezone integration and Android scheduled-notification receivers.
+  Legacy review endpoints return an empty list or a read-only compatibility response.
+
 ## [2026.07.08.1-alpha] - 2026-07-08
 
 ### Alpha notice

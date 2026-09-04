@@ -4,7 +4,6 @@ Components:
 - ``FeedbackStore``: captures tag accept/reject/add signals.
 - ``TagClassifier``: a tiny retrainable token->tag model; ``evaluate`` reports
   accuracy so a retrain step can be shown to hold/improve a metric.
-- ``ResurfacingScheduler``: spaced-repetition selection of due notes.
 - ``MemoryConsolidator``: promotes durable facts into a linked OKF Memory note.
 - ``SkillService``: stores/refines procedures as OKF ``Playbook`` concepts.
 - ``UserModelService``: maintains an evolving user-profile concept.
@@ -17,13 +16,12 @@ import json
 import re
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from vesnai.notes import NoteInput, NoteService
 from vesnai.okf.model import Origin
-from vesnai.providers.base import AIProvider, Clock, SystemClock
+from vesnai.providers.base import AIProvider
 
 _WORD = re.compile(r"[a-zA-Z\u00c0-\u024f]+")
 
@@ -99,52 +97,6 @@ class TagClassifier:
     @property
     def is_trained(self) -> bool:
         return bool(self._tags)
-
-
-# --------------------------------------------------------------------------- #
-# Spaced-repetition resurfacing
-# --------------------------------------------------------------------------- #
-# Increasing intervals (days) approximating spaced repetition.
-RESURFACE_INTERVALS_DAYS = [1, 3, 7, 16, 35, 90]
-
-
-class ResurfacingScheduler:
-    def __init__(self, clock: Clock | None = None) -> None:
-        self.clock = clock or SystemClock()
-
-    def due(self, notes: dict[str, Any]) -> list[str]:
-        """Return note paths whose next resurface time has passed.
-
-        ``notes`` maps path -> concept. Uses ``vesnai.created`` and
-        ``vesnai.resurface_count`` to compute the next due time.
-        """
-        now = self.clock.now()
-        due: list[str] = []
-        for path, concept in notes.items():
-            if concept.vesnai.get("done"):
-                # Done notes stay searchable for the assistant but are no
-                # longer worth resurfacing for the user.
-                continue
-            created = _parse_dt(concept.vesnai.get("created"))
-            if created is None:
-                continue
-            count = int(concept.vesnai.get("resurface_count", 0))
-            idx = min(count, len(RESURFACE_INTERVALS_DAYS) - 1)
-            interval = RESURFACE_INTERVALS_DAYS[idx]
-            last = _parse_dt(concept.vesnai.get("last_resurfaced")) or created
-            next_due = last.timestamp() + interval * 86400
-            if now.timestamp() >= next_due:
-                due.append(path)
-        return sorted(due)
-
-
-def _parse_dt(value: Any) -> datetime | None:
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(str(value))
-    except ValueError:
-        return None
 
 
 # --------------------------------------------------------------------------- #

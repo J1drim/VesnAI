@@ -143,7 +143,7 @@ All nine phases of the plan are implemented and tested:
 | 5 | Voice chat: RAG + tool-calling, girl-voice TTS + STT (interfaces), transcripts as OKF | `server/vesnai/ai/` |
 | 6 | Deep multilingual web-search agent (planning, time budget, citations) | `server/vesnai/ai/search_agent.py` |
 | 7 | Knowledge graph API + Flutter force-directed graph view | `server/vesnai/graph.py`, `app/lib/features/graph/` |
-| 8 | Closed learning loop: split memory + `update_memory` tool, tag feedback/resurfacing/playbooks wired to API & chat; trajectories | `server/vesnai/ai/selftune.py`, `memory_review.py`, chat tools |
+| 8 | Closed learning loop: split memory + `update_memory` tool, tag feedback/playbooks wired to API & chat; trajectories | `server/vesnai/ai/selftune.py`, `memory_review.py`, chat tools |
 | 9 | Theme polish, encryption-at-rest backups, TLS, one-command deploy, a11y, docs | `app/lib/theme.dart`, `server/`, `docs/` |
 
 All AI features run behind mockable provider interfaces, so the whole system is

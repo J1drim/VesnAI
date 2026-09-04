@@ -138,9 +138,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get view => 'View';
 
   @override
-  String get dueForReview => 'Due for review';
-
-  @override
   String get searchNotesHint => 'Search notes…';
 
   @override
@@ -868,37 +865,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'A generated note was added to your graph.';
 
   @override
-  String get dueReviewTitle => 'Notes due for review';
-
-  @override
-  String dueReviewSingle(String title) {
-    return '\"$title\" is due for review.';
-  }
-
-  @override
-  String dueReviewMultiple(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count notes are',
-      one: '1 note is',
-    );
-    return '$_temp0 due for review.';
-  }
-
-  @override
   String get channelBgJobs => 'Background jobs';
 
   @override
   String get channelBgJobsDesc =>
       'Notifies when searches and enrichment finish.';
-
-  @override
-  String get channelReminders => 'Reminders';
-
-  @override
-  String get channelRemindersDesc =>
-      'Scheduled reminders (notes due for review).';
 
   @override
   String get openShare => 'Open / Share';

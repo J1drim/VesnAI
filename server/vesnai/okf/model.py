@@ -121,7 +121,7 @@ class Concept:
 
     @property
     def done(self) -> bool:
-        """User marked this note as done (excluded from review resurfacing)."""
+        """User marked this note as done; it remains readable and searchable."""
         return bool(self.vesnai.get("done", False))
 
     @done.setter

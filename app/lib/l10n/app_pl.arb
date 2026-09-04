@@ -47,7 +47,6 @@
   "edit": "Edytuj",
   "view": "Podgląd",
 
-  "dueForReview": "Do przejrzenia",
   "searchNotesHint": "Szukaj w notatkach…",
   "offlineChangesQueued": "Offline – zmiany zostaną zsynchronizowane później.",
   "syncedChanges": "Zsynchronizowano ({count, plural, =1{1 zmiana} few{{count} zmiany} other{{count} zmian}}).",
@@ -355,19 +354,8 @@
   "notifImageReadyBody": "Wygenerowany obraz dodano do notatki.",
   "notifEnrichmentReady": "Wzbogacenie gotowe",
   "notifEnrichmentReadyBody": "Wygenerowaną notatkę dodano do grafu.",
-  "dueReviewTitle": "Notatki do przejrzenia",
-  "dueReviewSingle": "\"{title}\" czeka na przejrzenie.",
-  "@dueReviewSingle": {
-    "placeholders": { "title": { "type": "String" } }
-  },
-  "dueReviewMultiple": "{count, plural, =1{1 notatka czeka} few{{count} notatki czekają} other{{count} notatek czeka}} na przejrzenie.",
-  "@dueReviewMultiple": {
-    "placeholders": { "count": { "type": "int" } }
-  },
   "channelBgJobs": "Zadania w tle",
   "channelBgJobsDesc": "Powiadamia o zakończeniu wyszukiwań i wzbogacania.",
-  "channelReminders": "Przypomnienia",
-  "channelRemindersDesc": "Zaplanowane przypomnienia (notatki do przejrzenia).",
 
   "openShare": "Otwórz / Udostępnij",
   "shareSave": "Udostępnij / Zapisz",

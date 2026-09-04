@@ -21,7 +21,8 @@ def test_all_chat_tools_use_full_json_schema():
     assert "update_memory" in names
     assert "read_note" in names
     assert "update_note" in names
-    assert "list_due_notes" in names
+    assert "list_due_notes" not in names
+    assert "mark_note_resurfaced" not in names
     assert len(CHAT_TOOLS) >= 23
     for tool in CHAT_TOOLS:
         _assert_full_json_schema(tool.parameters)

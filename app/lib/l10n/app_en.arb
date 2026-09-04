@@ -47,7 +47,6 @@
   "edit": "Edit",
   "view": "View",
 
-  "dueForReview": "Due for review",
   "searchNotesHint": "Search notes…",
   "offlineChangesQueued": "Offline - changes queued for next sync.",
   "syncedChanges": "Synced ({count, plural, =1{1 change} other{{count} changes}} pushed).",
@@ -355,19 +354,8 @@
   "notifImageReadyBody": "A generated image was added to your note.",
   "notifEnrichmentReady": "Enrichment ready",
   "notifEnrichmentReadyBody": "A generated note was added to your graph.",
-  "dueReviewTitle": "Notes due for review",
-  "dueReviewSingle": "\"{title}\" is due for review.",
-  "@dueReviewSingle": {
-    "placeholders": { "title": { "type": "String" } }
-  },
-  "dueReviewMultiple": "{count, plural, =1{1 note is} other{{count} notes are}} due for review.",
-  "@dueReviewMultiple": {
-    "placeholders": { "count": { "type": "int" } }
-  },
   "channelBgJobs": "Background jobs",
   "channelBgJobsDesc": "Notifies when searches and enrichment finish.",
-  "channelReminders": "Reminders",
-  "channelRemindersDesc": "Scheduled reminders (notes due for review).",
 
   "openShare": "Open / Share",
   "shareSave": "Share / Save",

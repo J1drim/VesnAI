@@ -139,9 +139,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get view => 'Podgląd';
 
   @override
-  String get dueForReview => 'Do przejrzenia';
-
-  @override
   String get searchNotesHint => 'Szukaj w notatkach…';
 
   @override
@@ -879,38 +876,11 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wygenerowaną notatkę dodano do grafu.';
 
   @override
-  String get dueReviewTitle => 'Notatki do przejrzenia';
-
-  @override
-  String dueReviewSingle(String title) {
-    return '\"$title\" czeka na przejrzenie.';
-  }
-
-  @override
-  String dueReviewMultiple(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count notatek czeka',
-      few: '$count notatki czekają',
-      one: '1 notatka czeka',
-    );
-    return '$_temp0 na przejrzenie.';
-  }
-
-  @override
   String get channelBgJobs => 'Zadania w tle';
 
   @override
   String get channelBgJobsDesc =>
       'Powiadamia o zakończeniu wyszukiwań i wzbogacania.';
-
-  @override
-  String get channelReminders => 'Przypomnienia';
-
-  @override
-  String get channelRemindersDesc =>
-      'Zaplanowane przypomnienia (notatki do przejrzenia).';
 
   @override
   String get openShare => 'Otwórz / Udostępnij';

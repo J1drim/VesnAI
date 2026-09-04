@@ -119,9 +119,8 @@ NOTE_ACCESS_RULES = (
     "- When the user mentions a note by name or asks about saved content, call "
     "search_notes then read_note (and read_note_attachment for images).\n"
     "- Use append_to_note (not update_note) when the user asks to add text without replacing the note.\n"
-    "- After showing a due note from list_due_notes, call mark_note_resurfaced on that path.\n"
     "- When the user says they finished a task/list, call mark_note_done on that note; "
-    "done notes stay readable but leave the review queue.\n"
+    "done notes stay readable and searchable.\n"
     "- NEVER say you do not have access to the user's notes or note images — use tools.\n"
     "- Never claim note content you have not loaded via a successful read_note result.\n"
     "- Images attached in the current chat turn are already visible to you; images in saved "
@@ -261,7 +260,6 @@ class ChatService:
         get_conversation: Callable[[str], Any | None] | None = None,
         vision_provider: Any | None = None,
         run_enrich: Callable[[str, str], str] | None = None,
-        list_due_notes: Callable[[int], dict] | None = None,
     ) -> None:
         self.ai = ai
         self.index = index
@@ -283,7 +281,6 @@ class ChatService:
         self.get_conversation = get_conversation
         self.vision_provider = vision_provider
         self.run_enrich = run_enrich
-        self.list_due_notes = list_due_notes
 
     def _context(self, query: str, top_k: int = 4) -> str:
         hits = self.index.search(query, top_k=top_k)
@@ -685,18 +682,6 @@ class ChatService:
                 return {"error": "note not found"}
             except Exception as exc:
                 return {"error": str(exc)}
-        if name == "list_due_notes":
-            if not self.list_due_notes:
-                return {"error": "resurfacing is not available", "due_notes": []}
-            return self.list_due_notes(int(args.get("limit") or 20))
-        if name == "mark_note_resurfaced":
-            from vesnai.ai.note_tools import mark_note_resurfaced_payload
-
-            return mark_note_resurfaced_payload(
-                self.notes,
-                (args.get("path") or "").strip(),
-                clock=self.notes.clock,
-            )
         if name == "mark_note_done":
             from vesnai.ai.note_tools import mark_note_done_payload
 

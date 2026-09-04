@@ -131,35 +131,6 @@ class NotificationsService {
     }
   }
 
-  /// Schedule (or clear) the daily offline "due for review" reminder based on
-  /// the server's current due list. Fires at 9:00 local time even when the
-  /// app stays closed.
-  Future<void> refreshDueReviewReminder() async {
-    final client = _ref.read(apiClientProvider);
-    if (client == null) return;
-    final notifier = _ref.read(notifierProvider);
-    try {
-      final due = await client.listDueNotes();
-      if (due.isEmpty) {
-        await notifier.cancelScheduled(kDueReviewNotificationId);
-        return;
-      }
-      final body = due.length == 1
-          ? _l10n.dueReviewSingle(due.first.title ?? due.first.path)
-          : _l10n.dueReviewMultiple(due.length);
-      await notifier.scheduleDailyReminder(
-        id: kDueReviewNotificationId,
-        title: _l10n.dueReviewTitle,
-        body: body,
-        hour: 9,
-        minute: 0,
-        payload: kDueReviewPayload,
-      );
-    } catch (_) {
-      // Server unreachable; keep whatever reminder is already scheduled.
-    }
-  }
-
   void startPolling({Duration interval = const Duration(seconds: 5)}) {
     _timer ??= Timer.periodic(interval, (_) => drain());
   }

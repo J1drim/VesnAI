@@ -285,24 +285,10 @@ CHAT_TOOLS: list[ToolSpec] = [
         ),
     ),
     ToolSpec(
-        name="list_due_notes",
-        description=(
-            "List notes due for spaced-repetition resurfacing. "
-            "Use when the user asks what to review or revisit today."
-        ),
-        parameters=_obj(
-            properties={
-                "limit": {"type": "integer", "description": "Max results (default 20)"},
-            },
-            required=[],
-        ),
-    ),
-    ToolSpec(
         name="mark_note_done",
         description=(
             "Mark a note, task, or idea as done (or reopen it with done=false). "
-            "Done notes stay searchable for you but are excluded from the user's "
-            "review queue. Use when the user says they finished something "
+            "Done notes remain searchable. Use when the user says they finished something "
             "(e.g. completed a shopping list or task)."
         ),
         parameters=_obj(
@@ -312,19 +298,6 @@ CHAT_TOOLS: list[ToolSpec] = [
                     "type": "boolean",
                     "description": "true to mark done (default), false to reopen",
                 },
-            },
-            required=["path"],
-        ),
-    ),
-    ToolSpec(
-        name="mark_note_resurfaced",
-        description=(
-            "Mark a note as resurfaced after showing it to the user during review. "
-            "Call after presenting a due note from list_due_notes so it is not due again immediately."
-        ),
-        parameters=_obj(
-            properties={
-                "path": {"type": "string", "description": "Note path that was reviewed"},
             },
             required=["path"],
         ),

@@ -344,12 +344,6 @@ abstract class AppLocalizations {
   /// **'View'**
   String get view;
 
-  /// No description provided for @dueForReview.
-  ///
-  /// In en, this message translates to:
-  /// **'Due for review'**
-  String get dueForReview;
-
   /// No description provided for @searchNotesHint.
   ///
   /// In en, this message translates to:
@@ -1622,24 +1616,6 @@ abstract class AppLocalizations {
   /// **'A generated note was added to your graph.'**
   String get notifEnrichmentReadyBody;
 
-  /// No description provided for @dueReviewTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Notes due for review'**
-  String get dueReviewTitle;
-
-  /// No description provided for @dueReviewSingle.
-  ///
-  /// In en, this message translates to:
-  /// **'\"{title}\" is due for review.'**
-  String dueReviewSingle(String title);
-
-  /// No description provided for @dueReviewMultiple.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 note is} other{{count} notes are}} due for review.'**
-  String dueReviewMultiple(int count);
-
   /// No description provided for @channelBgJobs.
   ///
   /// In en, this message translates to:
@@ -1651,18 +1627,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifies when searches and enrichment finish.'**
   String get channelBgJobsDesc;
-
-  /// No description provided for @channelReminders.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminders'**
-  String get channelReminders;
-
-  /// No description provided for @channelRemindersDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Scheduled reminders (notes due for review).'**
-  String get channelRemindersDesc;
 
   /// No description provided for @openShare.
   ///

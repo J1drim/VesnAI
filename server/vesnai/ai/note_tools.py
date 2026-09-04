@@ -449,30 +449,6 @@ def resolve_style_reference(
     return {"error": "reference path not found"}
 
 
-def list_due_notes_payload(notes: NoteService, resurfacing, *, limit: int = 20) -> dict:
-    due_paths = resurfacing.due(notes.list())[: max(1, min(int(limit or 20), 50))]
-    out: list[dict] = []
-    for path in due_paths:
-        if notes.store.exists(path):
-            c = notes.get(path)
-            out.append({"path": path, "title": c.title or path, "type": c.type})
-    return {"due_notes": out}
-
-
-def mark_note_resurfaced_payload(notes: NoteService, path: str, *, clock) -> dict:
-    path = (path or "").strip()
-    if not path:
-        return {"error": "path is required"}
-    if not notes.store.exists(path):
-        return {"error": "note not found", "path": path}
-    concept = notes.get(path)
-    count = int(concept.vesnai.get("resurface_count", 0)) + 1
-    concept.vesnai["resurface_count"] = count
-    concept.vesnai["last_resurfaced"] = clock.now().isoformat()
-    notes.store.write_concept(path, concept, message="mark resurfaced")
-    return {"path": path, "resurface_count": count}
-
-
 def mark_note_done_payload(notes: NoteService, path: str, *, done: bool = True) -> dict:
     path = (path or "").strip()
     if not path:

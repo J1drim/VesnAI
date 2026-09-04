@@ -464,26 +464,6 @@ class VesnaiApiClient {
     _check(resp);
   }
 
-  Future<List<({String path, String? title})>> listDueNotes() async {
-    final resp = await _client.get(_u('/v1/notes/due'), headers: _headers);
-    _check(resp);
-    final list = jsonDecode(resp.body) as List;
-    return list
-        .map((e) => (
-              path: (e as Map<String, dynamic>)['path'] as String,
-              title: e['title'] as String?,
-            ))
-        .toList();
-  }
-
-  Future<void> markNoteResurfaced(String path) async {
-    final resp = await _client.post(
-      _u('/v1/notes/$path/resurfaced'),
-      headers: _headers,
-    );
-    _check(resp);
-  }
-
   // --- AI features (Phase 4) ----------------------------------------------- #
 
   /// Kick off a web-search job; returns the finished job dict (server runs it

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,40 +24,6 @@ class NotesScreen extends ConsumerStatefulWidget {
 
 class _NotesScreenState extends ConsumerState<NotesScreen> {
   final _searchController = TextEditingController();
-  List<({String path, String? title})> _dueNotes = const [];
-  bool _dueLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _loadDueNotes());
-  }
-
-  Future<void> _loadDueNotes() async {
-    final client = ref.read(apiClientProvider);
-    if (client == null) return;
-    setState(() => _dueLoading = true);
-    try {
-      final due = await client.listDueNotes();
-      if (mounted) setState(() => _dueNotes = due);
-    } catch (_) {
-      // Due notes are optional UX — ignore offline errors.
-    } finally {
-      if (mounted) setState(() => _dueLoading = false);
-    }
-  }
-
-  Future<void> _openDueNote(({String path, String? title}) due) async {
-    final client = ref.read(apiClientProvider);
-    if (client != null) {
-      unawaited(client.markNoteResurfaced(due.path));
-    }
-    if (!mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => NoteDetailScreen(path: due.path)),
-    );
-    _loadDueNotes();
-  }
 
   @override
   void dispose() {
@@ -192,7 +156,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                       .where((n) => noteMatchesTypeFilter(n, typeFilter))
                       .where((n) => noteMatchesQuery(n, query))
                       .toList();
-                  if (visible.isEmpty && (_dueNotes.isEmpty || query.isNotEmpty || typeFilter.isNotEmpty)) {
+                  if (visible.isEmpty) {
                     return ListView(
                       children: [
                         SizedBox(height: query.isEmpty && typeFilter.isEmpty ? 200 : 120),
@@ -210,42 +174,6 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                   }
                   return ListView(
                     children: [
-                      if (_dueNotes.isNotEmpty && query.isEmpty) ...[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.schedule, size: 18),
-                              const SizedBox(width: 8),
-                              Text(
-                                l.dueForReview,
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                              if (_dueLoading) ...[
-                                const SizedBox(width: 8),
-                                const SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                        ..._dueNotes.map(
-                          (due) => ListTile(
-                            leading: const Icon(Icons.replay_outlined),
-                            title: Text(due.title ?? due.path),
-                            subtitle: Text(
-                              due.path,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            onTap: () => _openDueNote(due),
-                          ),
-                        ),
-                        const Divider(height: 24),
-                      ],
                       ...visible.map(
                         (note) => Dismissible(
                           key: ValueKey('dismiss-${note.path}'),

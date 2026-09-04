@@ -6,6 +6,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'data/notifications_feed.dart';
+import 'data/notification_service.dart';
 import 'desktop/sticky_board.dart';
 import 'features/chat/chat_screen.dart';
 import 'features/chat/chat_sessions.dart';
@@ -93,7 +94,6 @@ class _HomeShellState extends ConsumerState<HomeShell>
     if (ref.read(serverConnectionProvider).isPaired) {
       _feed!.drain();
       _feed!.startPolling();
-      unawaited(_feed!.refreshDueReviewReminder());
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_consumeWidgetDeepLinks());
@@ -148,6 +148,7 @@ class _HomeShellState extends ConsumerState<HomeShell>
   }
 
   Future<void> _onResume(NotificationsService feed) async {
+    await retireLegacyReminder(ref.read(notifierProvider));
     final notes = ref.read(notesProvider.notifier);
     await notes.ingestQuickCaptures();
     if (ref.read(serverConnectionProvider).isPaired) {
@@ -155,7 +156,6 @@ class _HomeShellState extends ConsumerState<HomeShell>
       await ref.read(chatControllerProvider.notifier).flushPending();
       if (ref.read(serverConnectionProvider).isPaired) {
         feed.drain();
-        unawaited(feed.refreshDueReviewReminder());
       }
     }
     await ref.read(chatControllerProvider.notifier).publishWidgetFromLocalStore();

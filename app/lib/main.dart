@@ -52,6 +52,7 @@ Future<void> main() async {
     ],
   );
   // Route home-screen widget taps (deep links) into the app.
+  await retireLegacyReminder(localNotifier);
   registerWidgetActionHandler(container);
   // Restore any saved pairing + onboarding flag before the first frame.
   await container.read(serverConnectionProvider.notifier).hydrate();

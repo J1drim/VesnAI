@@ -58,7 +58,24 @@ def test_due_notes_endpoint(client):
     from vesnai.notes import NoteInput
 
     client.state.notes.create(NoteInput(title="Old note", body="body"))
-    client.state.clock.advance(2 * 86400)
+    client.state.clock.advance(100 * 86400)
     resp = client.get("/v1/notes/due", headers=headers)
     assert resp.status_code == 200
-    assert len(resp.json()) >= 1
+    assert resp.json() == []
+
+
+def test_retired_resurfacing_endpoint_preserves_metadata_and_history(client):
+    headers = _pair(client)
+    from vesnai.notes import NoteInput
+
+    path, concept = client.state.notes.create(NoteInput(title="Legacy note"))
+    concept.vesnai.update(resurface_count=3, last_resurfaced="2025-01-01")
+    client.state.store.write_concept(path, concept)
+    before = client.state.store.read_concept(path).frontmatter
+    cursor = client.state.sync.cursor
+    response = client.post(f"/v1/notes/{path}/resurfaced", headers=headers)
+    assert response.status_code == 200
+    assert response.json()["resurface_count"] == 3
+    assert client.state.store.read_concept(path).frontmatter == before
+    assert client.state.sync.cursor == cursor
+    assert client.get("/v1/notes/due").status_code == 401
