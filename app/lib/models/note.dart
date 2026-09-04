@@ -167,7 +167,7 @@ class Note {
       type: c.type ?? 'Note',
       tags: c.tags,
       origin: c.origin,
-      links: c.links(),
+      links: c.explicitLinks(),
       attachments: _attachmentsFromConcept(c),
       source: c.source ?? '',
       updated: rawUpdated?.toString() ?? '',

@@ -978,4 +978,78 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get gridLayout => 'Widok kart';
+
+  @override
+  String get libraryActive => 'Biblioteka';
+
+  @override
+  String get pinnedNotes => 'Przypięte';
+
+  @override
+  String get archive => 'Archiwum';
+
+  @override
+  String get sortNotes => 'Sortuj notatki';
+
+  @override
+  String get sortRecent => 'Ostatnio zmienione';
+
+  @override
+  String get sortOldest => 'Najdawniej zmienione';
+
+  @override
+  String get savedViews => 'Zapisane widoki';
+
+  @override
+  String get saveView => 'Zapisz ten widok';
+
+  @override
+  String get loadMore => 'Wczytaj więcej';
+
+  @override
+  String get pinNote => 'Przypnij notatkę';
+
+  @override
+  String get unpinNote => 'Odepnij notatkę';
+
+  @override
+  String get archiveNote => 'Archiwizuj notatkę';
+
+  @override
+  String get unarchiveNote => 'Przenieś do biblioteki';
+
+  @override
+  String get filterTags => 'Tagi';
+
+  @override
+  String get semanticSearch => 'Szukaj według znaczenia';
+
+  @override
+  String get semanticSearchExplanation =>
+      'Szukaj znaczenia notatek w bibliotece. Ta funkcja używa modelu embeddingowego na Twoim serwerze, a nie wyszukiwarki internetowej. Uruchom ją wtedy, gdy potrzebujesz.';
+
+  @override
+  String get semanticUnavailable =>
+      'Wyszukiwanie semantyczne jest niedostępne. Sparuj z dostępnym serwerem używającym rzeczywistego modelu embeddingowego; wyniki demonstracyjne nie są wyświetlane.';
+
+  @override
+  String get noRelatedNotes => 'Nie znaleziono powiązanych notatek.';
+
+  @override
+  String get similarMeaning => 'Sugestia na podstawie podobnego znaczenia';
+
+  @override
+  String get linkNote => 'Połącz';
+
+  @override
+  String get linkedNote => 'Dodano połączenie';
+
+  @override
+  String get backlinks => 'Odnośniki do tej notatki';
+
+  @override
+  String get linkedNotes => 'Połączone notatki';
+
+  @override
+  String get findRelatedNotes => 'Znajdź powiązane notatki';
 }

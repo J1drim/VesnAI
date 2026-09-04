@@ -76,8 +76,24 @@ Dependency migration details and deferred SDK/major-version decisions are in
 
 ## Remaining delivery
 
+## Organize and discover — implemented
+
+- Synced pins/archive, device-local saved views and tag/type/status/order filters.
+- SQLite FTS5 offline search, literal Unicode prefixes, title-weighted ranking,
+  highlights, pagination and transactional schema-8-to-9 backfill.
+- Explicit semantic library search with demo/unavailable states; offline
+  backlinks/outgoing links and user-confirmed semantic Link actions.
+- Validation: 202 Flutter tests passed (3 opt-in benchmarks skipped in normal
+  suite), 329 offline server tests passed (4 live excluded), analyzer/Ruff/mypy
+  pass. Separate 100/1,000/10,000-note host benchmark completed; method/results
+  are in [LIBRARY_DISCOVERY.md](LIBRARY_DISCOVERY.md).
+- Reviewed Linux golden artifact and restored its exact platform-specific
+  baseline; no assertion tolerance/skip was introduced. Final GitHub CI checks
+  are still required after all remaining implementation.
+
+## Remaining delivery (updated)
+
 - Dependency upgrades, CI/dependency automation, and service-image review.
-- Pins/archive/saved views, indexed/semantic search, backlinks/related notes.
 - Drafts/templates/shortcuts, history/Trash, project-scoped chat, native sharing.
 - Graph navigation, cleanup suggestions, notification delivery, AI controls,
   performance measurements and remaining platform verification.

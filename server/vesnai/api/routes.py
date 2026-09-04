@@ -219,7 +219,7 @@ def _to_out(path: str, concept: Concept) -> NoteOut:
         tags=concept.tags,
         origin=concept.origin.value,
         body=concept.body,
-        links=concept.links(),
+        links=concept.explicit_links(),
         attachments=attachments,
         source=concept.source,
         version=int(concept.vesnai.get("version", 1)),

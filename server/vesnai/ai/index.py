@@ -119,17 +119,22 @@ class IndexService:
             self.index_concept(rel, concept)
         return self.store.count()
 
-    def search(self, query: str, top_k: int = 5) -> list[VectorHit]:
+    def search(self, query: str, top_k: int = 5, *, strict: bool = False,
+               paths: set[str] | None = None) -> list[VectorHit]:
         try:
             vector = self.embedder.embed([truncate_for_embedding(query)])[0]
         except Exception as exc:  # noqa: BLE001
             log.warning("search_embed_failed", error=str(exc))
+            if strict:
+                raise
             return []
         # Fetch extra hits so multiple chunks from one note do not crowd out others.
-        raw = self.store.query(vector, top_k=max(top_k * 4, top_k))
+        raw = self.store.query(vector, top_k=self.store.count() if paths is not None else max(top_k * 4, top_k))
         best: dict[str, VectorHit] = {}
         for hit in raw:
             path = str(hit.payload.get("path") or hit.id.split("::", 1)[0])
+            if paths is not None and path not in paths:
+                continue
             merged = VectorHit(id=path, score=hit.score, payload={**hit.payload, "path": path})
             prev = best.get(path)
             if prev is None or merged.score > prev.score:

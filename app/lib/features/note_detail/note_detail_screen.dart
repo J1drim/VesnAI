@@ -20,6 +20,7 @@ import '../notes/delete_note_dialog.dart';
 import '../notes/note_preview.dart';
 import '../notes/note_type_ui.dart';
 import '../notes/sync_status.dart';
+import '../notes/note_connections.dart';
 
 /// View + edit a single note. The body renders as Markdown (with inline,
 /// authenticated attachment images) by default; the pencil toggles WYSIWYG editing.
@@ -193,7 +194,7 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
     final client = ref.watch(apiClientProvider);
     final cache = ref.watch(attachmentCacheProvider);
     final chatCache = ref.watch(chatAttachmentCacheProvider);
-    final current = _note ?? ref.watch(noteByPathProvider(widget.path));
+    final current = ref.watch(noteByPathProvider(widget.path)) ?? _note;
     return Scaffold(
       appBar: AppBar(
         title: Text(l.noteScreenTitle),
@@ -217,19 +218,44 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
               ),
               onPressed: _busy ? null : _toggleDone,
             ),
-          if (paired)
-            IconButton(
-              key: const Key('enrich-note'),
-              tooltip: l.enrichWithAi,
-              icon: const Icon(Icons.auto_awesome),
-              onPressed: _busy ? null : _enrich,
+          if (current != null)
+            PopupMenuButton<String>(
+              enabled: !_busy,
+              onSelected: (action) async {
+                if (action == 'delete') {
+                  await _delete();
+                  return;
+                }
+                if (action == 'enrich') {
+                  await _enrich();
+                  return;
+                }
+                final note =
+                    ref.read(noteByPathProvider(widget.path)) ?? current;
+                await ref
+                    .read(notesProvider.notifier)
+                    .updateNote(
+                      action == 'pin'
+                          ? note.copyWith(pinned: !note.pinned)
+                          : note.copyWith(archived: !note.archived),
+                    );
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  value: 'pin',
+                  child: Text(current.pinned ? l.unpinNote : l.pinNote),
+                ),
+                PopupMenuItem(
+                  value: 'archive',
+                  child: Text(
+                    current.archived ? l.unarchiveNote : l.archiveNote,
+                  ),
+                ),
+                if (paired)
+                  PopupMenuItem(value: 'enrich', child: Text(l.enrichWithAi)),
+                PopupMenuItem(value: 'delete', child: Text(l.delete)),
+              ],
             ),
-          IconButton(
-            key: const Key('delete-note'),
-            tooltip: l.delete,
-            icon: const Icon(Icons.delete_outline),
-            onPressed: _busy ? null : _delete,
-          ),
           if (_editing)
             IconButton(
               key: const Key('save-edit'),
@@ -361,6 +387,7 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
           ),
         ),
         ..._extraAttachments(note, client, cache),
+        NoteConnections(note: note),
         if (isCritique && note.source.isNotEmpty) ...[
           const SizedBox(height: 16),
           Text(l.critiquedNote, style: Theme.of(context).textTheme.titleSmall),

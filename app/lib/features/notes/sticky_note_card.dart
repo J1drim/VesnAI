@@ -3,13 +3,20 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/note.dart';
 import '../../theme.dart';
+import '../../widgets/highlighted_text.dart';
 import 'note_preview.dart';
 import 'note_type_ui.dart';
 
 class StickyNoteCard extends StatelessWidget {
   final Note note;
   final VoidCallback? onTap;
-  const StickyNoteCard({super.key, required this.note, this.onTap});
+  final String query;
+  const StickyNoteCard({
+    super.key,
+    required this.note,
+    this.onTap,
+    this.query = '',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,20 +54,20 @@ class StickyNoteCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 14),
-              Text(
+              HighlightedText(
                 note.title.isEmpty ? l.untitled : note.title,
+                query: query,
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: 8),
               Expanded(
-                child: Text(
+                child: HighlightedText(
                   notePreviewBody(note),
+                  query: query,
                   maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyMedium,
                 ),
               ),

@@ -75,11 +75,14 @@ class VesnaiDatabase extends _$VesnaiDatabase {
   VesnaiDatabase([QueryExecutor? executor]) : super(executor ?? _open());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (m) => m.createAll(),
+    onCreate: (m) async {
+      await m.createAll();
+      await _createSearchIndex();
+    },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
         await m.createTable(chatSessionRows);
@@ -110,8 +113,34 @@ class VesnaiDatabase extends _$VesnaiDatabase {
         await m.addColumn(noteRows, noteRows.serverVersion);
         await m.addColumn(noteRows, noteRows.conflictDeleted);
       }
+      if (from < 9) await _createSearchIndex();
     },
   );
+
+  Future<void> _createSearchIndex() async {
+    await customStatement(
+      "CREATE VIRTUAL TABLE note_search USING fts5(path UNINDEXED, title, tags, body, tokenize='unicode61 remove_diacritics 2', prefix='2 3')",
+    );
+    await customStatement(
+      'INSERT INTO note_search(rowid,path,title,tags,body) SELECT rowid,path,title,tags_json,body FROM note_rows',
+    );
+    await customStatement(
+      '''CREATE TRIGGER note_search_insert AFTER INSERT ON note_rows BEGIN
+      INSERT INTO note_search(rowid,path,title,tags,body) VALUES(new.rowid,new.path,new.title,new.tags_json,new.body);
+    END''',
+    );
+    await customStatement(
+      '''CREATE TRIGGER note_search_update AFTER UPDATE ON note_rows BEGIN
+      DELETE FROM note_search WHERE rowid=old.rowid;
+      INSERT INTO note_search(rowid,path,title,tags,body) VALUES(new.rowid,new.path,new.title,new.tags_json,new.body);
+    END''',
+    );
+    await customStatement(
+      '''CREATE TRIGGER note_search_delete AFTER DELETE ON note_rows BEGIN
+      DELETE FROM note_search WHERE rowid=old.rowid;
+    END''',
+    );
+  }
 
   static LazyDatabase _open() {
     return LazyDatabase(() async {

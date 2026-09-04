@@ -6,6 +6,13 @@ import 'package:okf_dart/okf_dart.dart';
 
 import '../models/note.dart';
 import 'drift/database.dart';
+import 'note_filter.dart';
+
+/// Treat user text as literal Unicode words, never as executable FTS syntax.
+List<String> searchTerms(String query) => RegExp(
+  r'[\p{L}\p{N}_]+',
+  unicode: true,
+).allMatches(query.toLowerCase()).map((m) => m.group(0)!).take(24).toList();
 
 /// Local mirror of notes. The production implementation is backed by Drift
 /// (SQLite); this interface keeps it mockable, and [InMemoryNoteStore] powers
@@ -17,6 +24,12 @@ abstract class LocalNoteStore {
   Future<void> put(Note note);
   Future<void> remove(String path);
   Future<List<Note>> pending();
+  Future<List<Note>> search(
+    String query, {
+    int limit = 100,
+    int offset = 0,
+    NoteFilter filter = const NoteFilter(),
+  });
   Future<T> transaction<T>(Future<T> Function() action);
 
   /// Persisted sync cursor (0 if never synced). Stored so deltas resume across
@@ -65,6 +78,42 @@ class InMemoryNoteStore implements LocalNoteStore {
   Future<Note?> get(String path) async => _notes[path];
 
   @override
+  Future<List<Note>> search(
+    String query, {
+    int limit = 100,
+    int offset = 0,
+    NoteFilter filter = const NoteFilter(),
+  }) async {
+    final terms = searchTerms(query);
+    final notes = (await all())
+        .where(filter.matches)
+        .where(
+          (n) => terms.every(
+            (t) => '${n.title} ${n.tags.join(' ')} ${n.body}'
+                .toLowerCase()
+                .contains(t),
+          ),
+        )
+        .toList();
+    int score(Note n) => terms.fold(
+      0,
+      (value, t) =>
+          value +
+          (n.title.toLowerCase().contains(t) ? 5 : 0) +
+          (n.tags.any((tag) => tag.toLowerCase().contains(t)) ? 3 : 0),
+    );
+    notes.sort((a, b) {
+      if (a.pinned != b.pinned) return a.pinned ? -1 : 1;
+      if (filter.sort == 'title') return a.title.compareTo(b.title);
+      if (filter.sort == 'oldest') return a.updated.compareTo(b.updated);
+      if (filter.sort == 'relevance' && terms.isNotEmpty)
+        return score(b).compareTo(score(a));
+      return b.updated.compareTo(a.updated);
+    });
+    return notes.skip(offset).take(limit).toList();
+  }
+
+  @override
   Future<void> put(Note note) async => _notes[note.path] = note;
 
   @override
@@ -86,6 +135,69 @@ class DriftNoteStore implements LocalNoteStore {
   final VesnaiDatabase db;
 
   DriftNoteStore([VesnaiDatabase? db]) : db = db ?? VesnaiDatabase();
+
+  @override
+  Future<List<Note>> search(
+    String query, {
+    int limit = 100,
+    int offset = 0,
+    NoteFilter filter = const NoteFilter(),
+  }) async {
+    final terms = searchTerms(query);
+    final match = terms
+        .map((term) => '"${term.replaceAll('"', '""')}"*')
+        .join(' AND ');
+    final where = <String>['n.sync_state != ?'];
+    final variables = <Variable>[Variable<int>(SyncState.pendingDelete.index)];
+    if (filter.libraryOnly) {
+      where.add(
+        "n.path NOT LIKE '%.conflict-%' AND n.type != 'ChatTranscript' AND NOT (n.source != '' AND n.type IN ('GeneratedImage','GeneratedCaption'))",
+      );
+    }
+    if (terms.isNotEmpty) {
+      where.add('note_search MATCH ?');
+      variables.add(Variable<String>(match));
+    }
+    if (filter.scope != 'all') {
+      where.add(
+        "coalesce(json_extract(n.frontmatter_json, '\$.vesnai.archived'),0)=?",
+      );
+      variables.add(Variable<int>(filter.scope == 'archive' ? 1 : 0));
+    }
+    if (filter.scope == 'pinned')
+      where.add("json_extract(n.frontmatter_json, '\$.vesnai.pinned')=1");
+    if (!filter.showDone) where.add('n.done=0');
+    if (filter.tag.isNotEmpty) {
+      where.add('EXISTS (SELECT 1 FROM json_each(n.tags_json) WHERE value=?)');
+      variables.add(Variable<String>(filter.tag));
+    }
+    if (filter.types.isNotEmpty) {
+      where.add('n.type IN (${filter.types.map((_) => '?').join(',')})');
+      variables.addAll(filter.types.map(Variable<String>.new));
+    }
+    final order = filter.sort == 'title'
+        ? 'n.title COLLATE NOCASE'
+        : filter.sort == 'oldest'
+        ? 'n.updated ASC'
+        : filter.sort == 'relevance' && terms.isNotEmpty
+        ? 'bm25(note_search, 0, 5, 3, 1)'
+        : 'n.updated DESC';
+    final rows = await db
+        .customSelect(
+          '''SELECT n.* FROM note_rows n
+      ${terms.isEmpty ? '' : 'JOIN note_search ON note_search.rowid=n.rowid'}
+      WHERE ${where.join(' AND ')}
+      ORDER BY coalesce(json_extract(n.frontmatter_json, '\$.vesnai.pinned'),0) DESC, $order, n.path LIMIT ? OFFSET ?''',
+          variables: [
+            ...variables,
+            Variable<int>(limit),
+            Variable<int>(offset),
+          ],
+          readsFrom: {db.noteRows},
+        )
+        .get();
+    return rows.map((r) => _fromRow(db.noteRows.map(r.data))).toList();
+  }
 
   @override
   Future<T> transaction<T>(Future<T> Function() action) =>

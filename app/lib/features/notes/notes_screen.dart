@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,12 +13,14 @@ import '../search/search_screen.dart';
 import 'delete_note_dialog.dart';
 import '../../widgets/unpaired_banner.dart';
 import 'note_preview.dart';
-import 'note_search.dart';
+import 'library_controls.dart';
+import 'library_search.dart';
 import 'note_tile.dart';
 import 'note_type_ui.dart';
 import 'notes_type_filter.dart';
 import 'sync_status.dart';
 import 'sticky_note_card.dart';
+import 'semantic_search_screen.dart';
 
 class NotesScreen extends ConsumerStatefulWidget {
   final bool initialGrid;
@@ -28,6 +32,7 @@ class NotesScreen extends ConsumerStatefulWidget {
 
 class _NotesScreenState extends ConsumerState<NotesScreen> {
   final _searchController = TextEditingController();
+  int _limit = 100;
 
   @override
   void dispose() {
@@ -84,13 +89,26 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final notes = ref.watch(notesProvider);
     final lastSynced = ref.watch(lastSyncedProvider);
     final paired = ref.watch(serverConnectionProvider).isPaired;
     final l = AppLocalizations.of(context);
     final query = _searchController.text;
     final typeFilter = ref.watch(notesTypeFilterProvider);
     final showDone = ref.watch(showDoneNotesProvider);
+    final view = ref.watch(libraryPreferencesProvider);
+    final notes = ref.watch(
+      librarySearchProvider(
+        jsonEncode({
+          'query': query,
+          'limit': _limit,
+          'types': typeFilter.toList()..sort(),
+          'done': showDone,
+          'scope': view['scope'] ?? 'active',
+          'tag': view['tag'] ?? '',
+          'sort': view['sort'] ?? (query.isEmpty ? 'updated' : 'relevance'),
+        }),
+      ),
+    );
     final grid =
         ref.watch(libraryPreferencesProvider)['grid'] as bool? ??
         widget.initialGrid;
@@ -101,7 +119,13 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
           children: [
             const VesnaiLogo(height: 28, full: false),
             const SizedBox(width: 8),
-            Flexible(child: Text(l.navNotes, maxLines: 1, overflow: TextOverflow.ellipsis)),
+            Flexible(
+              child: Text(
+                l.navNotes,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         bottom: PreferredSize(
@@ -154,12 +178,27 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                 hintText: l.searchNotesHint,
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: query.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {});
-                        },
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            tooltip: l.semanticSearch,
+                            icon: const Icon(Icons.auto_awesome_outlined),
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    SemanticSearchScreen(query: query),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() => _limit = 100);
+                            },
+                          ),
+                        ],
                       )
                     : null,
                 border: const OutlineInputBorder(),
@@ -169,6 +208,19 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
             ),
           ),
           const NotesTypeFilterBar(),
+          LibraryControls(
+            query: query,
+            onQuery: (value) {
+              if (!mounted) return;
+              _searchController.text = value;
+              setState(() => _limit = 100);
+            },
+          ),
+          if ((notes.valueOrNull?.length ?? 0) >= _limit)
+            TextButton(
+              onPressed: () => setState(() => _limit += 100),
+              child: Text(l.loadMore),
+            ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () => _sync(context, ref),
@@ -180,7 +232,6 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                       .where(noteVisibleInMainList)
                       .where((n) => showDone || !n.done)
                       .where((n) => noteMatchesTypeFilter(n, typeFilter))
-                      .where((n) => noteMatchesQuery(n, query))
                       .toList();
                   if (visible.isEmpty) {
                     return ListView(
@@ -224,6 +275,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                       itemCount: visible.length,
                       itemBuilder: (context, index) => StickyNoteCard(
                         note: visible[index],
+                        query: query,
                         onTap: () => openNote(index),
                       ),
                     );
@@ -248,6 +300,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                             ref.read(notesProvider.notifier).delete(note.path),
                         child: NoteTile(
                           note: note,
+                          query: query,
                           onTap: () => openNote(index),
                         ),
                       );

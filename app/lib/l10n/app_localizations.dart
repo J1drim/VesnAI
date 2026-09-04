@@ -1807,6 +1807,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Card view'**
   String get gridLayout;
+
+  /// No description provided for @libraryActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get libraryActive;
+
+  /// No description provided for @pinnedNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned'**
+  String get pinnedNotes;
+
+  /// No description provided for @archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get archive;
+
+  /// No description provided for @sortNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort notes'**
+  String get sortNotes;
+
+  /// No description provided for @sortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently updated'**
+  String get sortRecent;
+
+  /// No description provided for @sortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest updated'**
+  String get sortOldest;
+
+  /// No description provided for @savedViews.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved views'**
+  String get savedViews;
+
+  /// No description provided for @saveView.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this view'**
+  String get saveView;
+
+  /// No description provided for @loadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get loadMore;
+
+  /// No description provided for @pinNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin note'**
+  String get pinNote;
+
+  /// No description provided for @unpinNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin note'**
+  String get unpinNote;
+
+  /// No description provided for @archiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive note'**
+  String get archiveNote;
+
+  /// No description provided for @unarchiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to library'**
+  String get unarchiveNote;
+
+  /// No description provided for @filterTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get filterTags;
+
+  /// No description provided for @semanticSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by meaning'**
+  String get semanticSearch;
+
+  /// No description provided for @semanticSearchExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Search the meaning of notes in your library. This uses your server’s embedding model, never web research. Run it explicitly when you need it.'**
+  String get semanticSearchExplanation;
+
+  /// No description provided for @semanticUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Semantic search is unavailable. Pair with a reachable server using a real embedding model; demo results are not shown.'**
+  String get semanticUnavailable;
+
+  /// No description provided for @noRelatedNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'No related notes found.'**
+  String get noRelatedNotes;
+
+  /// No description provided for @similarMeaning.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested because of similar meaning'**
+  String get similarMeaning;
+
+  /// No description provided for @linkNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get linkNote;
+
+  /// No description provided for @linkedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Link added'**
+  String get linkedNote;
+
+  /// No description provided for @backlinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Links to this note'**
+  String get backlinks;
+
+  /// No description provided for @linkedNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked notes'**
+  String get linkedNotes;
+
+  /// No description provided for @findRelatedNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Find related notes'**
+  String get findRelatedNotes;
 }
 
 class _AppLocalizationsDelegate

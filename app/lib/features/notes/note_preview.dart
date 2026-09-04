@@ -13,10 +13,12 @@ String notePreviewBody(Note note) {
       continue;
     }
     if (trimmed.isNotEmpty) {
-      textLines.add(trimmed
-          .replaceFirst(RegExp(r'^#{1,6}\s+'), '')
-          .replaceFirst(RegExp(r'^[-*]\s+\[[ xX]\]\s*'), '')
-          .replaceAllMapped(RegExp(r'\[([^\]]+)\]\([^)]+\)'), (m) => m[1]!));
+      textLines.add(
+        trimmed
+            .replaceFirst(RegExp(r'^#{1,6}\s+'), '')
+            .replaceFirst(RegExp(r'^[-*]\s+\[[ xX]\]\s*'), '')
+            .replaceAllMapped(RegExp(r'\[([^\]]+)\]\([^)]+\)'), (m) => m[1]!),
+      );
     }
   }
 

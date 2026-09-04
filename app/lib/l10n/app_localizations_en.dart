@@ -965,4 +965,78 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gridLayout => 'Card view';
+
+  @override
+  String get libraryActive => 'Library';
+
+  @override
+  String get pinnedNotes => 'Pinned';
+
+  @override
+  String get archive => 'Archive';
+
+  @override
+  String get sortNotes => 'Sort notes';
+
+  @override
+  String get sortRecent => 'Recently updated';
+
+  @override
+  String get sortOldest => 'Oldest updated';
+
+  @override
+  String get savedViews => 'Saved views';
+
+  @override
+  String get saveView => 'Save this view';
+
+  @override
+  String get loadMore => 'Load more';
+
+  @override
+  String get pinNote => 'Pin note';
+
+  @override
+  String get unpinNote => 'Unpin note';
+
+  @override
+  String get archiveNote => 'Archive note';
+
+  @override
+  String get unarchiveNote => 'Move to library';
+
+  @override
+  String get filterTags => 'Tags';
+
+  @override
+  String get semanticSearch => 'Search by meaning';
+
+  @override
+  String get semanticSearchExplanation =>
+      'Search the meaning of notes in your library. This uses your server’s embedding model, never web research. Run it explicitly when you need it.';
+
+  @override
+  String get semanticUnavailable =>
+      'Semantic search is unavailable. Pair with a reachable server using a real embedding model; demo results are not shown.';
+
+  @override
+  String get noRelatedNotes => 'No related notes found.';
+
+  @override
+  String get similarMeaning => 'Suggested because of similar meaning';
+
+  @override
+  String get linkNote => 'Link';
+
+  @override
+  String get linkedNote => 'Link added';
+
+  @override
+  String get backlinks => 'Links to this note';
+
+  @override
+  String get linkedNotes => 'Linked notes';
+
+  @override
+  String get findRelatedNotes => 'Find related notes';
 }

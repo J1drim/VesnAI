@@ -38,8 +38,10 @@ String localizedNoteType(BuildContext context, String type) {
 
 class NoteTypeStyle {
   final IconData icon;
+
   /// Icon foreground and readable label on [fill].
   final Color color;
+
   /// Graph node fill / strong type accent.
   final Color fill;
 

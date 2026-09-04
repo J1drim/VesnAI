@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../models/note.dart';
 import '../../theme.dart';
+import '../../widgets/highlighted_text.dart';
 import 'note_preview.dart';
 import 'note_type_ui.dart';
 
@@ -11,8 +12,9 @@ import 'note_type_ui.dart';
 class NoteTile extends StatelessWidget {
   final Note note;
   final VoidCallback? onTap;
+  final String query;
 
-  const NoteTile({super.key, required this.note, this.onTap});
+  const NoteTile({super.key, required this.note, this.onTap, this.query = ''});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +48,10 @@ class NoteTile extends StatelessWidget {
                   : style.color,
             ),
           ),
-          title: Text(
+          title: HighlightedText(
             note.title.isEmpty ? l.untitled : note.title,
+            query: query,
             maxLines: 2,
-            overflow: TextOverflow.ellipsis,
             style: note.done
                 ? TextStyle(
                     decoration: TextDecoration.lineThrough,
@@ -64,10 +66,10 @@ class NoteTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                HighlightedText(
                   notePreviewBody(note),
+                  query: query,
                   maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
                 if (note.tags.isNotEmpty)
                   Padding(

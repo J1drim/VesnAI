@@ -387,6 +387,13 @@ class VesnaiApiClient {
     return Note.fromApi(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
+  Future<Map<String, dynamic>> searchLibrary(String query, {String excludePath = '', List<String>? paths}) async {
+    final response = await _client.post(_u('/v1/library/search'), headers: _headers,
+      body: jsonEncode({'query': query, 'exclude_path': excludePath, if (paths != null) 'paths': paths}));
+    _check(response);
+    return (jsonDecode(response.body) as Map).cast<String, dynamic>();
+  }
+
   Future<Note> updateNote(String path,
       {String? title, String? body, List<String>? tags, String? type}) async {
     final resp = await _client.put(
