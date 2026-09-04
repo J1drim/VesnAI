@@ -112,6 +112,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.44.0'
           cache: true
       - name: Pub get
         working-directory: app
@@ -148,6 +149,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: '3.44.0'
           cache: true
       - name: Install locked packages
         working-directory: app

@@ -54,3 +54,12 @@ The GitHub alert API currently reports security alerts disabled. The CI dependen
 audit checks public advisories independently. Repository administrators can enable
 GitHub alerts separately. A clean audit means no known findings in the checked
 dependency set at that time, not a guarantee about all optional environments.
+# SDK reproducibility follow-up
+
+GitHub's floating stable channel installed Flutter 3.47.2, whose SDK-pinned
+packages differ from the locally tested Flutter 3.44.0/Dart 3.12.0 lockfile.
+Locked installation correctly failed rather than silently changing five
+dependencies. Both Flutter CI jobs now pin 3.44.0. Upgrade that pin together
+with regenerated locks, visual baselines and native builds in a dedicated SDK
+migration; do not remove lock enforcement to hide the mismatch. Review the
+3.47.x migration after the feature regression suite is complete (2026-09).
