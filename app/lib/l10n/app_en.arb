@@ -451,5 +451,21 @@
   "projectCounts": "{notes} notes · {tasks} open tasks · {research} research notes",
   "projectEvidenceCount": "Evidence: {used} excerpts from {total} scoped notes.",
   "@projectCounts": {"placeholders": {"notes": {"type": "int"}, "tasks": {"type": "int"}, "research": {"type": "int"}}},
-  "@projectEvidenceCount": {"placeholders": {"used": {"type": "int"}, "total": {"type": "int"}}}
+  "@projectEvidenceCount": {"placeholders": {"used": {"type": "int"}, "total": {"type": "int"}}},
+  "focusConnections": "Focus connections",
+  "fitGraph": "Fit graph",
+  "resetGraphLayout": "Reset visible layout",
+  "findGraphNote": "Find a note in this graph",
+  "showFullGraph": "Show full graph",
+  "openNote": "Open note",
+  "libraryCleanup": "Library cleanup",
+  "cleanupExplanation": "Run an offline check for duplicate text, tag spelling variants and broken links. Review every change. Duplicates can be archived, never automatically merged or deleted. Body links open the editor for manual repair.",
+  "scanLibrary": "Scan library",
+  "noCleanupSuggestions": "No suggestions from this check.",
+  "duplicateContent": "Duplicate text",
+  "inconsistentTag": "Tag spelling variant",
+  "brokenLink": "Broken note link",
+  "applyTagChange": "Apply tag change",
+  "removeBrokenLink": "Remove explicit link",
+  "cleanupChanged": "The note or suggestion changed. Scan again before applying."
 }

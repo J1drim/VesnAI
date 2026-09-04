@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_force_directed_graph/flutter_force_directed_graph.dart';
@@ -34,13 +35,12 @@ class GraphFilters {
     bool clearOrigin = false,
     bool clearType = false,
     bool clearTags = false,
-  }) =>
-      GraphFilters(
-        origin: clearOrigin ? null : (origin ?? this.origin),
-        type: clearType ? null : (type ?? this.type),
-        tags: clearTags ? const {} : (tags ?? this.tags),
-        showAll: showAll ?? this.showAll,
-      );
+  }) => GraphFilters(
+    origin: clearOrigin ? null : (origin ?? this.origin),
+    type: clearType ? null : (type ?? this.type),
+    tags: clearTags ? const {} : (tags ?? this.tags),
+    showAll: showAll ?? this.showAll,
+  );
   GraphFilters toggleTag(String tag) {
     final next = Set<String>.from(tags);
     if (next.contains(tag)) {
@@ -57,7 +57,9 @@ Map<String, List<String>> groupTagsByFirstLetter(Iterable<String> tags) {
   final groups = <String, List<String>>{};
   for (final tag in tags) {
     final first = tag.isNotEmpty ? tag[0].toUpperCase() : '#';
-    final letter = first.codeUnitAt(0) >= 65 && first.codeUnitAt(0) <= 90 ? first : '#';
+    final letter = first.codeUnitAt(0) >= 65 && first.codeUnitAt(0) <= 90
+        ? first
+        : '#';
     groups.putIfAbsent(letter, () => []).add(tag);
   }
   for (final list in groups.values) {
@@ -67,20 +69,27 @@ Map<String, List<String>> groupTagsByFirstLetter(Iterable<String> tags) {
   return {for (final k in keys) k: groups[k]!};
 }
 
-final graphFiltersProvider = StateProvider<GraphFilters>((ref) => const GraphFilters());
+final graphFiltersProvider = StateProvider<GraphFilters>(
+  (ref) => const GraphFilters(),
+);
 
 /// Knowledge graph derived from the local note mirror (client-only; no server call).
-final graphProvider = Provider<Map<String, dynamic>>((ref) {
+final graphFocusProvider = StateProvider<String?>((ref) => null);
+final fullGraphProvider = Provider<Map<String, dynamic>>((ref) {
   final notes = ref.watch(notesProvider).valueOrNull ?? const [];
   final f = ref.watch(graphFiltersProvider);
-  final visible = f.showAll ? notes : notes.where(noteVisibleInMainList).toList();
-  return buildLocalGraph(
-    visible,
-    origin: f.origin,
-    type: f.type,
-    tags: f.tags,
-  );
+  final visible = f.showAll
+      ? notes
+      : notes.where(noteVisibleInMainList).toList();
+  return buildLocalGraph(visible, origin: f.origin, type: f.type, tags: f.tags);
 });
+
+final graphProvider = Provider<Map<String, dynamic>>(
+  (ref) => graphNeighborhood(
+    ref.watch(fullGraphProvider),
+    ref.watch(graphFocusProvider),
+  ),
+);
 
 /// Metadata for rendering a graph node (label + type + origin).
 class _NodeMeta {
@@ -107,6 +116,8 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
   int _canvasKey = 0;
   bool _refreshing = false;
   Timer? _layoutSaveTimer;
+  final _search = TextEditingController();
+  final _canvasBox = GlobalKey();
 
   @override
   void initState() {
@@ -122,21 +133,55 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
   @override
   void dispose() {
     _layoutSaveTimer?.cancel();
+    _search.dispose();
     _controller.dispose();
     super.dispose();
   }
 
-  static String _signatureOf(Map<String, dynamic> data) => graphDataSignature(data);
+  static String _signatureOf(Map<String, dynamic> data) =>
+      graphDataSignature(data);
 
   void _scheduleLayoutSave() {
     _layoutSaveTimer?.cancel();
     _layoutSaveTimer = Timer(const Duration(milliseconds: 500), () {
-      final encoded = encodeLayoutWithScale(
-        _controller.toJson(),
-        _controller.scale,
-      );
-      unawaited(ref.read(graphLayoutStoreProvider).save(encoded));
+      unawaited(_persistLayout());
     });
+  }
+
+  Future<void> _persistLayout() async {
+    final storage = ref.read(graphLayoutStoreProvider);
+    final current = _controller.toJson();
+    final scale = _controller.scale;
+    final saved = await storage.load();
+    await storage.save(mergeGraphLayout(saved, current, scale));
+  }
+
+  void _fit() {
+    final nodes = _controller.graph.nodes;
+    final size = _canvasBox.currentContext?.size;
+    if (nodes.isEmpty || size == null) return;
+    final xs = nodes.map((n) => n.position.x);
+    final ys = nodes.map((n) => n.position.y);
+    final left = xs.reduce(math.min), right = xs.reduce(math.max);
+    final top = ys.reduce(math.min), bottom = ys.reduce(math.max);
+    _controller.locateToPosition((left + right) / 2, (top + bottom) / 2);
+    _controller.scale = math.min(
+      size.width / (right - left + 180),
+      size.height / (bottom - top + 100),
+    );
+    _scheduleLayoutSave();
+  }
+
+  void _resetLayout() {
+    final nodes = _controller.graph.nodes;
+    final positions = initialSpreadPositions(nodes.map((n) => n.data).toList());
+    for (final node in nodes) {
+      final p = positions[node.data]!;
+      node.position.setValues(p.x, p.y);
+    }
+    _controller.scale = 1;
+    _controller.needUpdate();
+    _scheduleLayoutSave();
   }
 
   Future<void> _scheduleRebuildIfNeeded(Map<String, dynamic> data) async {
@@ -164,13 +209,23 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
         _canvasKey++;
       });
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _controller.needUpdate();
+        if (mounted) {
+          final focus = ref.read(graphFocusProvider);
+          if (focus != null) _controller.locateTo(focus);
+          _controller.needUpdate();
+          final latest = ref.read(graphProvider);
+          if (_signatureOf(latest) != _signature)
+            unawaited(_scheduleRebuildIfNeeded(latest));
+        }
       });
     }
   }
 
   /// Rebuild the controller's nodes/edges when graph data changes.
-  Future<void> _rebuild(Map<String, dynamic> data, {bool persist = true}) async {
+  Future<void> _rebuild(
+    Map<String, dynamic> data, {
+    bool persist = true,
+  }) async {
     final nodes = (data['nodes'] as List).cast<Map>();
     final edges = (data['edges'] as List).cast<Map>();
     final ids = nodes.map((n) => n['id'] as String).toList();
@@ -178,7 +233,9 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
 
     _meta
       ..clear()
-      ..addEntries(nodes.map((n) => MapEntry(
+      ..addEntries(
+        nodes.map(
+          (n) => MapEntry(
             n['id'] as String,
             _NodeMeta(
               (n['title'] as String?)?.trim().isNotEmpty == true
@@ -187,13 +244,12 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
               normalizeNoteType(n['type'] as String?),
               n['origin'] == 'generated',
             ),
-          )));
+          ),
+        ),
+      );
 
     final saved = await ref.read(graphLayoutStoreProvider).load();
-    final positions = pruneLayoutPositions(
-      data,
-      parseLayoutPositions(saved),
-    );
+    final positions = pruneLayoutPositions(data, parseLayoutPositions(saved));
     final savedScale = parseLayoutScale(saved);
 
     final nextController = ForceDirectedGraphController<String>();
@@ -229,8 +285,14 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
     nextController.scale = savedScale;
 
     if (persist) {
-      await ref.read(graphLayoutStoreProvider).save(
-            encodeLayoutWithScale(nextController.toJson(), nextController.scale),
+      await ref
+          .read(graphLayoutStoreProvider)
+          .save(
+            mergeGraphLayout(
+              saved,
+              nextController.toJson(),
+              nextController.scale,
+            ),
           );
     }
 
@@ -249,17 +311,69 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
       await _scheduleRebuildIfNeeded(data);
       if (!mounted) return;
       final l = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(pushed < 0 ? l.graphOffline : l.graphRefreshed(pushed)),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(pushed < 0 ? l.graphOffline : l.graphRefreshed(pushed)),
+        ),
+      );
     } finally {
       if (mounted) setState(() => _refreshing = false);
     }
   }
 
   void _open(String id) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => NoteDetailScreen(path: id)),
+    final l = AppLocalizations.of(context);
+    final note = (ref.read(notesProvider).valueOrNull ?? [])
+        .where((n) => n.path == id)
+        .firstOrNull;
+    if (note == null) return;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheet) => SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(note.title, style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 12),
+              Text(
+                note.body.length > 400
+                    ? '${note.body.substring(0, 400)}…'
+                    : note.body,
+              ),
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 8,
+                children: [
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.pop(sheet);
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => NoteDetailScreen(path: id),
+                        ),
+                      );
+                    },
+                    child: Text(l.openNote),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(sheet);
+                      ref.read(graphFocusProvider.notifier).state = id;
+                      _controller.locateTo(id);
+                    },
+                    child: Text(l.focusConnections),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -289,6 +403,16 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
       appBar: AppBar(
         title: Text(l.knowledgeGraph),
         actions: [
+          IconButton(
+            tooltip: l.fitGraph,
+            onPressed: _layoutReady ? _fit : null,
+            icon: const Icon(Icons.fit_screen),
+          ),
+          IconButton(
+            tooltip: l.resetGraphLayout,
+            onPressed: _layoutReady ? _resetLayout : null,
+            icon: const Icon(Icons.restart_alt),
+          ),
           if (_refreshing)
             const Padding(
               padding: EdgeInsets.all(12),
@@ -310,27 +434,70 @@ class _GraphScreenState extends ConsumerState<GraphScreen> {
       body: Column(
         children: [
           _FilterBar(filters: filters),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: TextField(
+              controller: _search,
+              onChanged: (_) => setState(() {}),
+              decoration: InputDecoration(
+                labelText: l.findGraphNote,
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: ref.watch(graphFocusProvider) == null
+                    ? null
+                    : IconButton(
+                        tooltip: l.showFullGraph,
+                        onPressed: () =>
+                            ref.read(graphFocusProvider.notifier).state = null,
+                        icon: const Icon(Icons.close_fullscreen),
+                      ),
+              ),
+            ),
+          ),
+          if (_search.text.trim().isNotEmpty)
+            for (final node
+                in (ref.watch(fullGraphProvider)['nodes'] as List)
+                    .cast<Map>()
+                    .where(
+                      (n) => '${n['title']} ${n['id']}'.toLowerCase().contains(
+                        _search.text.trim().toLowerCase(),
+                      ),
+                    )
+                    .take(3))
+              ListTile(
+                title: Text(
+                  node['title'] as String,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onTap: () {
+                  _open(node['id'] as String);
+                  setState(_search.clear);
+                },
+              ),
           Expanded(
-            child: notesAsync.isLoading && !notesAsync.hasValue
-                ? const Center(child: CircularProgressIndicator())
-                : nodes.isEmpty
-                    ? Center(
-                        child: Text(
-                          filters.hasActiveFilters
-                              ? l.graphNoNotesMatchFilters
-                              : l.graphNoNotes,
-                        ),
-                      )
-                    : !_layoutReady
-                        ? const Center(child: CircularProgressIndicator())
-                        : _GraphCanvas(
-                            key: ValueKey(_canvasKey),
-                            theme: theme,
-                            controller: _controller,
-                            meta: _meta,
-                            onOpen: _open,
-                            onLayoutChanged: _scheduleLayoutSave,
-                          ),
+            child: SizedBox(
+              key: _canvasBox,
+              child: notesAsync.isLoading && !notesAsync.hasValue
+                  ? const Center(child: CircularProgressIndicator())
+                  : nodes.isEmpty
+                  ? Center(
+                      child: Text(
+                        filters.hasActiveFilters
+                            ? l.graphNoNotesMatchFilters
+                            : l.graphNoNotes,
+                      ),
+                    )
+                  : !_layoutReady
+                  ? const Center(child: CircularProgressIndicator())
+                  : _GraphCanvas(
+                      key: ValueKey(_canvasKey),
+                      theme: theme,
+                      controller: _controller,
+                      meta: _meta,
+                      onOpen: _open,
+                      onLayoutChanged: _scheduleLayoutSave,
+                    ),
+            ),
           ),
         ],
       ),
@@ -387,8 +554,8 @@ class _GraphCanvasState extends State<_GraphCanvas> {
         controller: widget.controller,
         onDraggingEnd: (_) => widget.onLayoutChanged(),
         nodesBuilder: (context, id) {
-          final nodeMeta = widget.meta[id] ??
-              _NodeMeta(id.split('/').last, 'Note', false);
+          final nodeMeta =
+              widget.meta[id] ?? _NodeMeta(id.split('/').last, 'Note', false);
           final style = noteTypeStyle(nodeMeta.type, widget.theme.colorScheme);
           final fill = style.fill;
           final labelColor = noteTypeLabelColor(fill, widget.theme.colorScheme);
@@ -456,9 +623,8 @@ class _FilterBar extends ConsumerWidget {
           initialChildSize: 0.5,
           minChildSize: 0.3,
           maxChildSize: 0.85,
-          builder: (_, scrollController) => _GraphTagsSheet(
-            scrollController: scrollController,
-          ),
+          builder: (_, scrollController) =>
+              _GraphTagsSheet(scrollController: scrollController),
         ),
       ),
     );
@@ -469,8 +635,9 @@ class _FilterBar extends ConsumerWidget {
     final notifier = ref.read(graphFiltersProvider.notifier);
     final l = AppLocalizations.of(context);
     final tagCount = filters.tags.length;
-    final tagsLabel =
-        tagCount == 0 ? l.tagsFilterLabel : l.tagsFilterLabelCount(tagCount);
+    final tagsLabel = tagCount == 0
+        ? l.tagsFilterLabel
+        : l.tagsFilterLabelCount(tagCount);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -483,8 +650,10 @@ class _FilterBar extends ConsumerWidget {
               FilterChip(
                 label: Text(l.filterMine),
                 selected: filters.origin == 'user',
-                onSelected: (s) => notifier.state =
-                    filters.copyWith(origin: s ? 'user' : null, clearOrigin: !s),
+                onSelected: (s) => notifier.state = filters.copyWith(
+                  origin: s ? 'user' : null,
+                  clearOrigin: !s,
+                ),
               ),
               const SizedBox(width: 8),
               FilterChip(
@@ -499,7 +668,8 @@ class _FilterBar extends ConsumerWidget {
               FilterChip(
                 label: Text(l.showAll),
                 selected: filters.showAll,
-                onSelected: (s) => notifier.state = filters.copyWith(showAll: s),
+                onSelected: (s) =>
+                    notifier.state = filters.copyWith(showAll: s),
               ),
               const SizedBox(width: 8),
               for (final t in kUserNoteTypes)
@@ -508,8 +678,10 @@ class _FilterBar extends ConsumerWidget {
                   child: NoteTypeFilterChip(
                     type: t,
                     selected: filters.type == t,
-                    onSelected: (s) => notifier.state =
-                        filters.copyWith(type: s ? t : null, clearType: !s),
+                    onSelected: (s) => notifier.state = filters.copyWith(
+                      type: s ? t : null,
+                      clearType: !s,
+                    ),
                   ),
                 ),
               FilterChip(
@@ -634,8 +806,8 @@ class _GraphTagsSheet extends ConsumerWidget {
                                     key: Key('graph-tag-$tag'),
                                     label: Text('#$tag'),
                                     selected: false,
-                                    onSelected: (_) => notifier.state =
-                                        filters.toggleTag(tag),
+                                    onSelected: (_) =>
+                                        notifier.state = filters.toggleTag(tag),
                                   ),
                               ],
                             ),

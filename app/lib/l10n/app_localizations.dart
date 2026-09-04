@@ -2149,6 +2149,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Evidence: {used} excerpts from {total} scoped notes.'**
   String projectEvidenceCount(int used, int total);
+
+  /// No description provided for @focusConnections.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus connections'**
+  String get focusConnections;
+
+  /// No description provided for @fitGraph.
+  ///
+  /// In en, this message translates to:
+  /// **'Fit graph'**
+  String get fitGraph;
+
+  /// No description provided for @resetGraphLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset visible layout'**
+  String get resetGraphLayout;
+
+  /// No description provided for @findGraphNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a note in this graph'**
+  String get findGraphNote;
+
+  /// No description provided for @showFullGraph.
+  ///
+  /// In en, this message translates to:
+  /// **'Show full graph'**
+  String get showFullGraph;
+
+  /// No description provided for @openNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Open note'**
+  String get openNote;
+
+  /// No description provided for @libraryCleanup.
+  ///
+  /// In en, this message translates to:
+  /// **'Library cleanup'**
+  String get libraryCleanup;
+
+  /// No description provided for @cleanupExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Run an offline check for duplicate text, tag spelling variants and broken links. Review every change. Duplicates can be archived, never automatically merged or deleted. Body links open the editor for manual repair.'**
+  String get cleanupExplanation;
+
+  /// No description provided for @scanLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan library'**
+  String get scanLibrary;
+
+  /// No description provided for @noCleanupSuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'No suggestions from this check.'**
+  String get noCleanupSuggestions;
+
+  /// No description provided for @duplicateContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate text'**
+  String get duplicateContent;
+
+  /// No description provided for @inconsistentTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Tag spelling variant'**
+  String get inconsistentTag;
+
+  /// No description provided for @brokenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Broken note link'**
+  String get brokenLink;
+
+  /// No description provided for @applyTagChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply tag change'**
+  String get applyTagChange;
+
+  /// No description provided for @removeBrokenLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove explicit link'**
+  String get removeBrokenLink;
+
+  /// No description provided for @cleanupChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'The note or suggestion changed. Scan again before applying.'**
+  String get cleanupChanged;
 }
 
 class _AppLocalizationsDelegate

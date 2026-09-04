@@ -1173,4 +1173,54 @@ class AppLocalizationsPl extends AppLocalizations {
   String projectEvidenceCount(int used, int total) {
     return 'Źródła: $used fragmentów z $total notatek w zakresie.';
   }
+
+  @override
+  String get focusConnections => 'Skup się na połączeniach';
+
+  @override
+  String get fitGraph => 'Dopasuj graf';
+
+  @override
+  String get resetGraphLayout => 'Resetuj widoczny układ';
+
+  @override
+  String get findGraphNote => 'Znajdź notatkę w tym grafie';
+
+  @override
+  String get showFullGraph => 'Pokaż cały graf';
+
+  @override
+  String get openNote => 'Otwórz notatkę';
+
+  @override
+  String get libraryCleanup => 'Porządki w bibliotece';
+
+  @override
+  String get cleanupExplanation =>
+      'Sprawdź offline powieloną treść, warianty pisowni tagów i uszkodzone linki. Każda zmiana wymaga przeglądu. Duplikaty można zarchiwizować; nigdy nie są automatycznie łączone ani usuwane. Linki w treści naprawisz ręcznie w edytorze.';
+
+  @override
+  String get scanLibrary => 'Sprawdź bibliotekę';
+
+  @override
+  String get noCleanupSuggestions => 'Brak sugestii z tego sprawdzenia.';
+
+  @override
+  String get duplicateContent => 'Powielona treść';
+
+  @override
+  String get inconsistentTag => 'Wariant pisowni tagu';
+
+  @override
+  String get brokenLink => 'Uszkodzony link do notatki';
+
+  @override
+  String get applyTagChange => 'Zastosuj zmianę tagu';
+
+  @override
+  String get removeBrokenLink => 'Usuń jawny link';
+
+  @override
+  String get cleanupChanged =>
+      'Notatka lub sugestia uległa zmianie. Sprawdź ponownie przed zastosowaniem.';
 }

@@ -451,5 +451,21 @@
   "projectCounts": "Notatki: {notes} · Otwarte zadania: {tasks} · Badania: {research}",
   "projectEvidenceCount": "Źródła: {used} fragmentów z {total} notatek w zakresie.",
   "@projectCounts": {"placeholders": {"notes": {"type": "int"}, "tasks": {"type": "int"}, "research": {"type": "int"}}},
-  "@projectEvidenceCount": {"placeholders": {"used": {"type": "int"}, "total": {"type": "int"}}}
+  "@projectEvidenceCount": {"placeholders": {"used": {"type": "int"}, "total": {"type": "int"}}},
+  "focusConnections": "Skup się na połączeniach",
+  "fitGraph": "Dopasuj graf",
+  "resetGraphLayout": "Resetuj widoczny układ",
+  "findGraphNote": "Znajdź notatkę w tym grafie",
+  "showFullGraph": "Pokaż cały graf",
+  "openNote": "Otwórz notatkę",
+  "libraryCleanup": "Porządki w bibliotece",
+  "cleanupExplanation": "Sprawdź offline powieloną treść, warianty pisowni tagów i uszkodzone linki. Każda zmiana wymaga przeglądu. Duplikaty można zarchiwizować; nigdy nie są automatycznie łączone ani usuwane. Linki w treści naprawisz ręcznie w edytorze.",
+  "scanLibrary": "Sprawdź bibliotekę",
+  "noCleanupSuggestions": "Brak sugestii z tego sprawdzenia.",
+  "duplicateContent": "Powielona treść",
+  "inconsistentTag": "Wariant pisowni tagu",
+  "brokenLink": "Uszkodzony link do notatki",
+  "applyTagChange": "Zastosuj zmianę tagu",
+  "removeBrokenLink": "Usuń jawny link",
+  "cleanupChanged": "Notatka lub sugestia uległa zmianie. Sprawdź ponownie przed zastosowaniem."
 }

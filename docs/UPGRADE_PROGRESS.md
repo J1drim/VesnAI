@@ -95,7 +95,7 @@ Dependency migration details and deferred SDK/major-version decisions are in
 
 - Dependency upgrades, CI/dependency automation, and service-image review.
 - Native sharing.
-- Graph navigation, cleanup suggestions, notification delivery, AI controls,
+- Notification delivery, AI controls,
   performance measurements and remaining platform verification.
 
 ## Capture drafts — implemented
@@ -131,3 +131,12 @@ Dependency migration details and deferred SDK/major-version decisions are in
   or web access; explicit demo/unavailable states and pending-edit sync gate.
 - Validation: 208 Flutter tests and 335 offline server tests pass; analyzer,
   Ruff and mypy pass. Scope and limitations: [PROJECTS.md](PROJECTS.md).
+
+## Graph navigation and cleanup — implemented
+
+- Graph search, previews, one-hop focus and fit/reset controls; filtered layouts
+  retain hidden node positions. Existing type/origin/tag filters remain usable.
+- On-demand offline duplicate/tag/broken-link suggestions, previews, explicit
+  changes and stale-evidence checks. No automatic merge/delete or reminders.
+- Validation: 212 Flutter tests pass (3 benchmark skips); analyzer passes.
+  Behavior: [GRAPH_AND_CLEANUP.md](GRAPH_AND_CLEANUP.md).

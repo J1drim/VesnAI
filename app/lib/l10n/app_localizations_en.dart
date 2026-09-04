@@ -1160,4 +1160,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String projectEvidenceCount(int used, int total) {
     return 'Evidence: $used excerpts from $total scoped notes.';
   }
+
+  @override
+  String get focusConnections => 'Focus connections';
+
+  @override
+  String get fitGraph => 'Fit graph';
+
+  @override
+  String get resetGraphLayout => 'Reset visible layout';
+
+  @override
+  String get findGraphNote => 'Find a note in this graph';
+
+  @override
+  String get showFullGraph => 'Show full graph';
+
+  @override
+  String get openNote => 'Open note';
+
+  @override
+  String get libraryCleanup => 'Library cleanup';
+
+  @override
+  String get cleanupExplanation =>
+      'Run an offline check for duplicate text, tag spelling variants and broken links. Review every change. Duplicates can be archived, never automatically merged or deleted. Body links open the editor for manual repair.';
+
+  @override
+  String get scanLibrary => 'Scan library';
+
+  @override
+  String get noCleanupSuggestions => 'No suggestions from this check.';
+
+  @override
+  String get duplicateContent => 'Duplicate text';
+
+  @override
+  String get inconsistentTag => 'Tag spelling variant';
+
+  @override
+  String get brokenLink => 'Broken note link';
+
+  @override
+  String get applyTagChange => 'Apply tag change';
+
+  @override
+  String get removeBrokenLink => 'Remove explicit link';
+
+  @override
+  String get cleanupChanged =>
+      'The note or suggestion changed. Scan again before applying.';
 }

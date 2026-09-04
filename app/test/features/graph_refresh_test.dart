@@ -4,6 +4,31 @@ import 'package:vesnai_app/data/local_graph.dart';
 import 'package:vesnai_app/features/graph/graph_screen.dart';
 
 void main() {
+  test(
+    'focus includes incoming/outgoing neighbors only and preserves hidden layout',
+    () {
+      final graph = {
+        'nodes': [
+          for (final id in ['a', 'b', 'c', 'd']) {'id': id},
+        ],
+        'edges': [
+          {'source': 'b', 'target': 'a'},
+          {'source': 'a', 'target': 'c'},
+          {'source': 'c', 'target': 'd'},
+        ],
+      };
+      final focused = graphNeighborhood(graph, 'a');
+      expect((focused['nodes'] as List).map((n) => n['id']), ['a', 'b', 'c']);
+      expect(focused['edges'], hasLength(2));
+      final merged = mergeGraphLayout(
+        '{"nodes":[{"data":"hidden","position":{"x":3,"y":4}}]}',
+        '{"nodes":[{"data":"visible","position":{"x":5,"y":6}}]}',
+        .8,
+      );
+      expect(parseLayoutPositions(merged).keys, ['hidden', 'visible']);
+      expect(parseLayoutScale(merged), .8);
+    },
+  );
   test('groupTagsByFirstLetter buckets and sorts tags', () {
     final grouped = groupTagsByFirstLetter(['work', 'home', 'ideas', '3d']);
     expect(grouped.keys, ['#', 'H', 'I', 'W']);
@@ -34,12 +59,7 @@ void main() {
     };
     final renamed = {
       'nodes': [
-        {
-          'id': 'notes/a.md',
-          'title': 'Beta',
-          'type': 'Note',
-          'origin': 'user',
-        },
+        {'id': 'notes/a.md', 'title': 'Beta', 'type': 'Note', 'origin': 'user'},
       ],
       'edges': [],
     };

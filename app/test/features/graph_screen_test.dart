@@ -30,25 +30,21 @@ class _DelayedNotes extends NotesNotifier {
   }
 }
 
-Note _note(String path, String title, {List<String> tags = const []}) => Note(
-      path: path,
-      title: title,
-      body: 'body',
-      tags: tags,
-    );
+Note _note(String path, String title, {List<String> tags = const []}) =>
+    Note(path: path, title: title, body: 'body', tags: tags);
 
 ProviderScope _graphScope(List<Note> notes, Widget child) => ProviderScope(
-      overrides: [
-        notesProvider.overrideWith(() => _FakeNotes(notes)),
-        graphLayoutStoreProvider.overrideWithValue(InMemoryGraphLayoutStore()),
-      ],
-      child: MaterialApp(
-        theme: VesnaiTheme.light(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: child,
-      ),
-    );
+  overrides: [
+    notesProvider.overrideWith(() => _FakeNotes(notes)),
+    graphLayoutStoreProvider.overrideWithValue(InMemoryGraphLayoutStore()),
+  ],
+  child: MaterialApp(
+    theme: VesnaiTheme.light(),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: child,
+  ),
+);
 
 Future<void> _pumpUntilGraphSettled(WidgetTester tester) async {
   await tester.pump();
@@ -57,8 +53,44 @@ Future<void> _pumpUntilGraphSettled(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('GraphScreen shows node labels without canvas interaction',
-      (tester) async {
+  testWidgets('search previews a note before focusing its neighborhood', (
+    tester,
+  ) async {
+    final notes = [
+      const Note(
+        path: 'notes/a.md',
+        title: 'Alpha',
+        body: 'Preview body',
+        links: ['notes/b.md'],
+      ),
+      _note('notes/b.md', 'Beta'),
+      _note('notes/c.md', 'Gamma'),
+    ];
+    await tester.pumpWidget(_graphScope(notes, const GraphScreen()));
+    await _pumpUntilGraphSettled(tester);
+    await tester.enterText(find.byType(TextField), 'Alpha');
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ListTile, 'Alpha'));
+    await tester.pumpAndSettle();
+    expect(find.text('Preview body'), findsOneWidget);
+    expect(find.text('Open note'), findsOneWidget);
+    await tester.tap(find.text('Focus connections'));
+    await _pumpUntilGraphSettled(tester);
+    expect(find.text('Alpha'), findsOneWidget);
+    expect(find.text('Beta'), findsOneWidget);
+    expect(find.text('Gamma'), findsNothing);
+    await tester.tap(find.byTooltip('Show full graph'));
+    await _pumpUntilGraphSettled(tester);
+    expect(find.text('Gamma'), findsOneWidget);
+    await tester.tap(find.byTooltip('Fit graph'));
+    await _pumpUntilGraphSettled(tester);
+    await tester.tap(find.byTooltip('Reset visible layout'));
+    await _pumpUntilGraphSettled(tester);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('GraphScreen shows node labels without canvas interaction', (
+    tester,
+  ) async {
     final notes = [
       _note('notes/a.md', 'Alpha'),
       _note('notes/b.md', 'Beta'),
@@ -74,18 +106,18 @@ void main() {
     expect(find.text('Gamma'), findsOneWidget);
   });
 
-  testWidgets('GraphScreen shows nodes after notes load post-mount',
-      (tester) async {
-    final notes = [
-      _note('notes/a.md', 'Alpha'),
-      _note('notes/b.md', 'Beta'),
-    ];
+  testWidgets('GraphScreen shows nodes after notes load post-mount', (
+    tester,
+  ) async {
+    final notes = [_note('notes/a.md', 'Alpha'), _note('notes/b.md', 'Beta')];
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           notesProvider.overrideWith(() => _DelayedNotes(notes)),
-          graphLayoutStoreProvider.overrideWithValue(InMemoryGraphLayoutStore()),
+          graphLayoutStoreProvider.overrideWithValue(
+            InMemoryGraphLayoutStore(),
+          ),
         ],
         child: MaterialApp(
           theme: VesnaiTheme.light(),
@@ -101,8 +133,9 @@ void main() {
     expect(find.text('Beta'), findsOneWidget);
   });
 
-  testWidgets('filter bar uses Tags chip instead of listing every tag',
-      (tester) async {
+  testWidgets('filter bar uses Tags chip instead of listing every tag', (
+    tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(800, 1200));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -129,7 +162,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Filter by tag'), findsOneWidget);
-    expect(find.byType(TextField), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byType(DraggableScrollableSheet),
+        matching: find.byType(TextField),
+      ),
+      findsNothing,
+    );
 
     final workChip = find.byKey(const Key('graph-tag-work'));
     await tester.scrollUntilVisible(

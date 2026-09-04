@@ -1,6 +1,27 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+/// A focused/filtered graph must not erase positions belonging to hidden nodes.
+String mergeGraphLayout(String? saved, String current, double scale) {
+  Map<String, dynamic> old = {};
+  try {
+    if (saved != null) old = jsonDecode(saved) as Map<String, dynamic>;
+  } catch (_) {}
+  final next = jsonDecode(current) as Map<String, dynamic>;
+  final positions = <String, Map>{};
+  for (final node in [
+    ...(old['nodes'] as List? ?? []),
+    ...(next['nodes'] as List? ?? []),
+  ]) {
+    positions[node['data'] as String] = node as Map;
+  }
+  return jsonEncode({
+    ...next,
+    'nodes': positions.values.toList(),
+    'scale': scale,
+  });
+}
+
 /// Saved node positions keyed by note path, parsed from layout JSON.
 Map<String, ({double x, double y})> parseLayoutPositions(String? json) {
   if (json == null || json.isEmpty) return {};
@@ -61,10 +82,7 @@ Map<String, ({double x, double y})> initialSpreadPositions(
   final out = <String, ({double x, double y})>{};
   for (var i = 0; i < ids.length; i++) {
     final angle = 2 * math.pi * i / ids.length;
-    out[ids[i]] = (
-      x: radius * math.cos(angle),
-      y: radius * math.sin(angle),
-    );
+    out[ids[i]] = (x: radius * math.cos(angle), y: radius * math.sin(angle));
   }
   return out;
 }
@@ -77,7 +95,5 @@ Map<String, ({double x, double y})> pruneLayoutPositions(
   final ids = {
     for (final n in (graphData['nodes'] as List).cast<Map>()) n['id'] as String,
   };
-  return Map.fromEntries(
-    positions.entries.where((e) => ids.contains(e.key)),
-  );
+  return Map.fromEntries(positions.entries.where((e) => ids.contains(e.key)));
 }

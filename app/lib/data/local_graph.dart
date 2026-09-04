@@ -3,6 +3,31 @@ import 'package:okf_dart/okf_dart.dart';
 import '../features/notes/note_type_ui.dart';
 import '../models/note.dart';
 
+/// Keep a selected note and its incoming/outgoing one-hop connections.
+Map<String, dynamic> graphNeighborhood(
+  Map<String, dynamic> graph,
+  String? focus,
+) {
+  if (focus == null) return graph;
+  final edges = (graph['edges'] as List).cast<Map>();
+  final ids = {focus};
+  for (final edge in edges) {
+    if (edge['source'] == focus || edge['target'] == focus) {
+      ids.add(edge['source'] as String);
+      ids.add(edge['target'] as String);
+    }
+  }
+  return {
+    'nodes': (graph['nodes'] as List)
+        .cast<Map>()
+        .where((n) => ids.contains(n['id']))
+        .toList(),
+    'edges': edges
+        .where((e) => ids.contains(e['source']) && ids.contains(e['target']))
+        .toList(),
+  };
+}
+
 /// Build a knowledge graph from the local note mirror (mirrors server graph.py).
 ///
 /// The Flutter app derives the graph entirely on-device from the SQLite mirror;
@@ -31,13 +56,15 @@ Map<String, dynamic> buildLocalGraph(
   final known = selected.keys.toSet();
 
   final nodes = selected.entries
-      .map((e) => {
-            'id': e.key,
-            'title': e.value.title.isEmpty ? e.key : e.value.title,
-            'type': normalizeNoteType(e.value.type),
-            'origin': e.value.origin == Origin.generated ? 'generated' : 'user',
-            'tags': e.value.tags,
-          })
+      .map(
+        (e) => {
+          'id': e.key,
+          'title': e.value.title.isEmpty ? e.key : e.value.title,
+          'type': normalizeNoteType(e.value.type),
+          'origin': e.value.origin == Origin.generated ? 'generated' : 'user',
+          'tags': e.value.tags,
+        },
+      )
       .toList();
 
   final edges = <Map<String, String>>[];

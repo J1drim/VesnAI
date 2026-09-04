@@ -7,6 +7,7 @@ import '../../models/note.dart';
 import '../../providers.dart';
 import 'note_type_ui.dart';
 import 'projects_screen.dart';
+import 'cleanup_screen.dart';
 
 class LibraryControls extends ConsumerWidget {
   final String query;
@@ -36,6 +37,14 @@ class LibraryControls extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
+          IconButton(
+            tooltip: l.libraryCleanup,
+            icon: const Icon(Icons.cleaning_services_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const CleanupScreen()),
+            ),
+          ),
           IconButton(
             tooltip: l.projects,
             icon: const Icon(Icons.folder_outlined),
