@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
+import 'package:okf_dart/okf_dart.dart';
 
 import '../models/note.dart';
 import 'api_client.dart';
@@ -43,6 +44,17 @@ class CaptureDraftStore {
     ].expand(AttachmentCache.pathsFromNote).toSet();
     for (final item in draft?['attachments'] as List? ?? []) {
       referenced.add(item['path'] as String);
+    }
+    for (final item
+        in jsonDecode(await store.localValue('local_trash') ?? '[]') as List) {
+      referenced.addAll(
+        AttachmentCache.pathsFromNote(
+          Note.fromConcept(
+            item['path'] as String,
+            parseConcept(item['doc'] as String),
+          ),
+        ),
+      );
     }
     for (final path in candidates.where((p) => !referenced.contains(p))) {
       // Unsent media may belong to an in-flight capture; preserve it.

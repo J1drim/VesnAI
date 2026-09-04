@@ -768,7 +768,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String deleteNoteConfirm(String title) {
-    return 'Usunąć \"$title\"? Tej operacji nie można cofnąć.';
+    return 'Przenieść \"$title\" do Kosza? Lokalna kopia bezpieczeństwa pozostanie zachowana; po synchronizacji serwer zachowa kopię do odzyskania.';
   }
 
   @override
@@ -1087,4 +1087,50 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get discardDraftConfirm =>
       'Odrzucić tę niedokończoną notatkę i nieużywane załączniki lokalne? Tej operacji nie można cofnąć.';
+
+  @override
+  String get trash => 'Kosz';
+
+  @override
+  String get noteHistory => 'Historia notatki';
+
+  @override
+  String get restoreRevision => 'Przywróć jako nową zmianę';
+
+  @override
+  String get restoreNote => 'Przywróć notatkę';
+
+  @override
+  String get syncBeforeRestore =>
+      'Zsynchronizuj oczekujące zmiany przed przywróceniem wersji.';
+
+  @override
+  String get trashRetention =>
+      'Kosz jest przechowywany do odrzucenia elementów. Kopie serwera zawierają notatki podrzędne i multimedia. Lokalne kopie bezpieczeństwa są niezależne. Historia Git i kopie zapasowe mogą zachować odrzucone dane.';
+
+  @override
+  String get historyExplanation =>
+      'Podejrzyj wersję, a następnie przywróć treść i multimedia jako nową zmianę. Dotychczasowa historia zostanie zachowana.';
+
+  @override
+  String get recoveryUnavailable =>
+      'Odzyskiwanie z serwera jest niedostępne. Połącz się ze zaktualizowanym serwerem; historia wymaga też Git. Lokalne kopie bezpieczeństwa pozostają dostępne.';
+
+  @override
+  String get discardTrashConfirm =>
+      'Odrzucić tę kopię odzyskiwania? Zniknie z Kosza. Nie usuwa to historii Git ani kopii zapasowych.';
+
+  @override
+  String get restoreLocalCopyConfirm =>
+      'Przywrócić lokalną kopię bezpieczeństwa jako osobną notatkę? Istniejąca notatka serwera pozostanie bez zmian.';
+
+  @override
+  String get restoreTrashConfirm =>
+      'Przywrócić notatkę, wygenerowane notatki podrzędne i multimedia do oryginalnych ścieżek? Istniejące notatki nie zostaną zastąpione.';
+
+  @override
+  String get thisDevice => 'To urządzenie';
+
+  @override
+  String get pairedServer => 'Sparowany serwer';
 }

@@ -301,7 +301,7 @@
   "removeVoiceService": "Remove voice service",
 
   "deleteNoteQuestion": "Delete note?",
-  "deleteNoteConfirm": "Delete \"{title}\"? This cannot be undone.",
+  "deleteNoteConfirm": "Move \"{title}\" to Trash? A local safety copy is retained; the server keeps a recoverable snapshot after sync.",
   "@deleteNoteConfirm": {
     "placeholders": { "title": { "type": "String" } }
   },
@@ -426,5 +426,18 @@
   "ideaTemplate": "## Idea\n\n## Why it matters\n\n## Next experiment\n\n- [ ] ",
   "readingTemplate": "## Source\n\n## Key insights\n\n## My thoughts\n\n## Questions",
   "discardDraft": "Discard draft",
-  "discardDraftConfirm": "Discard this unfinished note and its unused local attachments? This cannot be undone."
+  "discardDraftConfirm": "Discard this unfinished note and its unused local attachments? This cannot be undone.",
+  "trash": "Trash",
+  "noteHistory": "Note history",
+  "restoreRevision": "Restore as a new edit",
+  "restoreNote": "Restore note",
+  "syncBeforeRestore": "Sync your pending edits before restoring a revision.",
+  "trashRetention": "Trash is kept until you discard it. Server snapshots include child notes and media. Local safety copies are separate. Git history and backups may retain discarded data.",
+  "historyExplanation": "Preview a revision, then restore its content and media as a new edit. Existing history is preserved.",
+  "recoveryUnavailable": "Server recovery is unavailable. Pair and connect to an upgraded server; history also requires Git. Local safety copies remain accessible.",
+  "discardTrashConfirm": "Discard this recovery snapshot? It will no longer appear in Trash. This does not erase Git history or backups.",
+  "restoreLocalCopyConfirm": "Restore this device’s safety copy as a separate note? Any existing server note is left unchanged.",
+  "restoreTrashConfirm": "Restore the note, its generated children and media to their original paths? Existing notes are never replaced.",
+  "thisDevice": "This device",
+  "pairedServer": "Paired server"
 }

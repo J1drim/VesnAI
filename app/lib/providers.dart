@@ -577,29 +577,10 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
   }
 
   Future<void> delete(String path) async {
-    final note = state.valueOrNull?.where((n) => n.path == path).firstOrNull;
-    final deletedPaths = note != null
-        ? AttachmentCache.pathsFromNote(note)
-        : const <String>[];
     try {
       await ref.read(repositoryProvider).delete(path);
     } finally {
       await reload();
-      await _evictUnreferencedAttachments(deletedPaths);
-    }
-  }
-
-  Future<void> _evictUnreferencedAttachments(List<String> candidates) async {
-    if (candidates.isEmpty) return;
-    final cache = ref.read(attachmentCacheProvider);
-    final notes = state.valueOrNull ?? const [];
-    final referenced = {
-      for (final n in notes) ...AttachmentCache.pathsFromNote(n),
-    };
-    for (final relPath in candidates) {
-      if (!referenced.contains(relPath)) {
-        await cache.delete(relPath);
-      }
     }
   }
 

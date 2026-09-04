@@ -301,7 +301,7 @@
   "removeVoiceService": "Usuń usługę głosową",
 
   "deleteNoteQuestion": "Usunąć notatkę?",
-  "deleteNoteConfirm": "Usunąć \"{title}\"? Tej operacji nie można cofnąć.",
+  "deleteNoteConfirm": "Przenieść \"{title}\" do Kosza? Lokalna kopia bezpieczeństwa pozostanie zachowana; po synchronizacji serwer zachowa kopię do odzyskania.",
   "@deleteNoteConfirm": {
     "placeholders": { "title": { "type": "String" } }
   },
@@ -426,5 +426,18 @@
   "ideaTemplate": "## Pomysł\n\n## Dlaczego warto\n\n## Następny eksperyment\n\n- [ ] ",
   "readingTemplate": "## Źródło\n\n## Najważniejsze wnioski\n\n## Moje przemyślenia\n\n## Pytania",
   "discardDraft": "Odrzuć szkic",
-  "discardDraftConfirm": "Odrzucić tę niedokończoną notatkę i nieużywane załączniki lokalne? Tej operacji nie można cofnąć."
+  "discardDraftConfirm": "Odrzucić tę niedokończoną notatkę i nieużywane załączniki lokalne? Tej operacji nie można cofnąć.",
+  "trash": "Kosz",
+  "noteHistory": "Historia notatki",
+  "restoreRevision": "Przywróć jako nową zmianę",
+  "restoreNote": "Przywróć notatkę",
+  "syncBeforeRestore": "Zsynchronizuj oczekujące zmiany przed przywróceniem wersji.",
+  "trashRetention": "Kosz jest przechowywany do odrzucenia elementów. Kopie serwera zawierają notatki podrzędne i multimedia. Lokalne kopie bezpieczeństwa są niezależne. Historia Git i kopie zapasowe mogą zachować odrzucone dane.",
+  "historyExplanation": "Podejrzyj wersję, a następnie przywróć treść i multimedia jako nową zmianę. Dotychczasowa historia zostanie zachowana.",
+  "recoveryUnavailable": "Odzyskiwanie z serwera jest niedostępne. Połącz się ze zaktualizowanym serwerem; historia wymaga też Git. Lokalne kopie bezpieczeństwa pozostają dostępne.",
+  "discardTrashConfirm": "Odrzucić tę kopię odzyskiwania? Zniknie z Kosza. Nie usuwa to historii Git ani kopii zapasowych.",
+  "restoreLocalCopyConfirm": "Przywrócić lokalną kopię bezpieczeństwa jako osobną notatkę? Istniejąca notatka serwera pozostanie bez zmian.",
+  "restoreTrashConfirm": "Przywrócić notatkę, wygenerowane notatki podrzędne i multimedia do oryginalnych ścieżek? Istniejące notatki nie zostaną zastąpione.",
+  "thisDevice": "To urządzenie",
+  "pairedServer": "Sparowany serwer"
 }

@@ -21,6 +21,7 @@ import 'notes_type_filter.dart';
 import 'sync_status.dart';
 import 'sticky_note_card.dart';
 import 'semantic_search_screen.dart';
+import 'recovery_screen.dart';
 
 final librarySearchFocusProvider = StateProvider<int>((ref) => 0);
 
@@ -161,6 +162,14 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
           ),
         ),
         actions: [
+          IconButton(
+            tooltip: l.trash,
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const RecoveryScreen()),
+            ),
+          ),
           IconButton(
             tooltip: grid ? l.listLayout : l.gridLayout,
             icon: Icon(

@@ -21,6 +21,7 @@ import '../notes/note_preview.dart';
 import '../notes/note_type_ui.dart';
 import '../notes/sync_status.dart';
 import '../notes/note_connections.dart';
+import '../notes/recovery_screen.dart';
 
 /// View + edit a single note. The body renders as Markdown (with inline,
 /// authenticated attachment images) by default; the pencil toggles WYSIWYG editing.
@@ -222,6 +223,15 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
             PopupMenuButton<String>(
               enabled: !_busy,
               onSelected: (action) async {
+                if (action == 'history') {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => RecoveryScreen(path: widget.path),
+                    ),
+                  );
+                  return;
+                }
                 if (action == 'delete') {
                   await _delete();
                   return;
@@ -241,6 +251,8 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
                     );
               },
               itemBuilder: (_) => [
+                if (!_editing)
+                  PopupMenuItem(value: 'history', child: Text(l.noteHistory)),
                 PopupMenuItem(
                   value: 'pin',
                   child: Text(current.pinned ? l.unpinNote : l.pinNote),

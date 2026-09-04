@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:okf_dart/okf_dart.dart';
 
@@ -63,6 +64,16 @@ class SyncEngine {
   Future<void> deleteLocal(String path) => store.transaction(() async {
     final note = await store.get(path);
     if (note == null) return;
+    final trash =
+        (jsonDecode(await store.localValue('local_trash') ?? '[]') as List);
+    trash.add({
+      'id': DateTime.now().microsecondsSinceEpoch.toString(),
+      'path': path,
+      'title': note.title,
+      'deleted_at': DateTime.now().toUtc().toIso8601String(),
+      'doc': dumpConcept(note.toConcept()),
+    });
+    await store.setLocalValue('local_trash', jsonEncode(trash));
     // Keep even an unsynced create as a tombstone: it may currently be uploading.
     await store.put(
       note.copyWith(

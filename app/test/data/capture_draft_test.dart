@@ -15,6 +15,26 @@ import 'package:vesnai_app/data/sync_queue.dart';
 import 'package:vesnai_app/models/note.dart';
 
 void main() {
+  test('local Trash retains media after deletion acknowledgement', () async {
+    final dir = await Directory.systemTemp.createTemp('vesnai-trash-media');
+    addTearDown(() => dir.delete(recursive: true));
+    final store = InMemoryNoteStore();
+    final drafts = CaptureDraftStore(store, AttachmentCache(dir));
+    final path = await drafts.persistAttachment(
+      'photo.png',
+      Uint8List.fromList([1, 3]),
+    );
+    final engine = SyncEngine(
+      store: store,
+      clientProvider: () => null,
+      reachable: () => false,
+    );
+    await engine.saveLocal(Note(path: 'notes/local.md', attachments: [path]));
+    await engine.deleteLocal('notes/local.md');
+    await store.remove('notes/local.md');
+    await drafts.releaseUnused([path]);
+    expect(await drafts.cache.exists(path), isTrue);
+  });
   test('draft and attachment survive database and cache restart', () async {
     final dir = await Directory.systemTemp.createTemp('vesnai-draft-test');
     addTearDown(() => dir.delete(recursive: true));

@@ -1445,7 +1445,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteNoteConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Delete \"{title}\"? This cannot be undone.'**
+  /// **'Move \"{title}\" to Trash? A local safety copy is retained; the server keeps a recoverable snapshot after sync.'**
   String deleteNoteConfirm(String title);
 
   /// No description provided for @deleteNoteSyncNote.
@@ -2011,6 +2011,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Discard this unfinished note and its unused local attachments? This cannot be undone.'**
   String get discardDraftConfirm;
+
+  /// No description provided for @trash.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash'**
+  String get trash;
+
+  /// No description provided for @noteHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Note history'**
+  String get noteHistory;
+
+  /// No description provided for @restoreRevision.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore as a new edit'**
+  String get restoreRevision;
+
+  /// No description provided for @restoreNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore note'**
+  String get restoreNote;
+
+  /// No description provided for @syncBeforeRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync your pending edits before restoring a revision.'**
+  String get syncBeforeRestore;
+
+  /// No description provided for @trashRetention.
+  ///
+  /// In en, this message translates to:
+  /// **'Trash is kept until you discard it. Server snapshots include child notes and media. Local safety copies are separate. Git history and backups may retain discarded data.'**
+  String get trashRetention;
+
+  /// No description provided for @historyExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview a revision, then restore its content and media as a new edit. Existing history is preserved.'**
+  String get historyExplanation;
+
+  /// No description provided for @recoveryUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Server recovery is unavailable. Pair and connect to an upgraded server; history also requires Git. Local safety copies remain accessible.'**
+  String get recoveryUnavailable;
+
+  /// No description provided for @discardTrashConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard this recovery snapshot? It will no longer appear in Trash. This does not erase Git history or backups.'**
+  String get discardTrashConfirm;
+
+  /// No description provided for @restoreLocalCopyConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this device’s safety copy as a separate note? Any existing server note is left unchanged.'**
+  String get restoreLocalCopyConfirm;
+
+  /// No description provided for @restoreTrashConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the note, its generated children and media to their original paths? Existing notes are never replaced.'**
+  String get restoreTrashConfirm;
+
+  /// No description provided for @thisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get thisDevice;
+
+  /// No description provided for @pairedServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired server'**
+  String get pairedServer;
 }
 
 class _AppLocalizationsDelegate

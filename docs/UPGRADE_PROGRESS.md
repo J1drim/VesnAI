@@ -94,7 +94,7 @@ Dependency migration details and deferred SDK/major-version decisions are in
 ## Remaining delivery (updated)
 
 - Dependency upgrades, CI/dependency automation, and service-image review.
-- History/Trash, project-scoped chat, native sharing.
+- Project-scoped chat, native sharing.
 - Graph navigation, cleanup suggestions, notification delivery, AI controls,
   performance measurements and remaining platform verification.
 
@@ -110,3 +110,15 @@ Dependency migration details and deferred SDK/major-version decisions are in
   Capture data/widget tests
   cover restart, templates, offline retry ordering and media ownership.
 - GitHub CI for the preceding organization and Linux-golden commits is green.
+
+## History and Trash — implemented
+
+- Authenticated per-note Git history, preview and base-checked restore as a new
+  edit, including historical media without overwriting changed attachments.
+- Server snapshots group deleted notes, enrichment children and attachments;
+  another paired device can restore them. Explicit retention until discard.
+- Local safety copies protect never-uploaded notes and keep their cached media.
+  Restore as a separate pending note works offline; no automatic erasure.
+- Validation: 207 Flutter tests pass (3 benchmark skips), analyzer passes;
+  334 offline server tests pass, Ruff and mypy pass. Details and retention
+  caveats: [RECOVERY.md](RECOVERY.md).

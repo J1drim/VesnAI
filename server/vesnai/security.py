@@ -43,6 +43,8 @@ def is_sync_path_allowed(path: str) -> bool:
     if not norm:
         return False
     parts = norm.split("/")
+    if any(part in {'.git', '.recovery', '..'} for part in parts):
+        return False
     if parts[-1] in RESERVED_FILENAMES:
         return False
     if parts[0] == "memory":

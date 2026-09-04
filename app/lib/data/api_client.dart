@@ -134,6 +134,26 @@ class VesnaiApiClient {
 
   Uri _u(String path) => baseUrl.resolve(path);
 
+  Future<Map<String, dynamic>> libraryRecovery(
+    String endpoint, {
+    Map<String, String> query = const {},
+    String method = 'GET',
+    Map<String, dynamic>? body,
+  }) async {
+    final uri = _u('/v1/library/$endpoint').replace(queryParameters: query);
+    final response = switch (method) {
+      'POST' => await _client.post(
+        uri,
+        headers: _headers,
+        body: body == null ? null : jsonEncode(body),
+      ),
+      'DELETE' => await _client.delete(uri, headers: _headers),
+      _ => await _client.get(uri, headers: _headers),
+    };
+    _check(response);
+    return (jsonDecode(response.body) as Map).cast<String, dynamic>();
+  }
+
   Future<List<Note>> listNotes() async {
     final resp = await _client.get(_u('/v1/notes'), headers: _headers);
     _check(resp);

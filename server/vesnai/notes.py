@@ -20,6 +20,7 @@ from vesnai.ids import slugify, uuid7
 from vesnai.okf.bundle import BundleStore, bundle_locked
 from vesnai.okf.model import Concept, Origin
 from vesnai.providers.base import Clock, SystemClock
+from vesnai.recovery import RecoveryService
 
 DEFAULT_TYPE = "Note"
 
@@ -42,6 +43,7 @@ class NoteService:
     def __init__(self, store: BundleStore, clock: Clock | None = None) -> None:
         self.store = store
         self.clock = clock or SystemClock()
+        self.recovery = RecoveryService(store)
 
     def _path_for(self, note_id: str, title: str) -> str:
         return f"notes/{slugify(title) if title else 'note'}-{note_id[:8]}.md"
@@ -135,8 +137,24 @@ class NoteService:
         if not rel_path:
             return
 
+        paths: list[str] = []
+        def collect(path: str) -> None:
+            if path in paths:
+                return
+            paths.append(path)
+            for child in self._enrichment_children(path):
+                collect(child)
+        collect(rel_path)
+        self.recovery.snapshot(paths, rel_path)
+        self._delete_contents(rel_path, set())
+
+    def _delete_contents(self, rel_path: str, visited: set[str]) -> None:
+        if rel_path in visited:
+            return
+        visited.add(rel_path)
+
         for child_path in self._enrichment_children(rel_path):
-            self.delete(child_path)
+            self._delete_contents(child_path, visited)
 
         orphan_candidates: set[str] = set()
         if self.store.exists(rel_path):

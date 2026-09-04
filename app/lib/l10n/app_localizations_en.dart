@@ -758,7 +758,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String deleteNoteConfirm(String title) {
-    return 'Delete \"$title\"? This cannot be undone.';
+    return 'Move \"$title\" to Trash? A local safety copy is retained; the server keeps a recoverable snapshot after sync.';
   }
 
   @override
@@ -1074,4 +1074,50 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get discardDraftConfirm =>
       'Discard this unfinished note and its unused local attachments? This cannot be undone.';
+
+  @override
+  String get trash => 'Trash';
+
+  @override
+  String get noteHistory => 'Note history';
+
+  @override
+  String get restoreRevision => 'Restore as a new edit';
+
+  @override
+  String get restoreNote => 'Restore note';
+
+  @override
+  String get syncBeforeRestore =>
+      'Sync your pending edits before restoring a revision.';
+
+  @override
+  String get trashRetention =>
+      'Trash is kept until you discard it. Server snapshots include child notes and media. Local safety copies are separate. Git history and backups may retain discarded data.';
+
+  @override
+  String get historyExplanation =>
+      'Preview a revision, then restore its content and media as a new edit. Existing history is preserved.';
+
+  @override
+  String get recoveryUnavailable =>
+      'Server recovery is unavailable. Pair and connect to an upgraded server; history also requires Git. Local safety copies remain accessible.';
+
+  @override
+  String get discardTrashConfirm =>
+      'Discard this recovery snapshot? It will no longer appear in Trash. This does not erase Git history or backups.';
+
+  @override
+  String get restoreLocalCopyConfirm =>
+      'Restore this device’s safety copy as a separate note? Any existing server note is left unchanged.';
+
+  @override
+  String get restoreTrashConfirm =>
+      'Restore the note, its generated children and media to their original paths? Existing notes are never replaced.';
+
+  @override
+  String get thisDevice => 'This device';
+
+  @override
+  String get pairedServer => 'Paired server';
 }
