@@ -1,7 +1,7 @@
 import 'package:okf_dart/okf_dart.dart';
 
 /// Local sync state for a note in the offline-first mirror.
-enum SyncState { synced, pendingCreate, pendingUpdate, pendingDelete }
+enum SyncState { synced, pendingCreate, pendingUpdate, pendingDelete, conflict }
 
 /// App-facing note model. It is a thin view over an OKF [Concept]; the OKF
 /// bundle on the server remains the source of truth.
@@ -20,6 +20,12 @@ class Note {
   final bool done;
   final String doneAt;
   final SyncState syncState;
+  final Map<String, dynamic> frontmatter;
+  final int baseVersion;
+  final String syncError;
+  final String serverDoc;
+  final int serverVersion;
+  final bool conflictDeleted;
 
   const Note({
     required this.path,
@@ -36,12 +42,21 @@ class Note {
     this.done = false,
     this.doneAt = '',
     this.syncState = SyncState.synced,
+    this.frontmatter = const {},
+    this.baseVersion = -1,
+    this.syncError = '',
+    this.serverDoc = '',
+    this.serverVersion = 0,
+    this.conflictDeleted = false,
   });
 
   bool get isGenerated => origin == Origin.generated;
   bool get isPending => syncState != SyncState.synced;
+  bool get pinned => (frontmatter['vesnai'] as Map?)?['pinned'] == true;
+  bool get archived => (frontmatter['vesnai'] as Map?)?['archived'] == true;
 
   Note copyWith({
+    String? path,
     String? title,
     String? body,
     String? type,
@@ -55,9 +70,25 @@ class Note {
     bool? done,
     String? doneAt,
     SyncState? syncState,
+    Map<String, dynamic>? frontmatter,
+    int? baseVersion,
+    String? syncError,
+    String? serverDoc,
+    int? serverVersion,
+    bool? conflictDeleted,
+    bool? pinned,
+    bool? archived,
   }) {
+    final metadata = {...(frontmatter ?? this.frontmatter)};
+    if (pinned != null || archived != null) {
+      metadata['vesnai'] = {
+        ...?(metadata['vesnai'] as Map?),
+        if (pinned != null) 'pinned': pinned,
+        if (archived != null) 'archived': archived,
+      };
+    }
     return Note(
-      path: path,
+      path: path ?? this.path,
       title: title ?? this.title,
       body: body ?? this.body,
       type: type ?? this.type,
@@ -71,6 +102,12 @@ class Note {
       done: done ?? this.done,
       doneAt: doneAt ?? this.doneAt,
       syncState: syncState ?? this.syncState,
+      frontmatter: metadata,
+      baseVersion: baseVersion ?? this.baseVersion,
+      syncError: syncError ?? this.syncError,
+      serverDoc: serverDoc ?? this.serverDoc,
+      serverVersion: serverVersion ?? this.serverVersion,
+      conflictDeleted: conflictDeleted ?? this.conflictDeleted,
     );
   }
 
@@ -81,12 +118,14 @@ class Note {
   }
 
   Concept toConcept() {
-    final vesnai = {
+    final vesnai = <String, dynamic>{
+      ...?(frontmatter['vesnai'] as Map?)?.cast<String, dynamic>(),
       'origin': origin == Origin.generated ? 'generated' : 'user',
       'links': links,
       'attachments': attachments,
       'updated': updated,
       'version': version,
+      'done': done,
     };
     if (source.isNotEmpty) {
       vesnai['source'] = source;
@@ -94,9 +133,12 @@ class Note {
     if (done) {
       vesnai['done'] = true;
       if (doneAt.isNotEmpty) vesnai['done_at'] = doneAt;
+    } else {
+      vesnai.remove('done_at');
     }
     return Concept(
       frontmatter: {
+        ...frontmatter,
         'type': type,
         'title': title,
         'tags': tags,
@@ -107,7 +149,11 @@ class Note {
     );
   }
 
-  factory Note.fromConcept(String path, Concept c, {SyncState sync = SyncState.synced}) {
+  factory Note.fromConcept(
+    String path,
+    Concept c, {
+    SyncState sync = SyncState.synced,
+  }) {
     final vesnai = c.vesnai;
     final rawVersion = vesnai['version'];
     final version = rawVersion is int
@@ -129,6 +175,8 @@ class Note {
       done: vesnai['done'] == true,
       doneAt: vesnai['done_at']?.toString() ?? '',
       syncState: sync,
+      frontmatter: Map<String, dynamic>.from(c.frontmatter),
+      baseVersion: version,
     );
   }
 
@@ -142,9 +190,13 @@ class Note {
       title: (json['title'] ?? '') as String,
       body: (json['body'] ?? '') as String,
       type: (json['type'] ?? 'Note') as String,
-      tags: ((json['tags'] ?? const []) as List).map((e) => e.toString()).toList(),
+      tags: ((json['tags'] ?? const []) as List)
+          .map((e) => e.toString())
+          .toList(),
       origin: (json['origin'] == 'generated') ? Origin.generated : Origin.user,
-      links: ((json['links'] ?? const []) as List).map((e) => e.toString()).toList(),
+      links: ((json['links'] ?? const []) as List)
+          .map((e) => e.toString())
+          .toList(),
       attachments: ((json['attachments'] ?? const []) as List)
           .map((e) => e.toString())
           .toList(),
@@ -153,6 +205,9 @@ class Note {
       version: version,
       done: json['done'] == true,
       doneAt: (json['done_at'] ?? '') as String,
+      frontmatter:
+          (json['frontmatter'] as Map?)?.cast<String, dynamic>() ?? const {},
+      baseVersion: version,
     );
   }
 }

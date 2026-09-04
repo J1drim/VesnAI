@@ -17,7 +17,7 @@ from vesnai.attachment_refs import (
     normalize_bundle_path,
 )
 from vesnai.ids import slugify, uuid7
-from vesnai.okf.bundle import BundleStore
+from vesnai.okf.bundle import BundleStore, bundle_locked
 from vesnai.okf.model import Concept, Origin
 from vesnai.providers.base import Clock, SystemClock
 
@@ -46,6 +46,7 @@ class NoteService:
     def _path_for(self, note_id: str, title: str) -> str:
         return f"notes/{slugify(title) if title else 'note'}-{note_id[:8]}.md"
 
+    @bundle_locked
     def create(self, data: NoteInput) -> tuple[str, Concept]:
         note_id = uuid7(int(self.clock.now().timestamp() * 1000))
         now = self.clock.now().isoformat()
@@ -77,6 +78,7 @@ class NoteService:
         self.store.write_concept(rel, concept, message=f"create note {note_id[:8]}")
         return rel, concept
 
+    @bundle_locked
     def update(self, rel_path: str, *, title: str | None = None, body: str | None = None,
                tags: list[str] | None = None, type: str | None = None,
                done: bool | None = None,
@@ -127,6 +129,7 @@ class NoteService:
                     return True
         return False
 
+    @bundle_locked
     def delete(self, rel_path: str) -> None:
         rel_path = normalize_bundle_path(rel_path)
         if not rel_path:

@@ -95,7 +95,7 @@ def test_push_newer_version_wins(sync_env):
     assert store.read_concept(rel).body == "newer client edit"
 
 
-def test_push_same_version_sequential_edit_no_conflict_copy(sync_env):
+def test_push_same_version_without_base_preserves_conflict_copy(sync_env):
     store, notes, sync = sync_env
     rel, _ = notes.create(NoteInput(title="Doc"))
     notes.update(rel, body="first edit", device="server")
@@ -112,7 +112,8 @@ def test_push_same_version_sequential_edit_no_conflict_copy(sync_env):
         body="stale mirror edit",
     )
     result = sync.push([Change(path=rel, doc=dump_concept(incoming))], device="phone")
-    assert result.conflicts == []
+    assert len(result.conflicts) == 1
+    assert store.read_concept(result.conflicts[0]['kept']).body == "first edit"
     assert store.read_concept(rel).body == "stale mirror edit"
     assert int(store.read_concept(rel).vesnai.get("version", 1)) == 3
 

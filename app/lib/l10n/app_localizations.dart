@@ -1723,6 +1723,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'untitled'**
   String get untitledPlain;
+
+  /// No description provided for @pendingChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes waiting to sync'**
+  String get pendingChanges;
+
+  /// No description provided for @syncConflictTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This note has conflicting changes'**
+  String get syncConflictTitle;
+
+  /// No description provided for @resolveConflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolve'**
+  String get resolveConflict;
+
+  /// No description provided for @syncConflictExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Your local change is safe. Compare the copies below. Recovery checks the latest server revision; a further edit will be flagged again.'**
+  String get syncConflictExplanation;
+
+  /// No description provided for @keepMine.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep mine'**
+  String get keepMine;
+
+  /// No description provided for @keepServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep server'**
+  String get keepServer;
+
+  /// No description provided for @keepBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep both'**
+  String get keepBoth;
+
+  /// No description provided for @serverNoteUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted or unavailable on the server'**
+  String get serverNoteUnavailable;
 }
 
 class _AppLocalizationsDelegate

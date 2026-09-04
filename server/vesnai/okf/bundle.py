@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import io
 import subprocess
+import threading
 import zipfile
+from functools import wraps
 from pathlib import Path
 
 from vesnai.observability import get_logger
@@ -21,6 +23,16 @@ from vesnai.providers.base import Clock, SystemClock
 log = get_logger("vesnai.okf.bundle")
 
 CONCEPTS_GLOB = "**/*.md"
+
+
+def bundle_locked(operation):
+    """Serialize a bundle operation, including observers and nested services."""
+    @wraps(operation)
+    def run(self, *args, **kwargs):
+        store = getattr(self, "store", self)
+        with store.lock:
+            return operation(self, *args, **kwargs)
+    return run
 
 
 class BundleError(Exception):
@@ -36,6 +48,7 @@ class BundleStore:
         self.root = Path(root).resolve()
         self.clock = clock or SystemClock()
         self.use_git = use_git
+        self.lock = threading.RLock()
         self._observers: list = []
         self.root.mkdir(parents=True, exist_ok=True)
         if self.use_git:
@@ -71,6 +84,7 @@ class BundleStore:
     # ------------------------------------------------------------------ #
     # Concepts
     # ------------------------------------------------------------------ #
+    @bundle_locked
     def write_concept(self, rel_path: str, concept: Concept, *, message: str | None = None) -> None:
         if not rel_path.endswith(".md"):
             raise BundleError("concept path must end with .md")
@@ -82,12 +96,14 @@ class BundleStore:
         self._commit(message or f"write {rel_path}")
         self._notify(rel_path, False)
 
+    @bundle_locked
     def read_concept(self, rel_path: str) -> Concept:
         target = self._resolve(rel_path)
         if not target.exists():
             raise BundleError(f"concept not found: {rel_path}")
         return parse_concept(target.read_text(encoding="utf-8"))
 
+    @bundle_locked
     def delete_concept(self, rel_path: str, *, message: str | None = None) -> None:
         target = self._resolve(rel_path)
         if target.exists():
@@ -111,6 +127,7 @@ class BundleStore:
             paths.append(rel)
         return paths
 
+    @bundle_locked
     def list_concepts(self) -> dict[str, Concept]:
         out: dict[str, Concept] = {}
         for rel in self.list_paths():
@@ -123,6 +140,7 @@ class BundleStore:
     # ------------------------------------------------------------------ #
     # Attachments
     # ------------------------------------------------------------------ #
+    @bundle_locked
     def save_attachment(self, rel_path: str, data: bytes, *, message: str | None = None) -> str:
         target = self._resolve(rel_path)
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -134,6 +152,7 @@ class BundleStore:
     def read_attachment(self, rel_path: str) -> bytes:
         return self._resolve(rel_path).read_bytes()
 
+    @bundle_locked
     def delete_attachment(self, rel_path: str, *, message: str | None = None) -> None:
         target = self._resolve(rel_path)
         if target.exists() and target.is_file():
@@ -207,6 +226,7 @@ class BundleStore:
     # ------------------------------------------------------------------ #
     # Backup / restore
     # ------------------------------------------------------------------ #
+    @bundle_locked
     def export_zip(self) -> bytes:
         buf = io.BytesIO()
         with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
@@ -216,6 +236,7 @@ class BundleStore:
                 zf.write(p, arcname=self.rel(p))
         return buf.getvalue()
 
+    @bundle_locked
     def import_zip(self, data: bytes, *, message: str = "restore from backup") -> None:
         with zipfile.ZipFile(io.BytesIO(data)) as zf:
             for name in zf.namelist():

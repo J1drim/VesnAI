@@ -99,7 +99,7 @@ void main() {
             {'path': 'notes/idea.md', 'title': 'Server title', 'origin': 'user'},
           ]);
         case '/v1/sync/push':
-          return _json({'ok': true});
+          return _json({'applied': ['notes/idea.md'], 'conflicts': []});
         case '/v1/sync/pull':
           return _json({'cursor': 0, 'changes': []});
       }

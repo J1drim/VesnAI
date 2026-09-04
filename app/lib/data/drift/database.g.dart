@@ -162,6 +162,81 @@ class $NoteRowsTable extends NoteRows with TableInfo<$NoteRowsTable, NoteRow> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _frontmatterJsonMeta = const VerificationMeta(
+    'frontmatterJson',
+  );
+  @override
+  late final GeneratedColumn<String> frontmatterJson = GeneratedColumn<String>(
+    'frontmatter_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('{}'),
+  );
+  static const VerificationMeta _baseVersionMeta = const VerificationMeta(
+    'baseVersion',
+  );
+  @override
+  late final GeneratedColumn<int> baseVersion = GeneratedColumn<int>(
+    'base_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(-1),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _serverDocMeta = const VerificationMeta(
+    'serverDoc',
+  );
+  @override
+  late final GeneratedColumn<String> serverDoc = GeneratedColumn<String>(
+    'server_doc',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _conflictDeletedMeta = const VerificationMeta(
+    'conflictDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> conflictDeleted = GeneratedColumn<bool>(
+    'conflict_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("conflict_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     path,
@@ -178,6 +253,12 @@ class $NoteRowsTable extends NoteRows with TableInfo<$NoteRowsTable, NoteRow> {
     done,
     doneAt,
     syncState,
+    frontmatterJson,
+    baseVersion,
+    syncError,
+    serverDoc,
+    serverVersion,
+    conflictDeleted,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -280,6 +361,54 @@ class $NoteRowsTable extends NoteRows with TableInfo<$NoteRowsTable, NoteRow> {
         syncState.isAcceptableOrUnknown(data['sync_state']!, _syncStateMeta),
       );
     }
+    if (data.containsKey('frontmatter_json')) {
+      context.handle(
+        _frontmatterJsonMeta,
+        frontmatterJson.isAcceptableOrUnknown(
+          data['frontmatter_json']!,
+          _frontmatterJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('base_version')) {
+      context.handle(
+        _baseVersionMeta,
+        baseVersion.isAcceptableOrUnknown(
+          data['base_version']!,
+          _baseVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('server_doc')) {
+      context.handle(
+        _serverDocMeta,
+        serverDoc.isAcceptableOrUnknown(data['server_doc']!, _serverDocMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('conflict_deleted')) {
+      context.handle(
+        _conflictDeletedMeta,
+        conflictDeleted.isAcceptableOrUnknown(
+          data['conflict_deleted']!,
+          _conflictDeletedMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -345,6 +474,30 @@ class $NoteRowsTable extends NoteRows with TableInfo<$NoteRowsTable, NoteRow> {
         DriftSqlType.int,
         data['${effectivePrefix}sync_state'],
       )!,
+      frontmatterJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}frontmatter_json'],
+      )!,
+      baseVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_version'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      )!,
+      serverDoc: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}server_doc'],
+      )!,
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      )!,
+      conflictDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}conflict_deleted'],
+      )!,
     );
   }
 
@@ -369,6 +522,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
   final bool done;
   final String doneAt;
   final int syncState;
+  final String frontmatterJson;
+  final int baseVersion;
+  final String syncError;
+  final String serverDoc;
+  final int serverVersion;
+  final bool conflictDeleted;
   const NoteRow({
     required this.path,
     required this.title,
@@ -384,6 +543,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
     required this.done,
     required this.doneAt,
     required this.syncState,
+    required this.frontmatterJson,
+    required this.baseVersion,
+    required this.syncError,
+    required this.serverDoc,
+    required this.serverVersion,
+    required this.conflictDeleted,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -402,6 +567,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
     map['done'] = Variable<bool>(done);
     map['done_at'] = Variable<String>(doneAt);
     map['sync_state'] = Variable<int>(syncState);
+    map['frontmatter_json'] = Variable<String>(frontmatterJson);
+    map['base_version'] = Variable<int>(baseVersion);
+    map['sync_error'] = Variable<String>(syncError);
+    map['server_doc'] = Variable<String>(serverDoc);
+    map['server_version'] = Variable<int>(serverVersion);
+    map['conflict_deleted'] = Variable<bool>(conflictDeleted);
     return map;
   }
 
@@ -421,6 +592,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
       done: Value(done),
       doneAt: Value(doneAt),
       syncState: Value(syncState),
+      frontmatterJson: Value(frontmatterJson),
+      baseVersion: Value(baseVersion),
+      syncError: Value(syncError),
+      serverDoc: Value(serverDoc),
+      serverVersion: Value(serverVersion),
+      conflictDeleted: Value(conflictDeleted),
     );
   }
 
@@ -444,6 +621,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
       done: serializer.fromJson<bool>(json['done']),
       doneAt: serializer.fromJson<String>(json['doneAt']),
       syncState: serializer.fromJson<int>(json['syncState']),
+      frontmatterJson: serializer.fromJson<String>(json['frontmatterJson']),
+      baseVersion: serializer.fromJson<int>(json['baseVersion']),
+      syncError: serializer.fromJson<String>(json['syncError']),
+      serverDoc: serializer.fromJson<String>(json['serverDoc']),
+      serverVersion: serializer.fromJson<int>(json['serverVersion']),
+      conflictDeleted: serializer.fromJson<bool>(json['conflictDeleted']),
     );
   }
   @override
@@ -464,6 +647,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
       'done': serializer.toJson<bool>(done),
       'doneAt': serializer.toJson<String>(doneAt),
       'syncState': serializer.toJson<int>(syncState),
+      'frontmatterJson': serializer.toJson<String>(frontmatterJson),
+      'baseVersion': serializer.toJson<int>(baseVersion),
+      'syncError': serializer.toJson<String>(syncError),
+      'serverDoc': serializer.toJson<String>(serverDoc),
+      'serverVersion': serializer.toJson<int>(serverVersion),
+      'conflictDeleted': serializer.toJson<bool>(conflictDeleted),
     };
   }
 
@@ -482,6 +671,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
     bool? done,
     String? doneAt,
     int? syncState,
+    String? frontmatterJson,
+    int? baseVersion,
+    String? syncError,
+    String? serverDoc,
+    int? serverVersion,
+    bool? conflictDeleted,
   }) => NoteRow(
     path: path ?? this.path,
     title: title ?? this.title,
@@ -497,6 +692,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
     done: done ?? this.done,
     doneAt: doneAt ?? this.doneAt,
     syncState: syncState ?? this.syncState,
+    frontmatterJson: frontmatterJson ?? this.frontmatterJson,
+    baseVersion: baseVersion ?? this.baseVersion,
+    syncError: syncError ?? this.syncError,
+    serverDoc: serverDoc ?? this.serverDoc,
+    serverVersion: serverVersion ?? this.serverVersion,
+    conflictDeleted: conflictDeleted ?? this.conflictDeleted,
   );
   NoteRow copyWithCompanion(NoteRowsCompanion data) {
     return NoteRow(
@@ -516,6 +717,20 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
       done: data.done.present ? data.done.value : this.done,
       doneAt: data.doneAt.present ? data.doneAt.value : this.doneAt,
       syncState: data.syncState.present ? data.syncState.value : this.syncState,
+      frontmatterJson: data.frontmatterJson.present
+          ? data.frontmatterJson.value
+          : this.frontmatterJson,
+      baseVersion: data.baseVersion.present
+          ? data.baseVersion.value
+          : this.baseVersion,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      serverDoc: data.serverDoc.present ? data.serverDoc.value : this.serverDoc,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      conflictDeleted: data.conflictDeleted.present
+          ? data.conflictDeleted.value
+          : this.conflictDeleted,
     );
   }
 
@@ -535,7 +750,13 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
           ..write('version: $version, ')
           ..write('done: $done, ')
           ..write('doneAt: $doneAt, ')
-          ..write('syncState: $syncState')
+          ..write('syncState: $syncState, ')
+          ..write('frontmatterJson: $frontmatterJson, ')
+          ..write('baseVersion: $baseVersion, ')
+          ..write('syncError: $syncError, ')
+          ..write('serverDoc: $serverDoc, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('conflictDeleted: $conflictDeleted')
           ..write(')'))
         .toString();
   }
@@ -556,6 +777,12 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
     done,
     doneAt,
     syncState,
+    frontmatterJson,
+    baseVersion,
+    syncError,
+    serverDoc,
+    serverVersion,
+    conflictDeleted,
   );
   @override
   bool operator ==(Object other) =>
@@ -574,7 +801,13 @@ class NoteRow extends DataClass implements Insertable<NoteRow> {
           other.version == this.version &&
           other.done == this.done &&
           other.doneAt == this.doneAt &&
-          other.syncState == this.syncState);
+          other.syncState == this.syncState &&
+          other.frontmatterJson == this.frontmatterJson &&
+          other.baseVersion == this.baseVersion &&
+          other.syncError == this.syncError &&
+          other.serverDoc == this.serverDoc &&
+          other.serverVersion == this.serverVersion &&
+          other.conflictDeleted == this.conflictDeleted);
 }
 
 class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
@@ -592,6 +825,12 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
   final Value<bool> done;
   final Value<String> doneAt;
   final Value<int> syncState;
+  final Value<String> frontmatterJson;
+  final Value<int> baseVersion;
+  final Value<String> syncError;
+  final Value<String> serverDoc;
+  final Value<int> serverVersion;
+  final Value<bool> conflictDeleted;
   final Value<int> rowid;
   const NoteRowsCompanion({
     this.path = const Value.absent(),
@@ -608,6 +847,12 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
     this.done = const Value.absent(),
     this.doneAt = const Value.absent(),
     this.syncState = const Value.absent(),
+    this.frontmatterJson = const Value.absent(),
+    this.baseVersion = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.serverDoc = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.conflictDeleted = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   NoteRowsCompanion.insert({
@@ -625,6 +870,12 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
     this.done = const Value.absent(),
     this.doneAt = const Value.absent(),
     this.syncState = const Value.absent(),
+    this.frontmatterJson = const Value.absent(),
+    this.baseVersion = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.serverDoc = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.conflictDeleted = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : path = Value(path);
   static Insertable<NoteRow> custom({
@@ -642,6 +893,12 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
     Expression<bool>? done,
     Expression<String>? doneAt,
     Expression<int>? syncState,
+    Expression<String>? frontmatterJson,
+    Expression<int>? baseVersion,
+    Expression<String>? syncError,
+    Expression<String>? serverDoc,
+    Expression<int>? serverVersion,
+    Expression<bool>? conflictDeleted,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -659,6 +916,12 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
       if (done != null) 'done': done,
       if (doneAt != null) 'done_at': doneAt,
       if (syncState != null) 'sync_state': syncState,
+      if (frontmatterJson != null) 'frontmatter_json': frontmatterJson,
+      if (baseVersion != null) 'base_version': baseVersion,
+      if (syncError != null) 'sync_error': syncError,
+      if (serverDoc != null) 'server_doc': serverDoc,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (conflictDeleted != null) 'conflict_deleted': conflictDeleted,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -678,6 +941,12 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
     Value<bool>? done,
     Value<String>? doneAt,
     Value<int>? syncState,
+    Value<String>? frontmatterJson,
+    Value<int>? baseVersion,
+    Value<String>? syncError,
+    Value<String>? serverDoc,
+    Value<int>? serverVersion,
+    Value<bool>? conflictDeleted,
     Value<int>? rowid,
   }) {
     return NoteRowsCompanion(
@@ -695,6 +964,12 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
       done: done ?? this.done,
       doneAt: doneAt ?? this.doneAt,
       syncState: syncState ?? this.syncState,
+      frontmatterJson: frontmatterJson ?? this.frontmatterJson,
+      baseVersion: baseVersion ?? this.baseVersion,
+      syncError: syncError ?? this.syncError,
+      serverDoc: serverDoc ?? this.serverDoc,
+      serverVersion: serverVersion ?? this.serverVersion,
+      conflictDeleted: conflictDeleted ?? this.conflictDeleted,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -744,6 +1019,24 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
     if (syncState.present) {
       map['sync_state'] = Variable<int>(syncState.value);
     }
+    if (frontmatterJson.present) {
+      map['frontmatter_json'] = Variable<String>(frontmatterJson.value);
+    }
+    if (baseVersion.present) {
+      map['base_version'] = Variable<int>(baseVersion.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (serverDoc.present) {
+      map['server_doc'] = Variable<String>(serverDoc.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (conflictDeleted.present) {
+      map['conflict_deleted'] = Variable<bool>(conflictDeleted.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -767,6 +1060,12 @@ class NoteRowsCompanion extends UpdateCompanion<NoteRow> {
           ..write('done: $done, ')
           ..write('doneAt: $doneAt, ')
           ..write('syncState: $syncState, ')
+          ..write('frontmatterJson: $frontmatterJson, ')
+          ..write('baseVersion: $baseVersion, ')
+          ..write('syncError: $syncError, ')
+          ..write('serverDoc: $serverDoc, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('conflictDeleted: $conflictDeleted, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1877,6 +2176,12 @@ typedef $$NoteRowsTableCreateCompanionBuilder =
       Value<bool> done,
       Value<String> doneAt,
       Value<int> syncState,
+      Value<String> frontmatterJson,
+      Value<int> baseVersion,
+      Value<String> syncError,
+      Value<String> serverDoc,
+      Value<int> serverVersion,
+      Value<bool> conflictDeleted,
       Value<int> rowid,
     });
 typedef $$NoteRowsTableUpdateCompanionBuilder =
@@ -1895,6 +2200,12 @@ typedef $$NoteRowsTableUpdateCompanionBuilder =
       Value<bool> done,
       Value<String> doneAt,
       Value<int> syncState,
+      Value<String> frontmatterJson,
+      Value<int> baseVersion,
+      Value<String> syncError,
+      Value<String> serverDoc,
+      Value<int> serverVersion,
+      Value<bool> conflictDeleted,
       Value<int> rowid,
     });
 
@@ -1974,6 +2285,36 @@ class $$NoteRowsTableFilterComposer
 
   ColumnFilters<int> get syncState => $composableBuilder(
     column: $table.syncState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get frontmatterJson => $composableBuilder(
+    column: $table.frontmatterJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get baseVersion => $composableBuilder(
+    column: $table.baseVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get serverDoc => $composableBuilder(
+    column: $table.serverDoc,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get conflictDeleted => $composableBuilder(
+    column: $table.conflictDeleted,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -2056,6 +2397,36 @@ class $$NoteRowsTableOrderingComposer
     column: $table.syncState,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get frontmatterJson => $composableBuilder(
+    column: $table.frontmatterJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get baseVersion => $composableBuilder(
+    column: $table.baseVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get serverDoc => $composableBuilder(
+    column: $table.serverDoc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get conflictDeleted => $composableBuilder(
+    column: $table.conflictDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$NoteRowsTableAnnotationComposer
@@ -2110,6 +2481,32 @@ class $$NoteRowsTableAnnotationComposer
 
   GeneratedColumn<int> get syncState =>
       $composableBuilder(column: $table.syncState, builder: (column) => column);
+
+  GeneratedColumn<String> get frontmatterJson => $composableBuilder(
+    column: $table.frontmatterJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get baseVersion => $composableBuilder(
+    column: $table.baseVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<String> get serverDoc =>
+      $composableBuilder(column: $table.serverDoc, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get conflictDeleted => $composableBuilder(
+    column: $table.conflictDeleted,
+    builder: (column) => column,
+  );
 }
 
 class $$NoteRowsTableTableManager
@@ -2154,6 +2551,12 @@ class $$NoteRowsTableTableManager
                 Value<bool> done = const Value.absent(),
                 Value<String> doneAt = const Value.absent(),
                 Value<int> syncState = const Value.absent(),
+                Value<String> frontmatterJson = const Value.absent(),
+                Value<int> baseVersion = const Value.absent(),
+                Value<String> syncError = const Value.absent(),
+                Value<String> serverDoc = const Value.absent(),
+                Value<int> serverVersion = const Value.absent(),
+                Value<bool> conflictDeleted = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => NoteRowsCompanion(
                 path: path,
@@ -2170,6 +2573,12 @@ class $$NoteRowsTableTableManager
                 done: done,
                 doneAt: doneAt,
                 syncState: syncState,
+                frontmatterJson: frontmatterJson,
+                baseVersion: baseVersion,
+                syncError: syncError,
+                serverDoc: serverDoc,
+                serverVersion: serverVersion,
+                conflictDeleted: conflictDeleted,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -2188,6 +2597,12 @@ class $$NoteRowsTableTableManager
                 Value<bool> done = const Value.absent(),
                 Value<String> doneAt = const Value.absent(),
                 Value<int> syncState = const Value.absent(),
+                Value<String> frontmatterJson = const Value.absent(),
+                Value<int> baseVersion = const Value.absent(),
+                Value<String> syncError = const Value.absent(),
+                Value<String> serverDoc = const Value.absent(),
+                Value<int> serverVersion = const Value.absent(),
+                Value<bool> conflictDeleted = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => NoteRowsCompanion.insert(
                 path: path,
@@ -2204,6 +2619,12 @@ class $$NoteRowsTableTableManager
                 done: done,
                 doneAt: doneAt,
                 syncState: syncState,
+                frontmatterJson: frontmatterJson,
+                baseVersion: baseVersion,
+                syncError: syncError,
+                serverDoc: serverDoc,
+                serverVersion: serverVersion,
+                conflictDeleted: conflictDeleted,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

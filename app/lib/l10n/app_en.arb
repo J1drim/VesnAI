@@ -378,5 +378,13 @@
   "yourNote": "Your note",
   "pendingSyncLabel": "pending sync",
   "doneLabel": "done",
-  "untitledPlain": "untitled"
+  "untitledPlain": "untitled",
+  "pendingChanges": "Changes waiting to sync",
+  "syncConflictTitle": "This note has conflicting changes",
+  "resolveConflict": "Resolve",
+  "syncConflictExplanation": "Your local change is safe. Compare the copies below. Recovery checks the latest server revision; a further edit will be flagged again.",
+  "keepMine": "Keep mine",
+  "keepServer": "Keep server",
+  "keepBoth": "Keep both",
+  "serverNoteUnavailable": "Deleted or unavailable on the server"
 }

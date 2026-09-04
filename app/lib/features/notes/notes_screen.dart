@@ -14,6 +14,7 @@ import 'note_search.dart';
 import 'note_tile.dart';
 import 'note_type_ui.dart';
 import 'notes_type_filter.dart';
+import 'sync_status.dart';
 
 class NotesScreen extends ConsumerStatefulWidget {
   const NotesScreen({super.key});
@@ -120,6 +121,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
       body: Column(
         children: [
           const UnpairedBanner(),
+          const SyncStatus(),
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
             child: TextField(

@@ -378,5 +378,13 @@
   "yourNote": "Twoja notatka",
   "pendingSyncLabel": "oczekuje na synchronizację",
   "doneLabel": "ukończona",
-  "untitledPlain": "bez tytułu"
+  "untitledPlain": "bez tytułu",
+  "pendingChanges": "Zmiany oczekujące na synchronizację",
+  "syncConflictTitle": "Ta notatka ma sprzeczne zmiany",
+  "resolveConflict": "Rozwiąż",
+  "syncConflictExplanation": "Twoja lokalna zmiana jest bezpieczna. Porównaj kopie poniżej. Odzyskiwanie sprawdza najnowszą wersję serwera; kolejna zmiana zostanie ponownie oznaczona.",
+  "keepMine": "Zachowaj moją",
+  "keepServer": "Zachowaj serwera",
+  "keepBoth": "Zachowaj obie",
+  "serverNoteUnavailable": "Usunięta lub niedostępna na serwerze"
 }

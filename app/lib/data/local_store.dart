@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
@@ -16,6 +17,7 @@ abstract class LocalNoteStore {
   Future<void> put(Note note);
   Future<void> remove(String path);
   Future<List<Note>> pending();
+  Future<T> transaction<T>(Future<T> Function() action);
 
   /// Persisted sync cursor (0 if never synced). Stored so deltas resume across
   /// restarts.
@@ -25,13 +27,37 @@ abstract class LocalNoteStore {
 
 class InMemoryNoteStore implements LocalNoteStore {
   final Map<String, Note> _notes = {};
+  Future<void> _transactions = Future.value();
+
+  @override
+  Future<T> transaction<T>(Future<T> Function() action) {
+    final result = _transactions.then((_) async {
+      final before = Map<String, Note>.from(_notes);
+      final beforeCursor = _cursor;
+      try {
+        return await action();
+      } catch (_) {
+        _notes
+          ..clear()
+          ..addAll(before);
+        _cursor = beforeCursor;
+        rethrow;
+      }
+    });
+    _transactions = result.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace __) {},
+    );
+    return result;
+  }
 
   @override
   Future<List<Note>> all() async {
-    final list = _notes.values
-        .where((n) => n.syncState != SyncState.pendingDelete)
-        .toList()
-      ..sort((a, b) => b.updated.compareTo(a.updated));
+    final list =
+        _notes.values
+            .where((n) => n.syncState != SyncState.pendingDelete)
+            .toList()
+          ..sort((a, b) => b.updated.compareTo(a.updated));
     return list;
   }
 
@@ -61,55 +87,75 @@ class DriftNoteStore implements LocalNoteStore {
 
   DriftNoteStore([VesnaiDatabase? db]) : db = db ?? VesnaiDatabase();
 
+  @override
+  Future<T> transaction<T>(Future<T> Function() action) =>
+      db.transaction(action);
+
   Note _fromRow(NoteRow r) => Note(
-        path: r.path,
-        title: r.title,
-        body: r.body,
-        type: r.type,
-        tags: (jsonDecode(r.tagsJson) as List).map((e) => e.toString()).toList(),
-        origin: r.origin == 'generated' ? Origin.generated : Origin.user,
-        links: (jsonDecode(r.linksJson) as List).map((e) => e.toString()).toList(),
-        attachments: (jsonDecode(r.attachmentsJson) as List)
-            .map((e) => e.toString())
-            .toList(),
-        source: r.source,
-        updated: r.updated,
-        version: r.version,
-        done: r.done,
-        doneAt: r.doneAt,
-        syncState: SyncState.values[r.syncState],
-      );
+    path: r.path,
+    title: r.title,
+    body: r.body,
+    type: r.type,
+    tags: (jsonDecode(r.tagsJson) as List).map((e) => e.toString()).toList(),
+    origin: r.origin == 'generated' ? Origin.generated : Origin.user,
+    links: (jsonDecode(r.linksJson) as List).map((e) => e.toString()).toList(),
+    attachments: (jsonDecode(r.attachmentsJson) as List)
+        .map((e) => e.toString())
+        .toList(),
+    source: r.source,
+    updated: r.updated,
+    version: r.version,
+    done: r.done,
+    doneAt: r.doneAt,
+    syncState: SyncState.values[r.syncState],
+    frontmatter: (jsonDecode(r.frontmatterJson) as Map).cast<String, dynamic>(),
+    baseVersion: r.baseVersion,
+    syncError: r.syncError,
+    serverDoc: r.serverDoc,
+    serverVersion: r.serverVersion,
+    conflictDeleted: r.conflictDeleted,
+  );
 
   NoteRowsCompanion _toCompanion(Note n) => NoteRowsCompanion(
-        path: Value(n.path),
-        title: Value(n.title),
-        body: Value(n.body),
-        type: Value(n.type),
-        tagsJson: Value(jsonEncode(n.tags)),
-        origin: Value(n.origin == Origin.generated ? 'generated' : 'user'),
-        linksJson: Value(jsonEncode(n.links)),
-        attachmentsJson: Value(jsonEncode(n.attachments)),
-        source: Value(n.source),
-        updated: Value(n.updated),
-        version: Value(n.version),
-        done: Value(n.done),
-        doneAt: Value(n.doneAt),
-        syncState: Value(n.syncState.index),
-      );
+    path: Value(n.path),
+    title: Value(n.title),
+    body: Value(n.body),
+    type: Value(n.type),
+    tagsJson: Value(jsonEncode(n.tags)),
+    origin: Value(n.origin == Origin.generated ? 'generated' : 'user'),
+    linksJson: Value(jsonEncode(n.links)),
+    attachmentsJson: Value(jsonEncode(n.attachments)),
+    source: Value(n.source),
+    updated: Value(n.updated),
+    version: Value(n.version),
+    done: Value(n.done),
+    doneAt: Value(n.doneAt),
+    syncState: Value(n.syncState.index),
+    frontmatterJson: Value(jsonEncode(n.frontmatter)),
+    baseVersion: Value(n.baseVersion),
+    syncError: Value(n.syncError),
+    serverDoc: Value(n.serverDoc),
+    serverVersion: Value(n.serverVersion),
+    conflictDeleted: Value(n.conflictDeleted),
+  );
 
   @override
   Future<List<Note>> all() async {
-    final rows = await (db.select(db.noteRows)
-          ..where((t) => t.syncState.equals(SyncState.pendingDelete.index).not())
-          ..orderBy([(t) => OrderingTerm.desc(t.updated)]))
-        .get();
+    final rows =
+        await (db.select(db.noteRows)
+              ..where(
+                (t) => t.syncState.equals(SyncState.pendingDelete.index).not(),
+              )
+              ..orderBy([(t) => OrderingTerm.desc(t.updated)]))
+            .get();
     return rows.map(_fromRow).toList();
   }
 
   @override
   Future<Note?> get(String path) async {
-    final row = await (db.select(db.noteRows)..where((t) => t.path.equals(path)))
-        .getSingleOrNull();
+    final row = await (db.select(
+      db.noteRows,
+    )..where((t) => t.path.equals(path))).getSingleOrNull();
     return row == null ? null : _fromRow(row);
   }
 
@@ -123,23 +169,29 @@ class DriftNoteStore implements LocalNoteStore {
 
   @override
   Future<List<Note>> pending() async {
-    final rows = await (db.select(db.noteRows)
-          ..where((t) => t.syncState.equals(SyncState.synced.index).not()))
-        .get();
+    final rows = await (db.select(
+      db.noteRows,
+    )..where((t) => t.syncState.equals(SyncState.synced.index).not())).get();
     return rows.map(_fromRow).toList();
   }
 
   @override
   Future<int> getCursor() async {
-    final row = await (db.select(db.syncMeta)..where((t) => t.key.equals('cursor')))
-        .getSingleOrNull();
+    final row = await (db.select(
+      db.syncMeta,
+    )..where((t) => t.key.equals('cursor'))).getSingleOrNull();
     return row == null ? 0 : (int.tryParse(row.value) ?? 0);
   }
 
   @override
   Future<void> setCursor(int cursor) async {
-    await db.into(db.syncMeta).insertOnConflictUpdate(
-          SyncMetaCompanion(key: const Value('cursor'), value: Value('$cursor')),
+    await db
+        .into(db.syncMeta)
+        .insertOnConflictUpdate(
+          SyncMetaCompanion(
+            key: const Value('cursor'),
+            value: Value('$cursor'),
+          ),
         );
   }
 }

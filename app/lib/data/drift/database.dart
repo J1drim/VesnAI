@@ -24,6 +24,13 @@ class NoteRows extends Table {
   BoolColumn get done => boolean().withDefault(const Constant(false))();
   TextColumn get doneAt => text().withDefault(const Constant(''))();
   IntColumn get syncState => integer().withDefault(const Constant(0))();
+  TextColumn get frontmatterJson => text().withDefault(const Constant('{}'))();
+  IntColumn get baseVersion => integer().withDefault(const Constant(-1))();
+  TextColumn get syncError => text().withDefault(const Constant(''))();
+  TextColumn get serverDoc => text().withDefault(const Constant(''))();
+  IntColumn get serverVersion => integer().withDefault(const Constant(0))();
+  BoolColumn get conflictDeleted =>
+      boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {path};
@@ -68,35 +75,43 @@ class VesnaiDatabase extends _$VesnaiDatabase {
   VesnaiDatabase([QueryExecutor? executor]) : super(executor ?? _open());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) => m.createAll(),
-        onUpgrade: (m, from, to) async {
-          if (from < 2) {
-            await m.createTable(chatSessionRows);
-            await m.createTable(chatMessageRows);
-          }
-          if (from < 3) {
-            await m.addColumn(noteRows, noteRows.attachmentsJson);
-            await m.addColumn(chatMessageRows, chatMessageRows.ttsAudioPath);
-          }
-          if (from < 4) {
-            await m.addColumn(chatMessageRows, chatMessageRows.attachmentsJson);
-          }
-          if (from < 5) {
-            await m.addColumn(noteRows, noteRows.source);
-          }
-          if (from < 6) {
-            await m.addColumn(noteRows, noteRows.version);
-          }
-          if (from < 7) {
-            await m.addColumn(noteRows, noteRows.done);
-            await m.addColumn(noteRows, noteRows.doneAt);
-          }
-        },
-      );
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.createTable(chatSessionRows);
+        await m.createTable(chatMessageRows);
+      }
+      if (from < 3) {
+        await m.addColumn(noteRows, noteRows.attachmentsJson);
+        await m.addColumn(chatMessageRows, chatMessageRows.ttsAudioPath);
+      }
+      if (from < 4) {
+        await m.addColumn(chatMessageRows, chatMessageRows.attachmentsJson);
+      }
+      if (from < 5) {
+        await m.addColumn(noteRows, noteRows.source);
+      }
+      if (from < 6) {
+        await m.addColumn(noteRows, noteRows.version);
+      }
+      if (from < 7) {
+        await m.addColumn(noteRows, noteRows.done);
+        await m.addColumn(noteRows, noteRows.doneAt);
+      }
+      if (from < 8) {
+        await m.addColumn(noteRows, noteRows.frontmatterJson);
+        await m.addColumn(noteRows, noteRows.baseVersion);
+        await m.addColumn(noteRows, noteRows.syncError);
+        await m.addColumn(noteRows, noteRows.serverDoc);
+        await m.addColumn(noteRows, noteRows.serverVersion);
+        await m.addColumn(noteRows, noteRows.conflictDeleted);
+      }
+    },
+  );
 
   static LazyDatabase _open() {
     return LazyDatabase(() async {

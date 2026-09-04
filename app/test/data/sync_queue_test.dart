@@ -27,7 +27,10 @@ class _FakeSyncServer extends http.BaseClient {
       pushedChanges.addAll(
         (body['changes'] as List).cast<Map<String, dynamic>>(),
       );
-      return _json({'cursor': 1, 'applied': pushedChanges.length});
+      return _json({
+        'cursor': 1,
+        'applied': pushedChanges.map((c) => c['path']).toList(),
+      });
     }
     if (request.url.path == '/v1/sync/pull') {
       return _json({'cursor': 1, 'changes': []});
@@ -72,11 +75,13 @@ void main() {
   test('pendingDelete notes are hidden from all()', () async {
     final store = InMemoryNoteStore();
     await store.put(const Note(path: 'notes/keep.md', title: 'Keep'));
-    await store.put(const Note(
-      path: 'notes/gone.md',
-      title: 'Gone',
-      syncState: SyncState.pendingDelete,
-    ));
+    await store.put(
+      const Note(
+        path: 'notes/gone.md',
+        title: 'Gone',
+        syncState: SyncState.pendingDelete,
+      ),
+    );
     final listed = await store.all();
     expect(listed.length, 1);
     expect(listed.first.path, 'notes/keep.md');
@@ -97,12 +102,14 @@ void main() {
     );
 
     // Mark done while offline: stays queued locally with done intact.
-    await engine.saveLocal(const Note(
-      path: 'notes/shopping.md',
-      title: 'Shopping',
-      done: true,
-      doneAt: '2026-07-08T08:00:00Z',
-    ));
+    await engine.saveLocal(
+      const Note(
+        path: 'notes/shopping.md',
+        title: 'Shopping',
+        done: true,
+        doneAt: '2026-07-08T08:00:00Z',
+      ),
+    );
     expect(await engine.flush(), -1);
     final queued = await store.get('notes/shopping.md');
     expect(queued!.done, isTrue);

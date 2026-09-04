@@ -46,8 +46,24 @@ Dependency migration details and deferred SDK/major-version decisions are in
 
 ## Remaining delivery
 
+## Sync reliability — implemented
+
+- Explicit base revisions, canonical version acknowledgements, unique conflict
+  copies and serialized bundle mutations; legacy divergent uploads retain both
+  copies. Unknown metadata and server-owned identity/creation fields survive.
+- Client network serialization, exact-revision acknowledgements, persistent
+  conflict/deletion intent, and atomic pulled batches/cursor updates (schema 8).
+- English/Polish pending status and readable Keep mine/server/both recovery.
+  Protocol and single-writer deployment constraint: [SYNC_PROTOCOL.md](SYNC_PROTOCOL.md).
+- Validation: 328 offline server tests passed (4 live excluded), Ruff and mypy
+  pass; 161 Flutter tests passed; analyzer exits successfully with informational
+  notices only. New tests cover concurrent same-base edits, acknowledgement
+  replay, partial rejection, in-flight edits, deletion races, metadata persistence
+  and transaction rollback. Physical multi-device recovery is not yet exercised.
+
+## Remaining delivery (updated)
+
 - Dependency upgrades, CI/dependency automation, and service-image review.
-- Sync concurrency, acknowledgements, atomic pulls, metadata, conflict recovery.
 - Desktop interaction, visual polish, responsive layouts, theme preferences.
 - Pins/archive/saved views, indexed/semantic search, backlinks/related notes.
 - Drafts/templates/shortcuts, history/Trash, project-scoped chat, native sharing.

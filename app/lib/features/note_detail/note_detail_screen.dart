@@ -19,6 +19,7 @@ import '../../widgets/note_meta_bar.dart';
 import '../notes/delete_note_dialog.dart';
 import '../notes/note_preview.dart';
 import '../notes/note_type_ui.dart';
+import '../notes/sync_status.dart';
 
 /// View + edit a single note. The body renders as Markdown (with inline,
 /// authenticated attachment images) by default; the pencil toggles WYSIWYG editing.
@@ -281,6 +282,15 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
     final critiques = _critiquesOfThisNote();
     return ListView(
       children: [
+        if (note.syncState == SyncState.conflict)
+          ListTile(
+            leading: const Icon(Icons.sync_problem),
+            title: Text(l.syncConflictTitle),
+            trailing: TextButton(
+              onPressed: () => showConflictRecovery(context, ref, note),
+              child: Text(l.resolveConflict),
+            ),
+          ),
         if (isCritique)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),

@@ -62,6 +62,7 @@ class NoteOut(BaseModel):
     updated: str = ""
     done: bool = False
     done_at: str | None = None
+    frontmatter: dict = Field(default_factory=dict)
 
 
 class TagSuggestRequest(BaseModel):
@@ -94,6 +95,7 @@ class ChangeModel(BaseModel):
     path: str
     deleted: bool = False
     doc: str | None = None
+    base_version: int | None = Field(default=None, ge=0)
 
 
 class PushRequest(BaseModel):

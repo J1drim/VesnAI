@@ -922,4 +922,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get untitledPlain => 'untitled';
+
+  @override
+  String get pendingChanges => 'Changes waiting to sync';
+
+  @override
+  String get syncConflictTitle => 'This note has conflicting changes';
+
+  @override
+  String get resolveConflict => 'Resolve';
+
+  @override
+  String get syncConflictExplanation =>
+      'Your local change is safe. Compare the copies below. Recovery checks the latest server revision; a further edit will be flagged again.';
+
+  @override
+  String get keepMine => 'Keep mine';
+
+  @override
+  String get keepServer => 'Keep server';
+
+  @override
+  String get keepBoth => 'Keep both';
+
+  @override
+  String get serverNoteUnavailable => 'Deleted or unavailable on the server';
 }

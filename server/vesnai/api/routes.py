@@ -226,6 +226,7 @@ def _to_out(path: str, concept: Concept) -> NoteOut:
         updated=str(concept.vesnai.get("updated", concept.timestamp or "")),
         done=concept.done,
         done_at=concept.done_at,
+        frontmatter=concept.frontmatter,
     )
 
 
@@ -391,12 +392,15 @@ def pull(since: int = 0, state: AppState = Depends(get_state), _=Depends(require
 def push(
     req: PushRequest, state: AppState = Depends(get_state), _=Depends(require_device)
 ) -> dict:
-    changes = [Change(path=c.path, deleted=c.deleted, doc=c.doc) for c in req.changes]
+    changes = [Change(path=c.path, deleted=c.deleted, doc=c.doc, base_version=c.base_version) for c in req.changes]
     result = state.sync.push(changes, device=req.device)
     if result.applied:
         # New/edited notes just arrived; give Marena a chance to critique them.
         state.maybe_run_marena_review()
-    return {"applied": result.applied, "conflicts": result.conflicts, "cursor": result.cursor}
+    return {
+        "applied": result.applied, "conflicts": result.conflicts,
+        "cursor": result.cursor, "versions": result.versions,
+    }
 
 
 # --------------------------------------------------------------------------- #

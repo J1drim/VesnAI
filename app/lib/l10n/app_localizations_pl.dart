@@ -935,4 +935,29 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get untitledPlain => 'bez tytułu';
+
+  @override
+  String get pendingChanges => 'Zmiany oczekujące na synchronizację';
+
+  @override
+  String get syncConflictTitle => 'Ta notatka ma sprzeczne zmiany';
+
+  @override
+  String get resolveConflict => 'Rozwiąż';
+
+  @override
+  String get syncConflictExplanation =>
+      'Twoja lokalna zmiana jest bezpieczna. Porównaj kopie poniżej. Odzyskiwanie sprawdza najnowszą wersję serwera; kolejna zmiana zostanie ponownie oznaczona.';
+
+  @override
+  String get keepMine => 'Zachowaj moją';
+
+  @override
+  String get keepServer => 'Zachowaj serwera';
+
+  @override
+  String get keepBoth => 'Zachowaj obie';
+
+  @override
+  String get serverNoteUnavailable => 'Usunięta lub niedostępna na serwerze';
 }
