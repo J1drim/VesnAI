@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:okf_dart/okf_dart.dart';
@@ -50,7 +52,7 @@ void main() {
 
     await expectLater(
       find.byType(ListView),
-      matchesGoldenFile('note_list.png'),
+      matchesGoldenFile(Platform.isLinux ? 'note_list_linux.png' : 'note_list.png'),
     );
   });
 }
