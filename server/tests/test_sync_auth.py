@@ -32,7 +32,7 @@ def test_pull_returns_deltas_after_cursor(sync_env):
     second = sync.pull(since=cursor)
     paths = [c["path"] for c in second["changes"]]
     assert any("b" in p.lower() for p in paths)
-    assert all("a-" not in p.lower() or True for p in paths)  # A not re-sent
+    assert not set(paths).intersection(c["path"] for c in first["changes"])
 
 
 def test_push_new_note_applied(sync_env):

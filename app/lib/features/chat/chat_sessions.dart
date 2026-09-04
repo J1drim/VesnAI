@@ -729,10 +729,6 @@ class ChatController extends Notifier<ChatState> {
     return local;
   }
 
-  void _updateLocalMessageAttachments(String id, List<ChatAttachmentMeta> attachments) {
-    _updateLocalMessage(id, attachments: attachments);
-  }
-
   Future<void> _rehomeCachedAttachments(
     String fromSessionId,
     String toSessionId,

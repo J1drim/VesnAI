@@ -43,6 +43,12 @@ subprojects {
     }
 }
 
+// Flutter installs plugin extensions while configuring the app. Federated
+// plugins such as android_file_picker need those before their own evaluation.
+subprojects {
+    if (name != "app") evaluationDependsOn(":app")
+}
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

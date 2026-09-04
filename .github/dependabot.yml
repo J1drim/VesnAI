@@ -5,18 +5,44 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      drift:
+        patterns: ["drift", "drift_dev", "sqlparser"]
+        update-types: ["minor", "patch"]
+      tooling:
+        patterns: ["build_runner", "flutter_lints", "mocktail"]
+        update-types: ["minor", "patch"]
   - package-ecosystem: pub
     directory: /packages/okf_dart
     schedule:
       interval: weekly
     open-pull-requests-limit: 3
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: /server
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      server-patches:
+        patterns: ["*"]
+        exclude-patterns: ["mflux", "chatterbox-tts", "torch", "numpy"]
+        update-types: ["patch"]
   - package-ecosystem: github-actions
     directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    groups:
+      action-patches:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+  - package-ecosystem: docker-compose
+    directory: /server
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+  - package-ecosystem: gradle
+    directory: /app/android
     schedule:
       interval: weekly
     open-pull-requests-limit: 3

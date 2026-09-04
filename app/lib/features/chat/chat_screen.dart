@@ -288,22 +288,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   Future<void> _pickFile() async {
-    final result = await FilePicker.pickFiles(withData: true);
-    final file = result?.files.singleOrNull;
-    if (file?.bytes == null) return;
-    _addPending(PendingChatAttachment(filename: file!.name, bytes: file.bytes!));
+    final file = await FilePicker.pickFile();
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    if (!mounted) return;
+    _addPending(PendingChatAttachment(filename: file.name, bytes: bytes));
   }
 
   Future<void> _pickVoiceNote() async {
-    final result = await FilePicker.pickFiles(
-      type: FileType.audio,
-      withData: true,
-    );
-    final file = result?.files.singleOrNull;
-    if (file?.bytes == null) return;
+    final file = await FilePicker.pickFile(type: FileType.audio);
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    if (!mounted) return;
     _addPending(PendingChatAttachment(
-      filename: file!.name,
-      bytes: file.bytes!,
+      filename: file.name,
+      bytes: bytes,
       kind: 'audio',
     ));
   }

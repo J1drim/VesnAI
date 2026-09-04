@@ -2207,7 +2207,16 @@ class $$NoteRowsTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$NoteRowsTable, NoteRow>(table),
+                  BaseReferences<_$VesnaiDatabase, $NoteRowsTable, NoteRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -2343,7 +2352,16 @@ class $$SyncMetaTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$SyncMetaTable, SyncMetaData>(table),
+                  BaseReferences<
+                    _$VesnaiDatabase,
+                    $SyncMetaTable,
+                    SyncMetaData
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -2549,7 +2567,16 @@ class $$ChatSessionRowsTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$ChatSessionRowsTable, ChatSessionRow>(table),
+                  BaseReferences<
+                    _$VesnaiDatabase,
+                    $ChatSessionRowsTable,
+                    ChatSessionRow
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -2816,7 +2843,16 @@ class $$ChatMessageRowsTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$ChatMessageRowsTable, ChatMessageRow>(table),
+                  BaseReferences<
+                    _$VesnaiDatabase,
+                    $ChatMessageRowsTable,
+                    ChatMessageRow
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),

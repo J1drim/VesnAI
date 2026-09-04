@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:okf_dart/okf_dart.dart';
 import 'package:vesnai_app/data/graph_layout.dart';
 import 'package:vesnai_app/data/graph_layout_store.dart';
 import 'package:vesnai_app/features/notes/note_type_ui.dart';

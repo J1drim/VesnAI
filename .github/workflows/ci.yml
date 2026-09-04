@@ -4,6 +4,17 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      live_models:
+        description: 'Run live model checks on the configured self-hosted runner'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '30 4 * * 1'
+
+permissions:
+  contents: read
 
 jobs:
   secrets_scan:
@@ -30,7 +41,7 @@ jobs:
         run: uv python install 3.12
       - name: Install deps
         working-directory: server
-        run: uv sync --extra dev
+        run: uv sync --locked --extra dev
       - name: Lint (ruff)
         working-directory: server
         run: uv run ruff check .
@@ -40,6 +51,11 @@ jobs:
       - name: Tests + coverage (fast suite, no live models)
         working-directory: server
         run: uv run pytest -q -m "not live" --cov=vesnai --cov-report=term-missing
+      - name: Audit locked server dependencies
+        working-directory: server
+        run: |
+          uv export --locked --extra dev --no-emit-project --format requirements-txt --output-file /tmp/vesnai-audit.txt
+          uvx pip-audit --disable-pip --no-deps -r /tmp/vesnai-audit.txt
 
   licenses:
     # The image and chatterbox extras have conflicting torch/numpy pins and can
@@ -65,7 +81,7 @@ jobs:
         run: uv python install 3.12
       - name: Install deps
         working-directory: server
-        run: uv sync ${{ matrix.sync_extras }}
+        run: uv sync --locked ${{ matrix.sync_extras }}
       - name: License compliance
         working-directory: server
         run: uv run python scripts/check_licenses.py
@@ -80,7 +96,7 @@ jobs:
           sdk: stable
       - name: Pub get
         working-directory: packages/okf_dart
-        run: dart pub get
+        run: dart pub get --enforce-lockfile
       - name: Analyze
         working-directory: packages/okf_dart
         run: dart analyze
@@ -99,15 +115,10 @@ jobs:
           cache: true
       - name: Pub get
         working-directory: app
-        run: flutter pub get
+        run: flutter pub get --enforce-lockfile
       - name: Analyze
         working-directory: app
-        run: |
-          dart analyze --format=machine > analyze.txt 2>&1 || true
-          if grep '|ERROR|' analyze.txt; then
-            cat analyze.txt
-            exit 1
-          fi
+        run: flutter analyze --no-fatal-infos
       - name: Install Linux build deps
         run: |
           sudo apt-get update -qq
@@ -127,10 +138,36 @@ jobs:
             echo "::warning::Known Flutter plugin compatibility warnings (workmanager); APK build succeeded"
           fi
 
-  e2e_nightly:
-    name: E2E + live models (nightly/manual)
+  android_e2e:
+    name: Android offline capture (scheduled/manual)
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install locked packages
+        working-directory: app
+        run: flutter pub get --enforce-lockfile
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          working-directory: app
+          script: flutter test integration_test/app_test.dart -d emulator-5554 --no-pub
+
+  live_models:
+    name: Live models (manual, configured runner)
+    if: github.event_name == 'workflow_dispatch' && inputs.live_models
+    runs-on: [self-hosted, vesnai-models]
     env:
       UV_PYTHON: "3.12"
     steps:
@@ -140,7 +177,7 @@ jobs:
         run: uv python install 3.12
       - name: Install deps
         working-directory: server
-        run: uv sync --extra dev --extra ai
+        run: uv sync --locked --extra dev --extra ai
       - name: Live suite
         working-directory: server
         run: uv run pytest -q -m live

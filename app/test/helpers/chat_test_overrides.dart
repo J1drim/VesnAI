@@ -8,14 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:vesnai_app/data/app_preferences.dart';
 import 'package:vesnai_app/data/attachment_cache.dart';
 import 'package:vesnai_app/data/chat_attachment_cache.dart';
-import 'package:vesnai_app/data/chat_store.dart';
 import 'package:vesnai_app/data/drift/database.dart';
-import 'package:vesnai_app/data/local_store.dart';
 import 'package:vesnai_app/data/shared_storage.dart';
 import 'package:vesnai_app/data/chat_tts_service.dart';
 import 'package:vesnai_app/data/voice_cache.dart';
 import 'package:vesnai_app/data/volume_gate.dart';
-import 'package:vesnai_app/features/chat/chat_sessions.dart';
 import 'package:vesnai_app/providers.dart';
 
 class PairedConnectionController extends ConnectionController {

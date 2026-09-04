@@ -211,17 +211,16 @@ class SettingsScreen extends ConsumerWidget {
   Future<void> _restore(BuildContext context, WidgetRef ref) async {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final result = await FilePicker.pickFiles(withData: true);
-    final file = result?.files.singleOrNull;
-    if (file?.bytes == null) return;
+    final file = await FilePicker.pickFile();
+    if (file == null) return;
     if (!context.mounted) return;
-    final passphrase = file!.name.endsWith('.enc')
+    final passphrase = file.name.endsWith('.enc')
         ? await _askPassphrase(context, l.backupPassphraseRequired)
         : null;
     final client = ref.read(apiClientProvider);
     if (client == null) return;
     try {
-      await client.restore(file.bytes!,
+      await client.restore(await file.readAsBytes(),
           filename: file.name,
           passphrase: (passphrase != null && passphrase.isNotEmpty) ? passphrase : null);
       await ref.read(notesProvider.notifier).sync();

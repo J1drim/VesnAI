@@ -20,6 +20,20 @@ on this host are explicitly recorded; they are not treated as passing.
 
 ## Dependency triage
 
+Dependency migration details and deferred SDK/major-version decisions are in
+[DEPENDENCY_UPDATES.md](DEPENDENCY_UPDATES.md).
+
+- Upgraded Flutter packages and stable native bridges: 156 Flutter tests and 11
+  shared Dart tests passed; analysis passes with informational deprecations only.
+- Updated Python lockfile: 324 offline tests, Ruff, mypy and 64-package license
+  check pass. Separate AI environment: 47 focused tests and 76-package license
+  check pass. Both installed-set and locked-export vulnerability audits report no
+  known findings. Live image/voice model execution is not validated here.
+- Android release APK builds successfully (93 MB); final analysis passes with
+  informational notices only. Workflow YAML parses successfully. Image and voice
+  environment resolution passes dry runs, without installing those model stacks.
+  Scheduled emulator execution and Apple/Windows release checks remain pending.
+
 - Open Dependabot PRs: #1 drift_dev, #2 share_plus, #3 build_runner, #4 drift,
   #5 mobile_scanner, #6 yaml. Inspect compatible current versions together with
   their migration notes before updating lockfiles.

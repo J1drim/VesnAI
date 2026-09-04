@@ -255,10 +255,11 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
   }
 
   Future<void> _pickFile() async {
-    final result = await FilePicker.pickFiles(withData: true);
-    final file = result?.files.singleOrNull;
-    if (file?.bytes == null) return;
-    _attachments.add(_PendingAttachment(file!.name, file.bytes!));
+    final file = await FilePicker.pickFile();
+    if (file == null) return;
+    final bytes = await file.readAsBytes();
+    if (!mounted) return;
+    _attachments.add(_PendingAttachment(file.name, bytes));
     if (_isImage(file.name)) _applyPhotoTypeIfNeeded();
     setState(() {});
   }

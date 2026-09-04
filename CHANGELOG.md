@@ -5,6 +5,17 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## Unreleased
 
+### Changed
+
+- Updated the Flutter/shared Dart and Python dependency lockfiles, including all
+  six initially open Dependabot update targets. Replaced file-picker/editor bridge
+  beta dependencies with stable releases and removed temporary overrides and the
+  obsolete SQLite Flutter plugin.
+- Migrated file selection to the stable single-file API and corrected Android
+  plugin evaluation order. CI enforces locked installs, checks server advisories,
+  runs scheduled Android capture checks, and keeps live-model tests explicitly
+  manual. Dependabot now covers uv, Compose, and Gradle with focused update groups.
+
 ### Removed
 
 - Age-based note reminders, the Due for review section, and assistant resurfacing

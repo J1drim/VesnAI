@@ -41,24 +41,23 @@ dependencies:
 
   # Phase 1: pairing + secure connection persistence + QR scan
   flutter_secure_storage: ^10.3.1
-  mobile_scanner: ^7.0.0
+  mobile_scanner: ^7.4.0
 
   # Phase 2: durable local note mirror (Drift/SQLite)
-  drift: ^2.20.0
-  sqlite3_flutter_libs: ^0.5.24
+  drift: ^2.34.4
   path: ^1.9.0
   path_provider: ^2.1.4
 
   # Phase 3: capture attachments
   image_picker: ^1.1.2
-  file_picker: ^12.0.0-beta.7
+  file_picker: ^12.2.0
 
   # Phase 4: voice + backup export/share
   # On-device speech-to-text (iOS Speech / Android SpeechRecognizer). Used in
   # chat so the transcript appears instantly; only text is sent to the server.
   speech_to_text: ^7.4.0
   just_audio: ^0.9.40
-  share_plus: ^13.2.0
+  share_plus: ^13.3.0
 
   # Phase 5: LAN server discovery (mDNS)
   nsd: ^5.0.1
@@ -91,15 +90,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  drift_dev: ^2.20.0
-  build_runner: ^2.4.12
+  drift_dev: ^2.34.6
+  build_runner: ^2.15.1
   flutter_launcher_icons: ^0.14.4
-
-# package_info_plus 10.2 adds built-in Kotlin (fixes KGP warning).
-# Beta overrides bridge file_picker/quill to win32 6 until stable releases catch up.
-dependency_overrides:
-  package_info_plus: ^10.2.0
-  quill_native_bridge_windows: 0.1.0-beta.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
