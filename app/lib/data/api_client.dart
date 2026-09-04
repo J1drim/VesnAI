@@ -9,18 +9,27 @@ import '../models/note.dart';
 
 /// User-facing hint when a chat attachment upload fails mid-transfer.
 String chatAttachmentUploadErrorMessage(
-    Object error, String filename, AppLocalizations l) {
+  Object error,
+  String filename,
+  AppLocalizations l,
+) {
   return _attachmentUploadErrorMessage(error, filename, l);
 }
 
 /// User-facing hint when a note attachment upload fails mid-transfer.
 String noteAttachmentUploadErrorMessage(
-    Object error, String filename, AppLocalizations l) {
+  Object error,
+  String filename,
+  AppLocalizations l,
+) {
   return _attachmentUploadErrorMessage(error, filename, l);
 }
 
 String _attachmentUploadErrorMessage(
-    Object error, String filename, AppLocalizations l) {
+  Object error,
+  String filename,
+  AppLocalizations l,
+) {
   final detail = error.toString();
   if (error is ApiException) {
     if (error.statusCode == 404) return l.uploadSessionNotFound;
@@ -119,9 +128,9 @@ class VesnaiApiClient {
   }) : _client = client ?? http.Client();
 
   Map<String, String> get _headers => {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      };
+    'Authorization': 'Bearer $token',
+    'Content-Type': 'application/json',
+  };
 
   Uri _u(String path) => baseUrl.resolve(path);
 
@@ -148,13 +157,18 @@ class VesnaiApiClient {
   }
 
   Future<Map<String, dynamic>> pull(int since) async {
-    final resp = await _client.get(_u('/v1/sync/pull?since=$since'), headers: _headers);
+    final resp = await _client.get(
+      _u('/v1/sync/pull?since=$since'),
+      headers: _headers,
+    );
     _check(resp);
     return jsonDecode(resp.body) as Map<String, dynamic>;
   }
 
-  Future<Map<String, dynamic>> push(List<Map<String, dynamic>> changes,
-      {String device = 'app'}) async {
+  Future<Map<String, dynamic>> push(
+    List<Map<String, dynamic>> changes, {
+    String device = 'app',
+  }) async {
     final resp = await _client.post(
       _u('/v1/sync/push'),
       headers: _headers,
@@ -166,14 +180,16 @@ class VesnaiApiClient {
 
   /// Enqueue a chat turn (async processing on server). Returns immediately.
   Future<
-      ({
-        String status,
-        String? sessionId,
-        String? userMessageId,
-        String? assistantMessageId,
-        String? language,
-        int queuePosition,
-      })> enqueueChatTurn(
+    ({
+      String status,
+      String? sessionId,
+      String? userMessageId,
+      String? assistantMessageId,
+      String? language,
+      int queuePosition,
+    })
+  >
+  enqueueChatTurn(
     String message, {
     String? assistantLanguage,
     String? sessionId,
@@ -199,7 +215,8 @@ class VesnaiApiClient {
       status: (j['status'] ?? 'accepted') as String,
       sessionId: j['session_id'] as String?,
       userMessageId: j['user_message_id'] as String?,
-      assistantMessageId: (j['assistant_message_id'] ?? j['message_id']) as String?,
+      assistantMessageId:
+          (j['assistant_message_id'] ?? j['message_id']) as String?,
       language: j['language'] as String?,
       queuePosition: (j['queue_position'] as num?)?.toInt() ?? 1,
     );
@@ -207,14 +224,16 @@ class VesnaiApiClient {
 
   /// @deprecated Use [enqueueChatTurn]. Kept as alias for tests migrating gradually.
   Future<
-      ({
-        String content,
-        List<dynamic> toolCalls,
-        String? sessionId,
-        String? language,
-        List<Map<String, dynamic>> pendingJobs,
-        String? messageId,
-      })> chat(
+    ({
+      String content,
+      List<dynamic> toolCalls,
+      String? sessionId,
+      String? language,
+      List<Map<String, dynamic>> pendingJobs,
+      String? messageId,
+    })
+  >
+  chat(
     String message, {
     String? assistantLanguage,
     String? sessionId,
@@ -255,13 +274,19 @@ class VesnaiApiClient {
   }
 
   Future<Map<String, dynamic>> getSession(String id) async {
-    final resp = await _client.get(_u('/v1/chat/sessions/$id'), headers: _headers);
+    final resp = await _client.get(
+      _u('/v1/chat/sessions/$id'),
+      headers: _headers,
+    );
     _check(resp);
     return jsonDecode(resp.body) as Map<String, dynamic>;
   }
 
   Future<void> deleteSession(String id) async {
-    final resp = await _client.delete(_u('/v1/chat/sessions/$id'), headers: _headers);
+    final resp = await _client.delete(
+      _u('/v1/chat/sessions/$id'),
+      headers: _headers,
+    );
     _check(resp);
   }
 
@@ -272,13 +297,16 @@ class VesnaiApiClient {
     Uint8List bytes, {
     String kind = 'file',
   }) async {
-    final req = http.MultipartRequest(
-      'POST',
-      _u('/v1/chat/sessions/$sessionId/attachments'),
-    )
-      ..headers['Authorization'] = 'Bearer $token'
-      ..fields['kind'] = kind
-      ..files.add(http.MultipartFile.fromBytes('file', bytes, filename: filename));
+    final req =
+        http.MultipartRequest(
+            'POST',
+            _u('/v1/chat/sessions/$sessionId/attachments'),
+          )
+          ..headers['Authorization'] = 'Bearer $token'
+          ..fields['kind'] = kind
+          ..files.add(
+            http.MultipartFile.fromBytes('file', bytes, filename: filename),
+          );
     final streamed = await _client
         .send(req)
         .timeout(const Duration(minutes: 2));
@@ -290,7 +318,10 @@ class VesnaiApiClient {
   Uri chatAttachmentUrl(String sessionId, String filename) =>
       _u('/v1/chat/attachments/$sessionId/$filename');
 
-  Future<Uint8List> downloadChatAttachment(String sessionId, String filename) async {
+  Future<Uint8List> downloadChatAttachment(
+    String sessionId,
+    String filename,
+  ) async {
     final resp = await _client.get(
       chatAttachmentUrl(sessionId, filename),
       headers: {'Authorization': 'Bearer $token'},
@@ -341,9 +372,12 @@ class VesnaiApiClient {
 
   // --- Notifications (local "image ready" feed) ---------------------------- #
 
-  Future<List<Map<String, dynamic>>> listNotifications({bool unreadOnly = true}) async {
-    final uri = _u('/v1/notifications')
-        .replace(queryParameters: {'unread_only': unreadOnly.toString()});
+  Future<List<Map<String, dynamic>>> listNotifications({
+    bool unreadOnly = true,
+  }) async {
+    final uri = _u(
+      '/v1/notifications',
+    ).replace(queryParameters: {'unread_only': unreadOnly.toString()});
     final resp = await _client.get(uri, headers: _headers);
     _check(resp);
     return (jsonDecode(resp.body) as List).cast<Map<String, dynamic>>();
@@ -387,15 +421,31 @@ class VesnaiApiClient {
     return Note.fromApi(jsonDecode(resp.body) as Map<String, dynamic>);
   }
 
-  Future<Map<String, dynamic>> searchLibrary(String query, {String excludePath = '', List<String>? paths}) async {
-    final response = await _client.post(_u('/v1/library/search'), headers: _headers,
-      body: jsonEncode({'query': query, 'exclude_path': excludePath, if (paths != null) 'paths': paths}));
+  Future<Map<String, dynamic>> searchLibrary(
+    String query, {
+    String excludePath = '',
+    List<String>? paths,
+  }) async {
+    final response = await _client.post(
+      _u('/v1/library/search'),
+      headers: _headers,
+      body: jsonEncode({
+        'query': query,
+        'exclude_path': excludePath,
+        if (paths != null) 'paths': paths,
+      }),
+    );
     _check(response);
     return (jsonDecode(response.body) as Map).cast<String, dynamic>();
   }
 
-  Future<Note> updateNote(String path,
-      {String? title, String? body, List<String>? tags, String? type}) async {
+  Future<Note> updateNote(
+    String path, {
+    String? title,
+    String? body,
+    List<String>? tags,
+    String? type,
+  }) async {
     final resp = await _client.put(
       _u('/v1/notes/$path'),
       headers: _headers,
@@ -429,16 +479,38 @@ class VesnaiApiClient {
   }
 
   Future<String> uploadAttachment(
-      String path, String filename, Uint8List bytes) async {
+    String path,
+    String filename,
+    Uint8List bytes,
+  ) async {
     final req = http.MultipartRequest('POST', _u('/v1/notes/$path/attachments'))
       ..headers['Authorization'] = 'Bearer $token'
-      ..files.add(http.MultipartFile.fromBytes('file', bytes, filename: filename));
+      ..files.add(
+        http.MultipartFile.fromBytes('file', bytes, filename: filename),
+      );
     final streamed = await _client
         .send(req)
         .timeout(const Duration(minutes: 2));
     final resp = await http.Response.fromStream(streamed);
     _check(resp);
-    return (jsonDecode(resp.body) as Map<String, dynamic>)['attachment'] as String;
+    return (jsonDecode(resp.body) as Map<String, dynamic>)['attachment']
+        as String;
+  }
+
+  Future<String> uploadLibraryAttachment(
+    String filename,
+    Uint8List bytes,
+  ) async {
+    final request = http.MultipartRequest('POST', _u('/v1/library/attachments'))
+      ..headers['Authorization'] = 'Bearer $token'
+      ..files.add(
+        http.MultipartFile.fromBytes('file', bytes, filename: filename),
+      );
+    final response = await http.Response.fromStream(
+      await _client.send(request).timeout(const Duration(minutes: 2)),
+    );
+    _check(response);
+    return jsonDecode(response.body)['attachment'] as String;
   }
 
   Future<({String type, List<String> tags})> suggestTags({
@@ -475,8 +547,11 @@ class VesnaiApiClient {
 
   /// Kick off a web-search job; returns the finished job dict (server runs it
   /// to completion synchronously). `result.research` holds the OKF note path.
-  Future<Map<String, dynamic>> search(String query,
-      {List<String>? languages, double maxSeconds = 60}) async {
+  Future<Map<String, dynamic>> search(
+    String query, {
+    List<String>? languages,
+    double maxSeconds = 60,
+  }) async {
     final resp = await _client.post(
       _u('/v1/search'),
       headers: _headers,
@@ -490,7 +565,10 @@ class VesnaiApiClient {
     return jsonDecode(resp.body) as Map<String, dynamic>;
   }
 
-  Future<Map<String, dynamic>> enrich(String path, {String kind = 'idea'}) async {
+  Future<Map<String, dynamic>> enrich(
+    String path, {
+    String kind = 'idea',
+  }) async {
     final resp = await _client.post(
       _u('/v1/enrich'),
       headers: _headers,
@@ -515,18 +593,24 @@ class VesnaiApiClient {
       }),
     );
     _check(resp);
-    final type = resp.headers['content-type']?.split(';').first.trim() ?? 'audio/wav';
+    final type =
+        resp.headers['content-type']?.split(';').first.trim() ?? 'audio/wav';
     return (bytes: resp.bodyBytes, contentType: type);
   }
 
   /// Send recorded audio; returns transcript, reply text, and reply audio bytes.
   Future<({String transcript, String reply, Uint8List audio})> converse(
-      Uint8List wav, {String? language}) async {
-    final uri = _u('/v1/voice/converse')
-        .replace(queryParameters: language != null ? {'language': language} : null);
+    Uint8List wav, {
+    String? language,
+  }) async {
+    final uri = _u('/v1/voice/converse').replace(
+      queryParameters: language != null ? {'language': language} : null,
+    );
     final req = http.MultipartRequest('POST', uri)
       ..headers['Authorization'] = 'Bearer $token'
-      ..files.add(http.MultipartFile.fromBytes('file', wav, filename: 'speech.wav'));
+      ..files.add(
+        http.MultipartFile.fromBytes('file', wav, filename: 'speech.wav'),
+      );
     final streamed = await _client.send(req);
     final resp = await http.Response.fromStream(streamed);
     _check(resp);
@@ -562,7 +646,10 @@ class VesnaiApiClient {
   }
 
   Future<void> deleteSecret(String name) async {
-    final resp = await _client.delete(_u('/v1/settings/secrets/$name'), headers: _headers);
+    final resp = await _client.delete(
+      _u('/v1/settings/secrets/$name'),
+      headers: _headers,
+    );
     _check(resp);
   }
 
@@ -595,7 +682,10 @@ class VesnaiApiClient {
   }
 
   Future<void> deleteVoiceRegistration() async {
-    final resp = await _client.delete(_u('/v1/settings/voice'), headers: _headers);
+    final resp = await _client.delete(
+      _u('/v1/settings/voice'),
+      headers: _headers,
+    );
     _check(resp);
   }
 
@@ -611,17 +701,24 @@ class VesnaiApiClient {
       _check(resp);
       return resp.bodyBytes;
     }
-    final uri = _u('/v1/backup').replace(queryParameters: {'allow_plaintext': 'true'});
+    final uri = _u(
+      '/v1/backup',
+    ).replace(queryParameters: {'allow_plaintext': 'true'});
     final resp = await _client.get(uri, headers: _headers);
     _check(resp);
     return resp.bodyBytes;
   }
 
-  Future<Map<String, dynamic>> restore(Uint8List bytes,
-      {String filename = 'backup.zip', String? passphrase}) async {
+  Future<Map<String, dynamic>> restore(
+    Uint8List bytes, {
+    String filename = 'backup.zip',
+    String? passphrase,
+  }) async {
     final req = http.MultipartRequest('POST', _u('/v1/backup/restore'))
       ..headers['Authorization'] = 'Bearer $token'
-      ..files.add(http.MultipartFile.fromBytes('file', bytes, filename: filename));
+      ..files.add(
+        http.MultipartFile.fromBytes('file', bytes, filename: filename),
+      );
     if (passphrase != null && passphrase.isNotEmpty) {
       req.fields['passphrase'] = passphrase;
     }
@@ -640,7 +737,10 @@ class VesnaiApiClient {
   }
 
   Future<void> revokeDevice(String deviceId) async {
-    final resp = await _client.delete(_u('/v1/auth/devices/$deviceId'), headers: _headers);
+    final resp = await _client.delete(
+      _u('/v1/auth/devices/$deviceId'),
+      headers: _headers,
+    );
     _check(resp);
   }
 

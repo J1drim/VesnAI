@@ -94,6 +94,19 @@ Dependency migration details and deferred SDK/major-version decisions are in
 ## Remaining delivery (updated)
 
 - Dependency upgrades, CI/dependency automation, and service-image review.
-- Drafts/templates/shortcuts, history/Trash, project-scoped chat, native sharing.
+- History/Trash, project-scoped chat, native sharing.
 - Graph navigation, cleanup suggestions, notification delivery, AI controls,
   performance measurements and remaining platform verification.
+
+## Capture drafts — implemented
+
+- SQLite draft metadata and atomic, content-addressed local attachment files;
+  local-first save and persistent media upload queue with idempotent retries.
+- Restored drafts, three localized templates, confirmed discard and conservative
+  attachment cleanup; home new/search and capture save keyboard shortcuts.
+- Details and compatibility: [CAPTURE_DRAFTS.md](CAPTURE_DRAFTS.md).
+- Validation: 205 Flutter tests pass (3 opt-in benchmark skips), analyzer passes
+  without errors/warnings; 330 offline server tests pass, Ruff and mypy pass.
+  Capture data/widget tests
+  cover restart, templates, offline retry ordering and media ownership.
+- GitHub CI for the preceding organization and Linux-golden commits is green.

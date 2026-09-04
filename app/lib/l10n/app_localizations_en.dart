@@ -1039,4 +1039,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get findRelatedNotes => 'Find related notes';
+
+  @override
+  String get draftUnavailable =>
+      'Your draft could not be restored. Retry before starting another note.';
+
+  @override
+  String get templates => 'Templates';
+
+  @override
+  String get templateMeeting => 'Meeting';
+
+  @override
+  String get templateIdea => 'Idea';
+
+  @override
+  String get templateReading => 'Reading note';
+
+  @override
+  String get meetingTemplate =>
+      '## Participants\n\n## Agenda\n\n## Decisions\n\n## Next actions\n\n- [ ] ';
+
+  @override
+  String get ideaTemplate =>
+      '## Idea\n\n## Why it matters\n\n## Next experiment\n\n- [ ] ';
+
+  @override
+  String get readingTemplate =>
+      '## Source\n\n## Key insights\n\n## My thoughts\n\n## Questions';
+
+  @override
+  String get discardDraft => 'Discard draft';
+
+  @override
+  String get discardDraftConfirm =>
+      'Discard this unfinished note and its unused local attachments? This cannot be undone.';
 }

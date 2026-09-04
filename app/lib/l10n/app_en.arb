@@ -416,5 +416,15 @@
   "linkedNote": "Link added",
   "backlinks": "Links to this note",
   "linkedNotes": "Linked notes",
-  "findRelatedNotes": "Find related notes"
+  "findRelatedNotes": "Find related notes",
+  "draftUnavailable": "Your draft could not be restored. Retry before starting another note.",
+  "templates": "Templates",
+  "templateMeeting": "Meeting",
+  "templateIdea": "Idea",
+  "templateReading": "Reading note",
+  "meetingTemplate": "## Participants\n\n## Agenda\n\n## Decisions\n\n## Next actions\n\n- [ ] ",
+  "ideaTemplate": "## Idea\n\n## Why it matters\n\n## Next experiment\n\n- [ ] ",
+  "readingTemplate": "## Source\n\n## Key insights\n\n## My thoughts\n\n## Questions",
+  "discardDraft": "Discard draft",
+  "discardDraftConfirm": "Discard this unfinished note and its unused local attachments? This cannot be undone."
 }

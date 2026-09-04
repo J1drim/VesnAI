@@ -32,3 +32,21 @@ def test_library_search_auth_demo_and_scope(tmp_path):
         empty = client.post('/v1/library/search', json={'query': 'creative', 'paths': []}, headers=headers)
         assert empty.json()['results'] == []
         assert client.post('/v1/library/search', json={'query': '', 'limit': 999}, headers=headers).status_code == 422
+
+
+def test_content_addressed_attachment_upload_is_authenticated_and_idempotent(tmp_path):
+    import hashlib
+
+    state = AppState(Settings(knowledge_dir=tmp_path / 'kb', data_dir=tmp_path / 'data',
+                              advertise_mdns=False, offline_only=True, auto_illustrate=False))
+    with TestClient(create_app(state)) as client:
+        files = {'file': ('../../picture.PNG', b'example content', 'image/png')}
+        assert client.post('/v1/library/attachments', files=files).status_code == 401
+        token = state.auth.redeem_pairing_code(state.auth.create_pairing_code(), 'test')
+        headers = {'Authorization': f'Bearer {token}'}
+        first = client.post('/v1/library/attachments', files=files, headers=headers)
+        second = client.post('/v1/library/attachments', files=files, headers=headers)
+        assert first.status_code == second.status_code == 200
+        path = f'attachments/{hashlib.sha256(b"example content").hexdigest()}.png'
+        assert first.json() == second.json() == {'attachment': path}
+        assert (state.store.root / path).read_bytes() == b'example content'

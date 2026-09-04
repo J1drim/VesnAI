@@ -416,5 +416,15 @@
   "linkedNote": "Dodano połączenie",
   "backlinks": "Odnośniki do tej notatki",
   "linkedNotes": "Połączone notatki",
-  "findRelatedNotes": "Znajdź powiązane notatki"
+  "findRelatedNotes": "Znajdź powiązane notatki",
+  "draftUnavailable": "Nie udało się przywrócić szkicu. Spróbuj ponownie przed rozpoczęciem nowej notatki.",
+  "templates": "Szablony",
+  "templateMeeting": "Spotkanie",
+  "templateIdea": "Pomysł",
+  "templateReading": "Notatka z lektury",
+  "meetingTemplate": "## Uczestnicy\n\n## Agenda\n\n## Decyzje\n\n## Kolejne działania\n\n- [ ] ",
+  "ideaTemplate": "## Pomysł\n\n## Dlaczego warto\n\n## Następny eksperyment\n\n- [ ] ",
+  "readingTemplate": "## Źródło\n\n## Najważniejsze wnioski\n\n## Moje przemyślenia\n\n## Pytania",
+  "discardDraft": "Odrzuć szkic",
+  "discardDraftConfirm": "Odrzucić tę niedokończoną notatkę i nieużywane załączniki lokalne? Tej operacji nie można cofnąć."
 }

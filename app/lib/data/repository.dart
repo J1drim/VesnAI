@@ -32,17 +32,24 @@ class NoteRepository {
     String? type,
     List<String>? tags,
     bool deferSync = false,
+    String? path,
+    List<String> attachments = const [],
+    String source = '',
   }) async {
     final suggestion = tagger.suggest(title, body);
     final now = DateTime.now().toUtc().toIso8601String();
     final slug = _slug(title);
     final note = Note(
-      path: 'notes/$slug-${now.hashCode.toUnsigned(32).toRadixString(16)}.md',
+      path:
+          path ??
+          'notes/$slug-${now.hashCode.toUnsigned(32).toRadixString(16)}.md',
       title: title,
       body: body,
       type: type ?? suggestion.type,
       tags: tags ?? suggestion.tags,
       updated: now,
+      attachments: attachments,
+      source: source,
       syncState: SyncState.pendingCreate,
     );
     await sync.saveLocal(note);
@@ -79,9 +86,10 @@ class NoteRepository {
   /// Push pending changes when online; returns false if the server was unreachable.
   Future<bool> tryFlush() async {
     try {
-      final result = await sync
-          .flush()
-          .timeout(const Duration(seconds: 5), onTimeout: () => -1);
+      final result = await sync.flush().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => -1,
+      );
       return result >= 0;
     } catch (_) {
       return false;

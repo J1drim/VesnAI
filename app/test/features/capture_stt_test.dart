@@ -51,16 +51,16 @@ List<Override> _overrides() {
 }
 
 Widget _app() => ProviderScope(
-      overrides: _overrides(),
-      child: MaterialApp(
-        localizationsDelegates: const [
-          ...AppLocalizations.localizationsDelegates,
-          FlutterQuillLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const CaptureScreen(),
-      ),
-    );
+  overrides: _overrides(),
+  child: MaterialApp(
+    localizationsDelegates: const [
+      ...AppLocalizations.localizationsDelegates,
+      FlutterQuillLocalizations.delegate,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: const CaptureScreen(),
+  ),
+);
 
 Future<void> _dictate(WidgetTester tester) async {
   await tester.tap(find.byKey(const Key('capture-mic')));
@@ -71,31 +71,36 @@ Future<void> _dictate(WidgetTester tester) async {
 void main() {
   testWidgets('dictation goes to the title when it has focus', (tester) async {
     await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('title-field')));
     await tester.pump();
 
     await _dictate(tester);
 
-    final title =
-        tester.widget<TextField>(find.byKey(const Key('title-field')));
+    final title = tester.widget<TextField>(
+      find.byKey(const Key('title-field')),
+    );
     expect(title.controller!.text, 'kup mleko');
   });
 
   testWidgets('dictation goes to the body when it has focus', (tester) async {
     await tester.pumpWidget(_app());
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('body-field')));
     await tester.pumpAndSettle();
 
     await _dictate(tester);
 
-    final editor =
-        tester.widget<NoteBodyEditor>(find.byKey(const Key('body-field')));
+    final editor = tester.widget<NoteBodyEditor>(
+      find.byKey(const Key('body-field')),
+    );
     expect(editor.controller!.markdown.trim(), 'kup mleko');
 
-    final title =
-        tester.widget<TextField>(find.byKey(const Key('title-field')));
+    final title = tester.widget<TextField>(
+      find.byKey(const Key('title-field')),
+    );
     expect(title.controller!.text, isEmpty);
   });
 }

@@ -12,6 +12,7 @@ class SyncEngine {
   final LocalNoteStore store;
   final VesnaiApiClient? Function() clientProvider;
   final bool Function() reachable;
+  final Future<void> Function(VesnaiApiClient, List<Note>)? uploadAttachments;
   int cursor;
   Future<void> _network = Future.value();
   static const _failureCooldown = Duration(seconds: 30);
@@ -21,6 +22,7 @@ class SyncEngine {
     required this.store,
     required this.clientProvider,
     required this.reachable,
+    this.uploadAttachments,
     this.cursor = 0,
   });
 
@@ -109,6 +111,7 @@ class SyncEngine {
       final pending = (await store.pending())
           .where((n) => n.syncState != SyncState.conflict)
           .toList();
+      await uploadAttachments?.call(client, pending);
       final changes = <Map<String, dynamic>>[
         for (final note in pending)
           {

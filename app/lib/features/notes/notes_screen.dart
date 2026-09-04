@@ -22,6 +22,8 @@ import 'sync_status.dart';
 import 'sticky_note_card.dart';
 import 'semantic_search_screen.dart';
 
+final librarySearchFocusProvider = StateProvider<int>((ref) => 0);
+
 class NotesScreen extends ConsumerStatefulWidget {
   final bool initialGrid;
   const NotesScreen({super.key, this.initialGrid = false});
@@ -32,11 +34,23 @@ class NotesScreen extends ConsumerStatefulWidget {
 
 class _NotesScreenState extends ConsumerState<NotesScreen> {
   final _searchController = TextEditingController();
+  final _searchFocus = FocusNode();
   int _limit = 100;
+
+  @override
+  void initState() {
+    super.initState();
+    if (ref.read(librarySearchFocusProvider) > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _searchFocus.requestFocus();
+      });
+    }
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocus.dispose();
     super.dispose();
   }
 
@@ -89,6 +103,10 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(
+      librarySearchFocusProvider,
+      (_, next) => _searchFocus.requestFocus(),
+    );
     final lastSynced = ref.watch(lastSyncedProvider);
     final paired = ref.watch(serverConnectionProvider).isPaired;
     final l = AppLocalizations.of(context);
@@ -174,6 +192,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
             child: TextField(
               controller: _searchController,
+              focusNode: _searchFocus,
               decoration: InputDecoration(
                 hintText: l.searchNotesHint,
                 prefixIcon: const Icon(Icons.search),

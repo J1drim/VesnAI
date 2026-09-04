@@ -1951,6 +1951,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Find related notes'**
   String get findRelatedNotes;
+
+  /// No description provided for @draftUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Your draft could not be restored. Retry before starting another note.'**
+  String get draftUnavailable;
+
+  /// No description provided for @templates.
+  ///
+  /// In en, this message translates to:
+  /// **'Templates'**
+  String get templates;
+
+  /// No description provided for @templateMeeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Meeting'**
+  String get templateMeeting;
+
+  /// No description provided for @templateIdea.
+  ///
+  /// In en, this message translates to:
+  /// **'Idea'**
+  String get templateIdea;
+
+  /// No description provided for @templateReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading note'**
+  String get templateReading;
+
+  /// No description provided for @meetingTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'## Participants\n\n## Agenda\n\n## Decisions\n\n## Next actions\n\n- [ ] '**
+  String get meetingTemplate;
+
+  /// No description provided for @ideaTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'## Idea\n\n## Why it matters\n\n## Next experiment\n\n- [ ] '**
+  String get ideaTemplate;
+
+  /// No description provided for @readingTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'## Source\n\n## Key insights\n\n## My thoughts\n\n## Questions'**
+  String get readingTemplate;
+
+  /// No description provided for @discardDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard draft'**
+  String get discardDraft;
+
+  /// No description provided for @discardDraftConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard this unfinished note and its unused local attachments? This cannot be undone.'**
+  String get discardDraftConfirm;
 }
 
 class _AppLocalizationsDelegate

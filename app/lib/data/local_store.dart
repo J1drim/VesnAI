@@ -31,6 +31,8 @@ abstract class LocalNoteStore {
     NoteFilter filter = const NoteFilter(),
   });
   Future<T> transaction<T>(Future<T> Function() action);
+  Future<String?> localValue(String key);
+  Future<void> setLocalValue(String key, String? value);
 
   /// Persisted sync cursor (0 if never synced). Stored so deltas resume across
   /// restarts.
@@ -40,6 +42,19 @@ abstract class LocalNoteStore {
 
 class InMemoryNoteStore implements LocalNoteStore {
   final Map<String, Note> _notes = {};
+  final Map<String, String> _values = {};
+
+  @override
+  Future<String?> localValue(String key) async => _values[key];
+  @override
+  Future<void> setLocalValue(String key, String? value) async {
+    if (value == null) {
+      _values.remove(key);
+    } else {
+      _values[key] = value;
+    }
+  }
+
   Future<void> _transactions = Future.value();
 
   @override
@@ -47,6 +62,7 @@ class InMemoryNoteStore implements LocalNoteStore {
     final result = _transactions.then((_) async {
       final before = Map<String, Note>.from(_notes);
       final beforeCursor = _cursor;
+      final beforeValues = Map<String, String>.from(_values);
       try {
         return await action();
       } catch (_) {
@@ -54,6 +70,9 @@ class InMemoryNoteStore implements LocalNoteStore {
           ..clear()
           ..addAll(before);
         _cursor = beforeCursor;
+        _values
+          ..clear()
+          ..addAll(beforeValues);
         rethrow;
       }
     });
@@ -135,6 +154,26 @@ class DriftNoteStore implements LocalNoteStore {
   final VesnaiDatabase db;
 
   DriftNoteStore([VesnaiDatabase? db]) : db = db ?? VesnaiDatabase();
+
+  @override
+  Future<String?> localValue(String key) async => (await (db.select(
+    db.syncMeta,
+  )..where((t) => t.key.equals('local:$key'))).getSingleOrNull())?.value;
+
+  @override
+  Future<void> setLocalValue(String key, String? value) async {
+    if (value == null) {
+      await (db.delete(
+        db.syncMeta,
+      )..where((t) => t.key.equals('local:$key'))).go();
+    } else {
+      await db
+          .into(db.syncMeta)
+          .insertOnConflictUpdate(
+            SyncMetaCompanion(key: Value('local:$key'), value: Value(value)),
+          );
+    }
+  }
 
   @override
   Future<List<Note>> search(

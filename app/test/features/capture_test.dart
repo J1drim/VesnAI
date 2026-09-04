@@ -27,16 +27,16 @@ List<Override> _cacheOverrides() {
 }
 
 Widget _captureTestApp(Widget child) => ProviderScope(
-      overrides: _cacheOverrides(),
-      child: MaterialApp(
-        localizationsDelegates: const [
-          ...AppLocalizations.localizationsDelegates,
-          FlutterQuillLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: child,
-      ),
-    );
+  overrides: _cacheOverrides(),
+  child: MaterialApp(
+    localizationsDelegates: const [
+      ...AppLocalizations.localizationsDelegates,
+      FlutterQuillLocalizations.delegate,
+    ],
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: child,
+  ),
+);
 
 Future<void> _enterTitleText(WidgetTester tester, String text) async {
   await tester.enterText(find.byKey(const Key('title-field')), text);
@@ -56,8 +56,56 @@ Future<void> _enterBodyText(WidgetTester tester, String text) async {
 }
 
 void main() {
+  testWidgets('closing capture restores its draft and template on reopening', (
+    tester,
+  ) async {
+    final container = ProviderContainer(overrides: _cacheOverrides());
+    addTearDown(container.dispose);
+    Widget app() => UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        localizationsDelegates: const [
+          ...AppLocalizations.localizationsDelegates,
+          FlutterQuillLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const CaptureScreen(),
+      ),
+    );
+    await tester.pumpWidget(app());
+    await tester.pumpAndSettle();
+    await _enterTitleText(tester, 'My meeting');
+    await tester.tap(find.byTooltip('Templates'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Meeting'));
+    await tester.pumpAndSettle();
+    expect(
+      (await container.read(captureDraftStoreProvider).load())!['body'],
+      contains('Participants'),
+    );
+    await tester.pumpWidget(const SizedBox());
+    await tester.pumpWidget(app());
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<TextField>(find.byKey(const Key('title-field')))
+          .controller!
+          .text,
+      'My meeting',
+    );
+    expect(find.textContaining('Participants', findRichText: true), findsWidgets);
+    await tester.tap(find.byKey(const Key('save-note')));
+    await tester.pumpAndSettle();
+    expect(await container.read(captureDraftStoreProvider).load(), isNull);
+    expect(
+      (await container.read(repositoryProvider).notes()).single.body,
+      contains('Participants'),
+    );
+  });
+
   testWidgets('tag suggestions update as the user types', (tester) async {
     await tester.pumpWidget(_captureTestApp(const CaptureScreen()));
+    await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('tag-misc')), findsOneWidget);
 
@@ -65,16 +113,21 @@ void main() {
     expect(find.byKey(const Key('tag-idea')), findsOneWidget);
   });
 
-  testWidgets('manual tag edits are not overwritten by heuristic', (tester) async {
+  testWidgets('manual tag edits are not overwritten by heuristic', (
+    tester,
+  ) async {
     await tester.pumpWidget(_captureTestApp(const CaptureScreen()));
+    await tester.pumpAndSettle();
 
     await _enterTitleText(tester, 'a brilliant idea');
     expect(find.byKey(const Key('tag-idea')), findsOneWidget);
 
-    await tester.tap(find.descendant(
-      of: find.byKey(const Key('tag-idea')),
-      matching: find.byType(Icon),
-    ));
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const Key('tag-idea')),
+        matching: find.byType(Icon),
+      ),
+    );
     await tester.pump();
     expect(find.byKey(const Key('tag-idea')), findsNothing);
 
@@ -84,6 +137,7 @@ void main() {
 
   testWidgets('user can add a custom tag via the tag sheet', (tester) async {
     await tester.pumpWidget(_captureTestApp(const CaptureScreen()));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('add-tag-chip')));
     await tester.pumpAndSettle();
@@ -95,6 +149,7 @@ void main() {
 
   testWidgets('type sheet changes the note type chip', (tester) async {
     await tester.pumpWidget(_captureTestApp(const CaptureScreen()));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('meta-type-chip')));
     await tester.pumpAndSettle();
@@ -108,9 +163,11 @@ void main() {
     );
   });
 
-  testWidgets('Aa toggle shows and hides the formatting toolbar',
-      (tester) async {
+  testWidgets('Aa toggle shows and hides the formatting toolbar', (
+    tester,
+  ) async {
     await tester.pumpWidget(_captureTestApp(const CaptureScreen()));
+    await tester.pumpAndSettle();
 
     expect(find.byType(QuillSimpleToolbar), findsNothing);
 
@@ -125,21 +182,26 @@ void main() {
 
   testWidgets('saving a note adds it to the notes list', (tester) async {
     late ProviderContainer container;
-    await tester.pumpWidget(ProviderScope(
-      overrides: _cacheOverrides(),
-      child: MaterialApp(
-        localizationsDelegates: const [
-          ...AppLocalizations.localizationsDelegates,
-          FlutterQuillLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Consumer(builder: (context, ref, _) {
-          container = ProviderScope.containerOf(context);
-          return const CaptureScreen();
-        }),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: _cacheOverrides(),
+        child: MaterialApp(
+          localizationsDelegates: const [
+            ...AppLocalizations.localizationsDelegates,
+            FlutterQuillLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Consumer(
+            builder: (context, ref, _) {
+              container = ProviderScope.containerOf(context);
+              return const CaptureScreen();
+            },
+          ),
+        ),
       ),
-    ));
+    );
 
+    await tester.pumpAndSettle();
     await _enterTitleText(tester, 'Buy milk');
     await _enterBodyText(tester, 'remember to buy milk');
     await tester.tap(find.byKey(const Key('save-note')));

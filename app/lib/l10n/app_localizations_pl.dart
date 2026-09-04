@@ -1052,4 +1052,39 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get findRelatedNotes => 'Znajdź powiązane notatki';
+
+  @override
+  String get draftUnavailable =>
+      'Nie udało się przywrócić szkicu. Spróbuj ponownie przed rozpoczęciem nowej notatki.';
+
+  @override
+  String get templates => 'Szablony';
+
+  @override
+  String get templateMeeting => 'Spotkanie';
+
+  @override
+  String get templateIdea => 'Pomysł';
+
+  @override
+  String get templateReading => 'Notatka z lektury';
+
+  @override
+  String get meetingTemplate =>
+      '## Uczestnicy\n\n## Agenda\n\n## Decyzje\n\n## Kolejne działania\n\n- [ ] ';
+
+  @override
+  String get ideaTemplate =>
+      '## Pomysł\n\n## Dlaczego warto\n\n## Następny eksperyment\n\n- [ ] ';
+
+  @override
+  String get readingTemplate =>
+      '## Źródło\n\n## Najważniejsze wnioski\n\n## Moje przemyślenia\n\n## Pytania';
+
+  @override
+  String get discardDraft => 'Odrzuć szkic';
+
+  @override
+  String get discardDraftConfirm =>
+      'Odrzucić tę niedokończoną notatkę i nieużywane załączniki lokalne? Tej operacji nie można cofnąć.';
 }

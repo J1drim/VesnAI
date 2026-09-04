@@ -8,6 +8,7 @@ import 'data/api_client.dart';
 import 'data/app_preferences.dart';
 import 'data/attachment_cache.dart';
 import 'data/chat_attachment_cache.dart';
+import 'data/capture_draft.dart';
 import 'data/chat_location_service.dart';
 import 'data/chat_store.dart';
 import 'data/drift/database.dart';
@@ -38,8 +39,9 @@ class ServerConnection {
 
 /// Durable credential store. Overridden in [main] with a [SecureConnectionStore]
 /// and in tests with an [InMemoryConnectionStore].
-final connectionStoreProvider =
-    Provider<ConnectionStore>((ref) => SecureConnectionStore());
+final connectionStoreProvider = Provider<ConnectionStore>(
+  (ref) => SecureConnectionStore(),
+);
 
 /// Owns the live [ServerConnection] and persists it via [ConnectionStore].
 class ConnectionController extends Notifier<ServerConnection> {
@@ -70,7 +72,9 @@ class ConnectionController extends Notifier<ServerConnection> {
       deviceName,
       client: ref.read(httpClientProvider),
     );
-    await ref.read(connectionStoreProvider).save(
+    await ref
+        .read(connectionStoreProvider)
+        .save(
           baseUrl: baseUrl.toString(),
           token: result.token,
           deviceId: result.deviceId,
@@ -106,10 +110,13 @@ class ConnectionController extends Notifier<ServerConnection> {
 }
 
 final serverConnectionProvider =
-    NotifierProvider<ConnectionController, ServerConnection>(ConnectionController.new);
+    NotifierProvider<ConnectionController, ServerConnection>(
+      ConnectionController.new,
+    );
 
-final appPreferencesStoreProvider =
-    Provider<AppPreferencesStore>((ref) => SecureAppPreferencesStore());
+final appPreferencesStoreProvider = Provider<AppPreferencesStore>(
+  (ref) => SecureAppPreferencesStore(),
+);
 
 /// Persists force-directed graph node positions. Overridden in [main] on device;
 /// defaults to in-memory for tests.
@@ -152,8 +159,8 @@ class AssistantLanguageController extends Notifier<AssistantLanguage> {
 
 final assistantLanguageProvider =
     NotifierProvider<AssistantLanguageController, AssistantLanguage>(
-  AssistantLanguageController.new,
-);
+      AssistantLanguageController.new,
+    );
 
 final readRepliesAloudProvider = FutureProvider<bool>((ref) async {
   return ref.read(appPreferencesStoreProvider).readRepliesAloud();
@@ -172,10 +179,9 @@ class ShareLocationWithChatController extends Notifier<bool> {
     state = value;
     if (value) {
       final saved = ref.read(savedChatLocationProvider);
-      final resolved = await ref.read(chatLocationServiceProvider).resolveForChat(
-            shareEnabled: true,
-            saved: saved,
-          );
+      final resolved = await ref
+          .read(chatLocationServiceProvider)
+          .resolveForChat(shareEnabled: true, saved: saved);
       if (resolved != null) {
         await ref.read(savedChatLocationProvider.notifier).save(resolved);
       }
@@ -185,15 +191,17 @@ class ShareLocationWithChatController extends Notifier<bool> {
 
 final shareLocationWithChatProvider =
     NotifierProvider<ShareLocationWithChatController, bool>(
-  ShareLocationWithChatController.new,
-);
+      ShareLocationWithChatController.new,
+    );
 
 class SavedChatLocationController extends Notifier<SavedLocation?> {
   @override
   SavedLocation? build() => null;
 
   Future<void> hydrate() async {
-    final raw = await ref.read(appPreferencesStoreProvider).savedChatLocationJson();
+    final raw = await ref
+        .read(appPreferencesStoreProvider)
+        .savedChatLocationJson();
     state = SavedLocation.fromJsonString(raw);
   }
 
@@ -207,11 +215,12 @@ class SavedChatLocationController extends Notifier<SavedLocation?> {
 
 final savedChatLocationProvider =
     NotifierProvider<SavedChatLocationController, SavedLocation?>(
-  SavedChatLocationController.new,
-);
+      SavedChatLocationController.new,
+    );
 
-final chatLocationServiceProvider =
-    Provider<ChatLocationService>((ref) => ChatLocationService());
+final chatLocationServiceProvider = Provider<ChatLocationService>(
+  (ref) => ChatLocationService(),
+);
 
 /// Whether first-run onboarding has been completed (hydrated in [main]).
 final onboardedProvider = StateProvider<bool>((ref) => false);
@@ -223,8 +232,9 @@ Future<void> completeOnboarding(WidgetRef ref) async {
 }
 
 /// LAN discovery of `_vesnai._tcp` servers.
-final serverDiscoveryProvider =
-    Provider<ServerDiscovery>((ref) => NsdServerDiscovery());
+final serverDiscoveryProvider = Provider<ServerDiscovery>(
+  (ref) => NsdServerDiscovery(),
+);
 
 final discoveredServersProvider = StreamProvider<List<DiscoveredServer>>(
   (ref) => ref.watch(serverDiscoveryProvider).watch(),
@@ -243,14 +253,17 @@ final chatStoreProvider = Provider<ChatStore>((ref) {
 
 /// In-memory by default (tests/previews). [main] overrides this with a
 /// [DriftNoteStore] for durable on-device persistence.
-final localStoreProvider = Provider<LocalNoteStore>((ref) => InMemoryNoteStore());
+final localStoreProvider = Provider<LocalNoteStore>(
+  (ref) => InMemoryNoteStore(),
+);
 
 final taggerProvider = Provider<Tagger>((ref) => const HeuristicTagger());
 
 /// On-device speech-to-text for the chat mic. Overridden in widget tests with
 /// a fake so the mic flow can be driven without a platform plugin.
-final speechInputProvider =
-    Provider<SpeechInputService>((ref) => NativeSpeechInputService());
+final speechInputProvider = Provider<SpeechInputService>(
+  (ref) => NativeSpeechInputService(),
+);
 
 /// Shared HTTP client. Overridden in [main] with [createPlatformHttpClient].
 /// Widget tests use a plain [http.Client] via the default implementation.
@@ -285,7 +298,9 @@ final voiceCacheProvider = Provider<VoiceCache>((ref) {
 });
 
 /// Server-reported settings (offline mode, models, languages, secret names).
-final serverSettingsProvider = FutureProvider<Map<String, dynamic>?>((ref) async {
+final serverSettingsProvider = FutureProvider<Map<String, dynamic>?>((
+  ref,
+) async {
   final client = ref.watch(apiClientProvider);
   if (client == null) return null;
   return client.settings();
@@ -296,8 +311,20 @@ final syncEngineProvider = Provider<SyncEngine>((ref) {
     store: ref.watch(localStoreProvider),
     clientProvider: () => ref.read(apiClientProvider),
     reachable: () => ref.read(apiClientProvider) != null,
+    uploadAttachments: (client, notes) async {
+      if (notes.any((n) => n.attachments.isNotEmpty)) {
+        await ref.read(captureDraftStoreProvider).uploadPending(client, notes);
+      }
+    },
   );
 });
+
+final captureDraftStoreProvider = Provider<CaptureDraftStore>(
+  (ref) => CaptureDraftStore(
+    ref.watch(localStoreProvider),
+    ref.watch(attachmentCacheProvider),
+  ),
+);
 
 final repositoryProvider = Provider<NoteRepository>((ref) {
   return NoteRepository(
@@ -312,8 +339,9 @@ final repositoryProvider = Provider<NoteRepository>((ref) {
 
 /// Bridge to native home-screen widgets. In-memory by default (tests/previews);
 /// [main] overrides with [PlatformSharedWidgetStorage] on device.
-final sharedWidgetStorageProvider =
-    Provider<SharedWidgetStorage>((ref) => InMemorySharedWidgetStorage());
+final sharedWidgetStorageProvider = Provider<SharedWidgetStorage>(
+  (ref) => InMemorySharedWidgetStorage(),
+);
 
 /// OS notifications for completed background jobs. No-op by default; [main]
 /// overrides with [LocalNotifier] on device.
@@ -371,7 +399,8 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
       });
       if (!state.hasError || attempt == retries) break;
       final err = state.error.toString();
-      if (!err.contains('database is locked') && !err.contains('SqliteException(5)')) {
+      if (!err.contains('database is locked') &&
+          !err.contains('SqliteException(5)')) {
         break;
       }
       await Future<void>.delayed(Duration(milliseconds: 200 * (attempt + 1)));
@@ -380,20 +409,26 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
 
   /// Mirror the most recent notes into the shared store the home-screen
   /// widgets read. Preserves existing chat recents when [chats] is omitted.
-  Future<void> _publishWidgetSnapshot(List<Note> notes, {List<WidgetChat>? chats}) async {
+  Future<void> _publishWidgetSnapshot(
+    List<Note> notes, {
+    List<WidgetChat>? chats,
+  }) async {
     final storage = ref.read(sharedWidgetStorageProvider);
-    final chatRecents = chats ??
+    final chatRecents =
+        chats ??
         (await storage.readSnapshot())?.chatRecents ??
         const <WidgetChat>[];
     final recents = notes
         .where(noteVisibleInMainList)
         .take(kWidgetRecentsLimit)
-        .map((n) => WidgetNote(
-              title: n.title.isEmpty ? '(untitled)' : n.title,
-              type: n.type,
-              generated: n.isGenerated,
-              path: n.path,
-            ))
+        .map(
+          (n) => WidgetNote(
+            title: n.title.isEmpty ? '(untitled)' : n.title,
+            type: n.type,
+            generated: n.isGenerated,
+            path: n.path,
+          ),
+        )
         .toList();
     final encoded = WidgetSnapshot(recents, chatRecents: chatRecents).encode();
     if (encoded == _lastPublishedEncoded) return;
@@ -403,7 +438,8 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
 
   /// Update only the chat portion of the widget snapshot (keeps current notes).
   Future<void> publishChatRecents(List<WidgetChat> chats) async {
-    final notes = state.valueOrNull ?? await ref.read(repositoryProvider).notes();
+    final notes =
+        state.valueOrNull ?? await ref.read(repositoryProvider).notes();
     await _publishWidgetSnapshot(notes, chats: chats);
   }
 
@@ -427,7 +463,9 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
   /// Ingest quick captures made from a home-screen widget while the app was
   /// closed. Called on launch/foreground.
   Future<void> ingestQuickCaptures() async {
-    final captures = await ref.read(sharedWidgetStorageProvider).drainQuickCaptures();
+    final captures = await ref
+        .read(sharedWidgetStorageProvider)
+        .drainQuickCaptures();
     if (captures.isEmpty) return;
     final repo = ref.read(repositoryProvider);
     final existing = await repo.notes();
@@ -504,11 +542,24 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     String? type,
     List<String>? tags,
     bool deferSync = false,
+    String? path,
+    List<String> attachments = const [],
+    String source = '',
   }) async {
     Note? note;
     try {
-      note = await ref.read(repositoryProvider).capture(
-            title: title, body: body, type: type, tags: tags, deferSync: deferSync);
+      note = await ref
+          .read(repositoryProvider)
+          .capture(
+            title: title,
+            body: body,
+            type: type,
+            tags: tags,
+            deferSync: deferSync,
+            path: path,
+            attachments: attachments,
+            source: source,
+          );
       return note;
     } finally {
       if (!deferSync) await reload();
@@ -605,19 +656,15 @@ class HomeTabRequestNotifier extends Notifier<HomeTabRequest?> {
 
 final homeTabRequestProvider =
     NotifierProvider<HomeTabRequestNotifier, HomeTabRequest?>(
-  HomeTabRequestNotifier.new,
-);
+      HomeTabRequestNotifier.new,
+    );
 
 /// Widget tap deferred until [appNavigatorKey] is ready (cold start).
 class PendingWidgetAction {
   final String action;
   final String? path;
   final String? sessionId;
-  const PendingWidgetAction({
-    required this.action,
-    this.path,
-    this.sessionId,
-  });
+  const PendingWidgetAction({required this.action, this.path, this.sessionId});
 }
 
 class PendingWidgetActionNotifier extends Notifier<PendingWidgetAction?> {
@@ -631,5 +678,5 @@ class PendingWidgetActionNotifier extends Notifier<PendingWidgetAction?> {
 
 final pendingWidgetActionProvider =
     NotifierProvider<PendingWidgetActionNotifier, PendingWidgetAction?>(
-  PendingWidgetActionNotifier.new,
-);
+      PendingWidgetActionNotifier.new,
+    );

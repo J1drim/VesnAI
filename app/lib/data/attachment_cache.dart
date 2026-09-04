@@ -47,7 +47,15 @@ class AttachmentCache {
   Future<void> write(String relPath, Uint8List bytes) async {
     final file = localFile(relPath);
     await file.parent.create(recursive: true);
-    await file.writeAsBytes(bytes);
+    // Stage on the destination filesystem so rename is atomic.
+    final localStage = await file.parent.createTemp('.staging-');
+    try {
+      final temporary = File(p.join(localStage.path, 'content'));
+      await temporary.writeAsBytes(bytes, flush: true);
+      await temporary.rename(file.path);
+    } finally {
+      await localStage.delete(recursive: true);
+    }
   }
 
   Future<void> delete(String relPath) async {
