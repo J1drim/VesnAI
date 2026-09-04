@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:okf_dart/okf_dart.dart';
@@ -14,7 +12,7 @@ void main() {
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
     await tester.pumpWidget(MaterialApp(
-      theme: VesnaiTheme.light(),
+      theme: VesnaiTheme.light().copyWith(platform: TargetPlatform.android),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
@@ -50,13 +48,9 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    final goldenFile = Platform.environment.containsKey('GITHUB_ACTIONS')
-        ? 'note_list_linux.png'
-        : (Platform.isLinux ? 'note_list_linux.png' : 'note_list.png');
-
     await expectLater(
       find.byType(ListView),
-      matchesGoldenFile(goldenFile),
+      matchesGoldenFile('note_list.png'),
     );
   });
 }

@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'data/notifications_feed.dart';
 import 'data/notification_service.dart';
+import 'data/library_preferences.dart';
 import 'desktop/sticky_board.dart';
 import 'features/chat/chat_screen.dart';
 import 'features/chat/chat_sessions.dart';
@@ -50,6 +51,11 @@ class VesnaiApp extends ConsumerWidget {
       navigatorKey: appNavigatorKey,
       theme: VesnaiTheme.light(),
       darkTheme: VesnaiTheme.dark(),
+      themeMode: switch (ref.watch(libraryPreferencesProvider)['theme']) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      },
       locale: appLocale.languageCode == null
           ? null
           : Locale(appLocale.languageCode!),
@@ -58,7 +64,9 @@ class VesnaiApp extends ConsumerWidget {
         FlutterQuillLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: (paired || onboarded) ? const HomeShell() : const OnboardingScreen(),
+      home: (paired || onboarded)
+          ? const HomeShell()
+          : const OnboardingScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -158,7 +166,9 @@ class _HomeShellState extends ConsumerState<HomeShell>
         feed.drain();
       }
     }
-    await ref.read(chatControllerProvider.notifier).publishWidgetFromLocalStore();
+    await ref
+        .read(chatControllerProvider.notifier)
+        .publishWidgetFromLocalStore();
     await notes.publishFullWidgetSnapshot();
   }
 
@@ -175,19 +185,64 @@ class _HomeShellState extends ConsumerState<HomeShell>
     return Scaffold(
       // Edge-to-edge on Android 15+: inset content so it clears the system
       // status/navigation bars (the bottom bar handles its own inset).
-      body: SafeArea(bottom: false, child: _screens[_index]),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: [
-          NavigationDestination(icon: const Icon(Icons.notes_outlined), label: l.navNotes),
-          NavigationDestination(
-              icon: const Icon(Icons.chat_bubble_outline), label: l.navChat),
-          NavigationDestination(icon: const Icon(Icons.hub_outlined), label: l.navGraph),
-          NavigationDestination(
-              icon: const Icon(Icons.settings_outlined), label: l.navSettings),
-        ],
+      body: SafeArea(
+        bottom: false,
+        child: Row(
+          children: [
+            if (MediaQuery.sizeOf(context).width >= 840) ...[
+              NavigationRail(
+                selectedIndex: _index,
+                labelType: NavigationRailLabelType.all,
+                onDestinationSelected: (i) => setState(() => _index = i),
+                destinations: [
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.notes_outlined),
+                    label: Text(l.navNotes),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.chat_bubble_outline),
+                    label: Text(l.navChat),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.hub_outlined),
+                    label: Text(l.navGraph),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.settings_outlined),
+                    label: Text(l.navSettings),
+                  ),
+                ],
+              ),
+              const VerticalDivider(width: 1),
+            ],
+            Expanded(child: _screens[_index]),
+          ],
+        ),
       ),
+      bottomNavigationBar: MediaQuery.sizeOf(context).width >= 840
+          ? null
+          : NavigationBar(
+              selectedIndex: _index,
+              onDestinationSelected: (i) => setState(() => _index = i),
+              destinations: [
+                NavigationDestination(
+                  icon: const Icon(Icons.notes_outlined),
+                  label: l.navNotes,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.chat_bubble_outline),
+                  label: l.navChat,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.hub_outlined),
+                  label: l.navGraph,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.settings_outlined),
+                  label: l.navSettings,
+                ),
+              ],
+            ),
     );
   }
 }

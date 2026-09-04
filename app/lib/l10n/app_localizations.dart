@@ -1771,6 +1771,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deleted or unavailable on the server'**
   String get serverNoteUnavailable;
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @listLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
+  String get listLayout;
+
+  /// No description provided for @gridLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Card view'**
+  String get gridLayout;
 }
 
 class _AppLocalizationsDelegate

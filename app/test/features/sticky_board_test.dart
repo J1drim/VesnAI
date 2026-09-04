@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:okf_dart/okf_dart.dart';
@@ -9,22 +10,46 @@ import 'package:vesnai_app/providers.dart';
 import 'package:vesnai_app/theme.dart';
 
 void main() {
-  testWidgets('sticky note card shows AI marker for generated notes', (tester) async {
-    await tester.pumpWidget(MaterialApp(
-      theme: VesnaiTheme.light(),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const Scaffold(
-        body: StickyNoteCard(
-          note: Note(
-            path: 'generated/x.md',
-            title: 'Generated',
-            body: 'made by vesna',
-            origin: Origin.generated,
+  testWidgets('card is keyboard accessible and opens on Enter', (tester) async {
+    var opened = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: StickyNoteCard(
+            note: const Note(path: 'notes/a.md', title: 'A'),
+            onTap: () => opened++,
           ),
         ),
       ),
-    ));
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+    expect(opened, 1);
+  });
+  testWidgets('sticky note card shows AI marker for generated notes', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: VesnaiTheme.light(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(
+          body: StickyNoteCard(
+            note: Note(
+              path: 'generated/x.md',
+              title: 'Generated',
+              body: 'made by vesna',
+              origin: Origin.generated,
+            ),
+          ),
+        ),
+      ),
+    );
     expect(find.byIcon(Icons.auto_awesome), findsOneWidget);
     expect(find.text('Generated'), findsOneWidget);
   });
@@ -36,14 +61,16 @@ void main() {
         .read(repositoryProvider)
         .capture(title: 'Desktop note', body: 'hi');
 
-    await tester.pumpWidget(UncontrolledProviderScope(
-      container: container,
-      child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: StickyBoard(),
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: StickyBoard(),
+        ),
       ),
-    ));
+    );
     await tester.pumpAndSettle();
     expect(find.byType(StickyNoteCard), findsOneWidget);
     expect(find.text('Desktop note'), findsOneWidget);

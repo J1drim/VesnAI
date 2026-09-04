@@ -386,5 +386,11 @@
   "keepMine": "Zachowaj moją",
   "keepServer": "Zachowaj serwera",
   "keepBoth": "Zachowaj obie",
-  "serverNoteUnavailable": "Usunięta lub niedostępna na serwerze"
+  "serverNoteUnavailable": "Usunięta lub niedostępna na serwerze",
+  "appearance": "Wygląd",
+  "themeSystem": "Systemowy",
+  "themeLight": "Jasny",
+  "themeDark": "Ciemny",
+  "listLayout": "Widok listy",
+  "gridLayout": "Widok kart"
 }

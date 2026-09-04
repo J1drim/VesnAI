@@ -77,11 +77,13 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
     await ref.read(notesProvider.notifier).updateNote(updated);
     final client = ref.read(apiClientProvider);
     if (client != null) {
-      unawaited(client.recordTagFeedback(
-        text: '${updated.title} ${updated.body}',
-        tags: tags,
-        action: 'accepted',
-      ));
+      unawaited(
+        client.recordTagFeedback(
+          text: '${updated.title} ${updated.body}',
+          tags: tags,
+          action: 'accepted',
+        ),
+      );
     }
     if (mounted) {
       setState(() {
@@ -199,16 +201,20 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
           IconButton(
             key: const Key('toggle-edit'),
             tooltip: _editing ? l.view : l.edit,
-            icon: Icon(_editing ? Icons.visibility_outlined : Icons.edit_outlined),
-            onPressed: _busy ? null : () => setState(() => _editing = !_editing),
+            icon: Icon(
+              _editing ? Icons.visibility_outlined : Icons.edit_outlined,
+            ),
+            onPressed: _busy
+                ? null
+                : () => setState(() => _editing = !_editing),
           ),
           if (current != null)
             IconButton(
               key: const Key('toggle-done'),
               tooltip: current.done ? l.reopen : l.markDone,
-              icon: Icon(current.done
-                  ? Icons.check_circle
-                  : Icons.check_circle_outline),
+              icon: Icon(
+                current.done ? Icons.check_circle : Icons.check_circle_outline,
+              ),
               onPressed: _busy ? null : _toggleDone,
             ),
           if (paired)
@@ -233,37 +239,42 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
             ),
         ],
       ),
-      body: SafeArea(
-        child: notesAsync.when(
-          loading: () {
-            final note = ref.watch(noteByPathProvider(widget.path));
-            if (note == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            _syncFromNote(note);
-            final display = _note ?? note;
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: _editing
-                  ? _buildEditor(display)
-                  : _buildView(display, client, cache, chatCache),
-            );
-          },
-          error: (e, _) => Center(child: Text(l.errorWithDetail('$e'))),
-          data: (_) {
-            final note = ref.watch(noteByPathProvider(widget.path));
-            if (note == null) {
-              return Center(child: Text(l.noteNotFound));
-            }
-            _syncFromNote(note);
-            final display = _note ?? note;
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: _editing
-                  ? _buildEditor(display)
-                  : _buildView(display, client, cache, chatCache),
-            );
-          },
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 860),
+          child: SafeArea(
+            child: notesAsync.when(
+              loading: () {
+                final note = ref.watch(noteByPathProvider(widget.path));
+                if (note == null) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                _syncFromNote(note);
+                final display = _note ?? note;
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: _editing
+                      ? _buildEditor(display)
+                      : _buildView(display, client, cache, chatCache),
+                );
+              },
+              error: (e, _) => Center(child: Text(l.errorWithDetail('$e'))),
+              data: (_) {
+                final note = ref.watch(noteByPathProvider(widget.path));
+                if (note == null) {
+                  return Center(child: Text(l.noteNotFound));
+                }
+                _syncFromNote(note);
+                final display = _note ?? note;
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: _editing
+                      ? _buildEditor(display)
+                      : _buildView(display, client, cache, chatCache),
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -278,7 +289,10 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
     final l = AppLocalizations.of(context);
     final imageRel = _generatedImageRel();
     final isCritique = note.type == kCritiqueNoteType;
-    final critiqueStyle = noteTypeStyle(kCritiqueNoteType, Theme.of(context).colorScheme);
+    final critiqueStyle = noteTypeStyle(
+      kCritiqueNoteType,
+      Theme.of(context).colorScheme,
+    );
     final critiques = _critiquesOfThisNote();
     return ListView(
       children: [
@@ -295,7 +309,11 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Chip(
-              avatar: Icon(critiqueStyle.icon, size: 16, color: critiqueStyle.color),
+              avatar: Icon(
+                critiqueStyle.icon,
+                size: 16,
+                color: critiqueStyle.color,
+              ),
               label: Text(l.critiqueByMarena),
               backgroundColor: critiqueStyle.fill.withValues(alpha: 0.3),
               side: BorderSide(color: critiqueStyle.color),
@@ -317,8 +335,10 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
               label: Text(l.done),
             ),
           ),
-        Text(note.title.isEmpty ? l.untitled : note.title,
-            style: Theme.of(context).textTheme.headlineSmall),
+        Text(
+          note.title.isEmpty ? l.untitled : note.title,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
         if (note.tags.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -385,8 +405,10 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
         ],
         if (imageRel != null) ...[
           const SizedBox(height: 16),
-          Text(l.generatedMemoryAid,
-              style: Theme.of(context).textTheme.titleSmall),
+          Text(
+            l.generatedMemoryAid,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
@@ -458,28 +480,26 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
   }
 
   List<Widget> _extraAttachments(
-      Note note, VesnaiApiClient? client, AttachmentCache cache) {
+    Note note,
+    VesnaiApiClient? client,
+    AttachmentCache cache,
+  ) {
     if (note.attachments.isEmpty) return const [];
     final inBody = RegExp(r'!\[[^\]]*\]\(([^)]+)\)');
-    final linked = inBody
-        .allMatches(note.body)
-        .map((m) => m.group(1)!)
-        .toSet();
+    final linked = inBody.allMatches(note.body).map((m) => m.group(1)!).toSet();
     final extra = note.attachments.where((a) => !linked.contains(a)).toList();
     if (extra.isEmpty) return const [];
     return [
       const SizedBox(height: 16),
-      Text(AppLocalizations.of(context).attachments,
-          style: Theme.of(context).textTheme.titleSmall),
+      Text(
+        AppLocalizations.of(context).attachments,
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
       const SizedBox(height: 8),
       for (final rel in extra)
         Padding(
           padding: const EdgeInsets.only(bottom: 8),
-          child: AuthenticatedImage(
-            relPath: rel,
-            cache: cache,
-            client: client,
-          ),
+          child: AuthenticatedImage(relPath: rel, cache: cache, client: client),
         ),
     ];
   }
@@ -530,8 +550,10 @@ class _AttachmentImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final raw = uri.toString();
     if (raw.startsWith('http://') || raw.startsWith('https://')) {
-      return Image.network(raw,
-          errorBuilder: (context, error, stack) => _fallback(context));
+      return Image.network(
+        raw,
+        errorBuilder: (context, error, stack) => _fallback(context),
+      );
     }
     if (raw.startsWith('chat:')) {
       final rest = raw.substring(5);
@@ -565,13 +587,13 @@ class _AttachmentImage extends StatelessWidget {
   }
 
   Widget _fallback(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          children: [
-            const Icon(Icons.broken_image_outlined, size: 18),
-            const SizedBox(width: 8),
-            Flexible(child: Text(alt?.isNotEmpty == true ? alt! : 'image')),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      children: [
+        const Icon(Icons.broken_image_outlined, size: 18),
+        const SizedBox(width: 8),
+        Flexible(child: Text(alt?.isNotEmpty == true ? alt! : 'image')),
+      ],
+    ),
+  );
 }

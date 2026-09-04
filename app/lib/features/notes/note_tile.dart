@@ -18,8 +18,7 @@ class NoteTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final style = noteTypeStyle(note.type, theme.colorScheme);
-    // Marena critiques keep their own hostile red styling even though they
-    // are generated notes.
+    // Keep Marena's recognizable accent, with neutral reading surfaces.
     final isCritique = note.type == kCritiqueNoteType;
     final l = AppLocalizations.of(context);
     final semanticLabel = [
@@ -49,30 +48,49 @@ class NoteTile extends StatelessWidget {
           ),
           title: Text(
             note.title.isEmpty ? l.untitled : note.title,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: note.done
                 ? TextStyle(
                     decoration: TextDecoration.lineThrough,
                     color: theme.colorScheme.onSurfaceVariant,
                   )
-                : null,
+                : theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
           ),
-          subtitle: Text(
-            notePreviewBody(note),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  notePreviewBody(note),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (note.tags.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      '${note.tags.take(3).map((t) => '#$t').join('  ')}${note.tags.length > 3 ? '  +${note.tags.length - 3}' : ''}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              if (note.pinned) const Icon(Icons.push_pin, size: 16),
               if (isCritique)
-                _Badge(
-                  label: 'Marena',
-                  color: style.color,
-                  icon: style.icon,
-                )
+                _Badge(label: 'Marena', color: style.color, icon: style.icon)
               else if (note.isGenerated)
                 _Badge(
                   label: 'AI',

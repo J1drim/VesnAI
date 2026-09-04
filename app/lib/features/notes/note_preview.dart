@@ -12,7 +12,12 @@ String notePreviewBody(Note note) {
       imageLines++;
       continue;
     }
-    if (trimmed.isNotEmpty) textLines.add(trimmed);
+    if (trimmed.isNotEmpty) {
+      textLines.add(trimmed
+          .replaceFirst(RegExp(r'^#{1,6}\s+'), '')
+          .replaceFirst(RegExp(r'^[-*]\s+\[[ xX]\]\s*'), '')
+          .replaceAllMapped(RegExp(r'\[([^\]]+)\]\([^)]+\)'), (m) => m[1]!));
+    }
   }
 
   if (textLines.isNotEmpty) {

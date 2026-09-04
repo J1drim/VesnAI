@@ -44,8 +44,6 @@ Dependency migration details and deferred SDK/major-version decisions are in
 - Development test dependencies installed from the existing lockfile into
   `/private/tmp/vesnai-upgrade-venv`; the installed server environment is unchanged.
 
-## Remaining delivery
-
 ## Sync reliability — implemented
 
 - Explicit base revisions, canonical version acknowledgements, unique conflict
@@ -63,8 +61,22 @@ Dependency migration details and deferred SDK/major-version decisions are in
 
 ## Remaining delivery (updated)
 
+## Visual evolution — implemented
+
+- Shared lazy Notes list/grid with working desktop capture, clickable and
+  keyboard-activatable cards, compact tags, calmer surfaces and retained palette.
+- Responsive navigation rail; persisted System/Light/Dark and list/card choices;
+  constrained reader/chat width. Enlarged Polish title overflow found and fixed.
+- 195 Flutter tests passed; analysis passes without errors/warnings. Includes 32
+  layout combinations plus 1.8× text-scale checks, keyboard activation and
+  preference persistence. Real-font/icon fixture screenshots generated and
+  representative images visually reviewed; see [VISUAL_REVIEW.md](VISUAL_REVIEW.md).
+- CI SDK drift found in remote checks and fixed separately by pinning Flutter
+  3.44.0. Physical-device visual/native checks remain outstanding.
+
+## Remaining delivery
+
 - Dependency upgrades, CI/dependency automation, and service-image review.
-- Desktop interaction, visual polish, responsive layouts, theme preferences.
 - Pins/archive/saved views, indexed/semantic search, backlinks/related notes.
 - Drafts/templates/shortcuts, history/Trash, project-scoped chat, native sharing.
 - Graph navigation, cleanup suggestions, notification delivery, AI controls,

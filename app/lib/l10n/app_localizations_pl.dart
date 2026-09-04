@@ -960,4 +960,22 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get serverNoteUnavailable => 'Usunięta lub niedostępna na serwerze';
+
+  @override
+  String get appearance => 'Wygląd';
+
+  @override
+  String get themeSystem => 'Systemowy';
+
+  @override
+  String get themeLight => 'Jasny';
+
+  @override
+  String get themeDark => 'Ciemny';
+
+  @override
+  String get listLayout => 'Widok listy';
+
+  @override
+  String get gridLayout => 'Widok kart';
 }

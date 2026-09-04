@@ -386,5 +386,11 @@
   "keepMine": "Keep mine",
   "keepServer": "Keep server",
   "keepBoth": "Keep both",
-  "serverNoteUnavailable": "Deleted or unavailable on the server"
+  "serverNoteUnavailable": "Deleted or unavailable on the server",
+  "appearance": "Appearance",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "listLayout": "List view",
+  "gridLayout": "Card view"
 }

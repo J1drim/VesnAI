@@ -588,10 +588,10 @@ class _MessageBubble extends ConsumerWidget {
       hasImageAttachment: hasImageAttachment,
     );
     final bubble = Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 7),
+      padding: const EdgeInsets.all(16),
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.sizeOf(context).width * 0.78,
+        maxWidth: (MediaQuery.sizeOf(context).width * 0.84).clamp(0, 760),
       ),
       decoration: BoxDecoration(
         color: isUser

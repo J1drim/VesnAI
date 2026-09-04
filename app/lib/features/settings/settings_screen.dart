@@ -10,6 +10,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../data/api_client.dart';
 import '../../data/app_preferences.dart';
+import '../../data/library_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers.dart';
 import 'qr_scan_screen.dart';
@@ -46,6 +47,19 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => _confirmUnpair(context, ref),
             ),
           _SectionHeader(l.sectionApp),
+          ListTile(
+            leading: const Icon(Icons.palette_outlined),
+            title: Text(l.appearance),
+            trailing: DropdownButton<String>(
+              value: ref.watch(libraryPreferencesProvider)['theme'] as String? ?? 'system',
+              items: [
+                DropdownMenuItem(value: 'system', child: Text(l.themeSystem)),
+                DropdownMenuItem(value: 'light', child: Text(l.themeLight)),
+                DropdownMenuItem(value: 'dark', child: Text(l.themeDark)),
+              ],
+              onChanged: (value) => ref.read(libraryPreferencesProvider.notifier).set('theme', value),
+            ),
+          ),
           ListTile(
             key: const Key('app-language-tile'),
             leading: const Icon(Icons.language_outlined),

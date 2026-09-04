@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../providers.dart';
+import '../../data/library_preferences.dart';
 import '../note_detail/note_detail_screen.dart';
 import '../../widgets/vesnai_logo.dart';
 import '../capture/capture_screen.dart';
@@ -15,9 +16,11 @@ import 'note_tile.dart';
 import 'note_type_ui.dart';
 import 'notes_type_filter.dart';
 import 'sync_status.dart';
+import 'sticky_note_card.dart';
 
 class NotesScreen extends ConsumerStatefulWidget {
-  const NotesScreen({super.key});
+  final bool initialGrid;
+  const NotesScreen({super.key, this.initialGrid = false});
 
   @override
   ConsumerState<NotesScreen> createState() => _NotesScreenState();
@@ -37,15 +40,19 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final pushed = await ref.read(notesProvider.notifier).sync();
     if (!context.mounted) return;
-    messenger.showSnackBar(SnackBar(
-      content: Text(
-          pushed < 0 ? l.offlineChangesQueued : l.syncedChanges(pushed)),
-    ));
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          pushed < 0 ? l.offlineChangesQueued : l.syncedChanges(pushed),
+        ),
+      ),
+    );
   }
 
   Widget _errorView(BuildContext context, WidgetRef ref, Object error) {
     final l = AppLocalizations.of(context);
-    final locked = error.toString().contains('database is locked') ||
+    final locked =
+        error.toString().contains('database is locked') ||
         error.toString().contains('SqliteException(5)');
     return Center(
       child: Padding(
@@ -53,7 +60,11 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.error_outline, size: 48, color: Theme.of(context).colorScheme.error),
+            Icon(
+              Icons.error_outline,
+              size: 48,
+              color: Theme.of(context).colorScheme.error,
+            ),
             const SizedBox(height: 12),
             Text(
               locked ? l.notesBusySyncing : l.couldNotLoadNotes,
@@ -61,7 +72,8 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
             ),
             const SizedBox(height: 16),
             FilledButton(
-              onPressed: () => ref.read(notesProvider.notifier).reload(retries: 2),
+              onPressed: () =>
+                  ref.read(notesProvider.notifier).reload(retries: 2),
               child: Text(l.retry),
             ),
           ],
@@ -79,6 +91,9 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
     final query = _searchController.text;
     final typeFilter = ref.watch(notesTypeFilterProvider);
     final showDone = ref.watch(showDoneNotesProvider);
+    final grid =
+        ref.watch(libraryPreferencesProvider)['grid'] as bool? ??
+        widget.initialGrid;
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -86,7 +101,7 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
           children: [
             const VesnaiLogo(height: 28, full: false),
             const SizedBox(width: 8),
-            Text(l.navNotes),
+            Flexible(child: Text(l.navNotes, maxLines: 1, overflow: TextOverflow.ellipsis)),
           ],
         ),
         bottom: PreferredSize(
@@ -96,8 +111,8 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
             child: Text(
               paired
                   ? (lastSynced == null
-                      ? l.pairedPullToSync
-                      : l.lastSynced(_ago(context, lastSynced)))
+                        ? l.pairedPullToSync
+                        : l.lastSynced(_ago(context, lastSynced)))
                   : l.notPaired,
               style: Theme.of(context).textTheme.labelSmall,
             ),
@@ -105,11 +120,20 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
         ),
         actions: [
           IconButton(
+            tooltip: grid ? l.listLayout : l.gridLayout,
+            icon: Icon(
+              grid ? Icons.view_list_outlined : Icons.grid_view_outlined,
+            ),
+            onPressed: () => ref
+                .read(libraryPreferencesProvider.notifier)
+                .set('grid', !grid),
+          ),
+          IconButton(
             tooltip: l.webSearch,
             icon: const Icon(Icons.travel_explore),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SearchScreen()),
-            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const SearchScreen())),
           ),
           IconButton(
             tooltip: l.sync,
@@ -161,45 +185,73 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
                   if (visible.isEmpty) {
                     return ListView(
                       children: [
-                        SizedBox(height: query.isEmpty && typeFilter.isEmpty ? 200 : 120),
+                        SizedBox(
+                          height: query.isEmpty && typeFilter.isEmpty
+                              ? 200
+                              : 120,
+                        ),
                         Center(
                           child: Text(
                             query.isNotEmpty
                                 ? l.noNotesMatchQuery(query)
                                 : typeFilter.isNotEmpty
-                                    ? l.noNotesMatchTypes
-                                    : l.emptyNotes,
+                                ? l.noNotesMatchTypes
+                                : l.emptyNotes,
                           ),
                         ),
                       ],
                     );
                   }
-                  return ListView(
-                    children: [
-                      ...visible.map(
-                        (note) => Dismissible(
-                          key: ValueKey('dismiss-${note.path}'),
-                          direction: DismissDirection.endToStart,
-                          confirmDismiss: (_) => confirmDeleteNote(context, note: note),
-                          background: Container(
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.only(right: 24),
-                            color: Theme.of(context).colorScheme.errorContainer,
-                            child: const Icon(Icons.delete_outline),
-                          ),
-                          onDismissed: (_) =>
-                              ref.read(notesProvider.notifier).delete(note.path),
-                          child: NoteTile(
-                            note: note,
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => NoteDetailScreen(path: note.path),
-                              ),
-                            ),
-                          ),
-                        ),
+                  void openNote(int index) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          NoteDetailScreen(path: visible[index].path),
+                    ),
+                  );
+                  if (grid) {
+                    return GridView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 360,
+                        mainAxisExtent:
+                            250 *
+                            MediaQuery.textScalerOf(
+                              context,
+                            ).scale(1).clamp(1, 2),
+                        crossAxisSpacing: 14,
+                        mainAxisSpacing: 14,
                       ),
-                    ],
+                      itemCount: visible.length,
+                      itemBuilder: (context, index) => StickyNoteCard(
+                        note: visible[index],
+                        onTap: () => openNote(index),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    itemCount: visible.length,
+                    itemBuilder: (context, index) {
+                      final note = visible[index];
+                      return Dismissible(
+                        key: ValueKey('dismiss-' + note.path),
+                        direction: DismissDirection.endToStart,
+                        confirmDismiss: (_) =>
+                            confirmDeleteNote(context, note: note),
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 24),
+                          color: Theme.of(context).colorScheme.errorContainer,
+                          child: const Icon(Icons.delete_outline),
+                        ),
+                        onDismissed: (_) =>
+                            ref.read(notesProvider.notifier).delete(note.path),
+                        child: NoteTile(
+                          note: note,
+                          onTap: () => openNote(index),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -208,9 +260,9 @@ class _NotesScreenState extends ConsumerState<NotesScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const CaptureScreen()),
-        ),
+        onPressed: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const CaptureScreen())),
         icon: const Icon(Icons.add),
         label: Text(l.capture),
       ),

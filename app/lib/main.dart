@@ -14,6 +14,7 @@ import 'data/chat_attachment_cache.dart';
 import 'data/graph_layout_store.dart';
 import 'data/http_client_factory.dart';
 import 'data/local_store.dart';
+import 'data/library_preferences.dart';
 import 'data/notification_service.dart';
 import 'data/notifications_feed.dart';
 import 'data/shared_storage.dart';
@@ -36,6 +37,7 @@ Future<void> main() async {
   );
   container = ProviderContainer(
     overrides: [
+      libraryPreferencesStorageProvider.overrideWithValue(sharedPrefs),
       graphLayoutStoreProvider.overrideWith(
         (ref) => SharedPreferencesGraphLayoutStore(sharedPrefs),
       ),

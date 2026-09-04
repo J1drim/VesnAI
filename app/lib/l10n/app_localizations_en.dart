@@ -947,4 +947,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverNoteUnavailable => 'Deleted or unavailable on the server';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get listLayout => 'List view';
+
+  @override
+  String get gridLayout => 'Card view';
 }
