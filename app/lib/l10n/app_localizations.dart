@@ -2089,6 +2089,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paired server'**
   String get pairedServer;
+
+  /// No description provided for @projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get projects;
+
+  /// No description provided for @projectsExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a library view to use it as a project. Its filters define the project’s notes, tasks and research.'**
+  String get projectsExplanation;
+
+  /// No description provided for @askProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about this project'**
+  String get askProject;
+
+  /// No description provided for @projectAnswerUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Project answers require a reachable server with a real chat model. Demo responses are not shown.'**
+  String get projectAnswerUnavailable;
+
+  /// No description provided for @syncBeforeProjectQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync pending project notes before asking so the server can use your latest content.'**
+  String get syncBeforeProjectQuestion;
+
+  /// No description provided for @projectScopeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No server notes are available in this project’s scope.'**
+  String get projectScopeEmpty;
+
+  /// No description provided for @projectFirstHundred.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the first 100 notes. Open the saved library view to browse the full project.'**
+  String get projectFirstHundred;
+
+  /// No description provided for @projectQuestionExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers use up to eight matching excerpts from this project only, with clickable citations. No web research or note-editing tools run. Questions and answers are saved on this device; earlier answers may become outdated.'**
+  String get projectQuestionExplanation;
+
+  /// No description provided for @projectCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{notes} notes · {tasks} open tasks · {research} research notes'**
+  String projectCounts(int notes, int tasks, int research);
+
+  /// No description provided for @projectEvidenceCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Evidence: {used} excerpts from {total} scoped notes.'**
+  String projectEvidenceCount(int used, int total);
 }
 
 class _AppLocalizationsDelegate

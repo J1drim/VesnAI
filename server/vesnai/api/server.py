@@ -13,6 +13,7 @@ import structlog
 from fastapi import FastAPI, Request
 
 from vesnai.api.library import router as library_router
+from vesnai.api.projects import router as projects_router
 from vesnai.api.routes import ALL_ROUTERS
 from vesnai.app_state import AppState
 from vesnai.observability import configure_logging, get_logger, metrics
@@ -135,5 +136,6 @@ def create_app(state: AppState | None = None) -> FastAPI:
     for router in ALL_ROUTERS:
         app.include_router(router)
     app.include_router(library_router)
+    app.include_router(projects_router)
 
     return app

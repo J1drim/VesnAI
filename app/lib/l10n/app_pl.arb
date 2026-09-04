@@ -439,5 +439,17 @@
   "restoreLocalCopyConfirm": "Przywrócić lokalną kopię bezpieczeństwa jako osobną notatkę? Istniejąca notatka serwera pozostanie bez zmian.",
   "restoreTrashConfirm": "Przywrócić notatkę, wygenerowane notatki podrzędne i multimedia do oryginalnych ścieżek? Istniejące notatki nie zostaną zastąpione.",
   "thisDevice": "To urządzenie",
-  "pairedServer": "Sparowany serwer"
+  "pairedServer": "Sparowany serwer",
+  "projects": "Projekty",
+  "projectsExplanation": "Zapisz widok biblioteki, aby używać go jako projektu. Jego filtry określają notatki, zadania i badania projektu.",
+  "askProject": "Zapytaj o ten projekt",
+  "projectAnswerUnavailable": "Odpowiedzi o projekcie wymagają dostępnego serwera z rzeczywistym modelem czatu. Odpowiedzi demonstracyjne nie są wyświetlane.",
+  "syncBeforeProjectQuestion": "Zsynchronizuj oczekujące notatki projektu przed pytaniem, aby serwer użył aktualnej treści.",
+  "projectScopeEmpty": "Brak notatek serwera w zakresie tego projektu.",
+  "projectFirstHundred": "Wyświetlono pierwsze 100 notatek. Otwórz zapisany widok biblioteki, aby przeglądać cały projekt.",
+  "projectQuestionExplanation": "Odpowiedzi korzystają z maksymalnie ośmiu pasujących fragmentów wyłącznie tego projektu, z odnośnikami do źródeł. Bez badań w sieci ani narzędzi edycji notatek. Pytania i odpowiedzi są zapisywane na tym urządzeniu; wcześniejsze odpowiedzi mogą się zdezaktualizować.",
+  "projectCounts": "Notatki: {notes} · Otwarte zadania: {tasks} · Badania: {research}",
+  "projectEvidenceCount": "Źródła: {used} fragmentów z {total} notatek w zakresie.",
+  "@projectCounts": {"placeholders": {"notes": {"type": "int"}, "tasks": {"type": "int"}, "research": {"type": "int"}}},
+  "@projectEvidenceCount": {"placeholders": {"used": {"type": "int"}, "total": {"type": "int"}}}
 }

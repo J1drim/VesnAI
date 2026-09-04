@@ -1120,4 +1120,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pairedServer => 'Paired server';
+
+  @override
+  String get projects => 'Projects';
+
+  @override
+  String get projectsExplanation =>
+      'Save a library view to use it as a project. Its filters define the project’s notes, tasks and research.';
+
+  @override
+  String get askProject => 'Ask about this project';
+
+  @override
+  String get projectAnswerUnavailable =>
+      'Project answers require a reachable server with a real chat model. Demo responses are not shown.';
+
+  @override
+  String get syncBeforeProjectQuestion =>
+      'Sync pending project notes before asking so the server can use your latest content.';
+
+  @override
+  String get projectScopeEmpty =>
+      'No server notes are available in this project’s scope.';
+
+  @override
+  String get projectFirstHundred =>
+      'Showing the first 100 notes. Open the saved library view to browse the full project.';
+
+  @override
+  String get projectQuestionExplanation =>
+      'Answers use up to eight matching excerpts from this project only, with clickable citations. No web research or note-editing tools run. Questions and answers are saved on this device; earlier answers may become outdated.';
+
+  @override
+  String projectCounts(int notes, int tasks, int research) {
+    return '$notes notes · $tasks open tasks · $research research notes';
+  }
+
+  @override
+  String projectEvidenceCount(int used, int total) {
+    return 'Evidence: $used excerpts from $total scoped notes.';
+  }
 }

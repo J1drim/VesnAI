@@ -1133,4 +1133,44 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get pairedServer => 'Sparowany serwer';
+
+  @override
+  String get projects => 'Projekty';
+
+  @override
+  String get projectsExplanation =>
+      'Zapisz widok biblioteki, aby używać go jako projektu. Jego filtry określają notatki, zadania i badania projektu.';
+
+  @override
+  String get askProject => 'Zapytaj o ten projekt';
+
+  @override
+  String get projectAnswerUnavailable =>
+      'Odpowiedzi o projekcie wymagają dostępnego serwera z rzeczywistym modelem czatu. Odpowiedzi demonstracyjne nie są wyświetlane.';
+
+  @override
+  String get syncBeforeProjectQuestion =>
+      'Zsynchronizuj oczekujące notatki projektu przed pytaniem, aby serwer użył aktualnej treści.';
+
+  @override
+  String get projectScopeEmpty =>
+      'Brak notatek serwera w zakresie tego projektu.';
+
+  @override
+  String get projectFirstHundred =>
+      'Wyświetlono pierwsze 100 notatek. Otwórz zapisany widok biblioteki, aby przeglądać cały projekt.';
+
+  @override
+  String get projectQuestionExplanation =>
+      'Odpowiedzi korzystają z maksymalnie ośmiu pasujących fragmentów wyłącznie tego projektu, z odnośnikami do źródeł. Bez badań w sieci ani narzędzi edycji notatek. Pytania i odpowiedzi są zapisywane na tym urządzeniu; wcześniejsze odpowiedzi mogą się zdezaktualizować.';
+
+  @override
+  String projectCounts(int notes, int tasks, int research) {
+    return 'Notatki: $notes · Otwarte zadania: $tasks · Badania: $research';
+  }
+
+  @override
+  String projectEvidenceCount(int used, int total) {
+    return 'Źródła: $used fragmentów z $total notatek w zakresie.';
+  }
 }

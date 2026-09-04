@@ -39,7 +39,9 @@ def sanitize_attachment_stored_rel(filename: str | None) -> str:
 
 def is_sync_path_allowed(path: str) -> bool:
     """Reject sync writes to reserved bundle paths."""
-    norm = path.replace("\\", "/").strip().lstrip("/")
+    norm = path.replace("\\", "/").strip()
+    if norm.startswith('/'):
+        return False
     if not norm:
         return False
     parts = norm.split("/")
@@ -47,7 +49,7 @@ def is_sync_path_allowed(path: str) -> bool:
         return False
     if parts[-1] in RESERVED_FILENAMES:
         return False
-    if parts[0] == "memory":
+    if parts[0] in {"memory", "attachments"}:
         return False
     return True
 

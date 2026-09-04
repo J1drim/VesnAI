@@ -122,6 +122,8 @@ class BundleStore:
             if ".git" in p.parts:
                 continue
             rel = self.rel(p)
+            if rel.split('/')[0] in {'attachments', '.recovery'}:
+                continue
             if Path(rel).name in RESERVED_FILENAMES:
                 continue
             paths.append(rel)

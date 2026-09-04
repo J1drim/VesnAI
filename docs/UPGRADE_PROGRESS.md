@@ -94,7 +94,7 @@ Dependency migration details and deferred SDK/major-version decisions are in
 ## Remaining delivery (updated)
 
 - Dependency upgrades, CI/dependency automation, and service-image review.
-- Project-scoped chat, native sharing.
+- Native sharing.
 - Graph navigation, cleanup suggestions, notification delivery, AI controls,
   performance measurements and remaining platform verification.
 
@@ -122,3 +122,12 @@ Dependency migration details and deferred SDK/major-version decisions are in
 - Validation: 207 Flutter tests pass (3 benchmark skips), analyzer passes;
   334 offline server tests pass, Ruff and mypy pass. Details and retention
   caveats: [RECOVERY.md](RECOVERY.md).
+
+## Project spaces and scoped questions — implemented
+
+- Saved-view project overviews with offline note/task/research counts and a
+  device-persisted question interface with clickable note citations.
+- Server-enforced path/filter intersection, bounded lexical excerpts, no tools
+  or web access; explicit demo/unavailable states and pending-edit sync gate.
+- Validation: 208 Flutter tests and 335 offline server tests pass; analyzer,
+  Ruff and mypy pass. Scope and limitations: [PROJECTS.md](PROJECTS.md).

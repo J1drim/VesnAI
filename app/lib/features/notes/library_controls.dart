@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 import '../../models/note.dart';
 import '../../providers.dart';
 import 'note_type_ui.dart';
+import 'projects_screen.dart';
 
 class LibraryControls extends ConsumerWidget {
   final String query;
@@ -35,6 +36,14 @@ class LibraryControls extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
+          IconButton(
+            tooltip: l.projects,
+            icon: const Icon(Icons.folder_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const ProjectsScreen()),
+            ),
+          ),
           for (final item in [
             ('active', l.libraryActive),
             ('pinned', l.pinnedNotes),
@@ -76,13 +85,13 @@ class LibraryControls extends ConsumerWidget {
             icon: const Icon(Icons.bookmarks_outlined),
             onSelected: (index) async {
               if (index == -1) {
-              var name = '';
+                var name = '';
                 final accepted = await showDialog<bool>(
                   context: context,
                   builder: (context) => AlertDialog(
                     title: Text(l.saveView),
                     content: TextField(
-                    onChanged: (value) => name = value,
+                      onChanged: (value) => name = value,
                       autofocus: true,
                       decoration: InputDecoration(labelText: l.titleLabel),
                     ),
@@ -98,7 +107,7 @@ class LibraryControls extends ConsumerWidget {
                     ],
                   ),
                 );
-              final title = name.trim();
+                final title = name.trim();
                 if (accepted == true && title.isNotEmpty) {
                   await controller.set('views', [
                     ...saved.where((v) => v['name'] != title),
