@@ -128,6 +128,14 @@ jobs:
       - name: Test (unit + widget + golden)
         working-directory: app
         run: flutter test
+      - name: Preserve golden failure images
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: flutter-golden-failures
+          path: app/test/**/failures/*.png
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Check direct deps freshness
         run: python3 scripts/check_flutter_deps.py
       - name: Release APK (plugin compatibility)
