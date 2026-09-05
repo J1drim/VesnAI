@@ -58,7 +58,7 @@ dependencies:
   # On-device speech-to-text (iOS Speech / Android SpeechRecognizer). Used in
   # chat so the transcript appears instantly; only text is sent to the server.
   speech_to_text: ^7.4.0
-  just_audio: ^0.9.40
+  just_audio: ^0.10.6
   share_plus: ^13.3.0
 
   # Phase 5: LAN server discovery (mDNS)
