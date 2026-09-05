@@ -147,6 +147,24 @@ jobs:
             echo "::warning::Known Flutter plugin compatibility warnings (workmanager); APK build succeeded"
           fi
 
+  ios_build:
+    name: iOS unsigned release (plugin and extension compatibility)
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.44.0'
+          cache: true
+      - name: Install locked packages
+        working-directory: app
+        run: flutter pub get --enforce-lockfile
+      - name: Build unsigned iOS release
+        working-directory: app
+        run: flutter build ios --release --no-codesign
+
   android_e2e:
     name: Android offline capture (scheduled/manual)
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
