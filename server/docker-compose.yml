@@ -80,7 +80,7 @@ services:
 
   searxng:
     # Pinned digest (pulled 2026-07-01); avoids floating :latest per security audit M18.
-    image: searxng/searxng@sha256:c6d6af406d214a24edee971b98b92d05a83ee9707ff9a59a56471f9cfce5eee2
+    image: searxng/searxng@sha256:8bb6a6f677a758cefa4ae2c9f5da1012876e428a4388e3e86f34be4ca715330a
     ports:
       - "127.0.0.1:8888:8080"
     volumes:
