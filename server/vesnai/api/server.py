@@ -15,6 +15,7 @@ from fastapi import FastAPI, Request
 from vesnai.api.library import router as library_router
 from vesnai.api.projects import router as projects_router
 from vesnai.api.routes import ALL_ROUTERS
+from vesnai.api.services import router as services_router
 from vesnai.app_state import AppState
 from vesnai.observability import configure_logging, get_logger, metrics
 
@@ -137,5 +138,6 @@ def create_app(state: AppState | None = None) -> FastAPI:
         app.include_router(router)
     app.include_router(library_router)
     app.include_router(projects_router)
+    app.include_router(services_router)
 
     return app

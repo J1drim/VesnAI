@@ -64,7 +64,8 @@ Future<bool> runBackgroundNotificationPoll({
 }) async {
   final saved = await (store ?? SecureConnectionStore()).load();
   if (saved == null && client == null) return true; // Not paired.
-  final api = client ??
+  final api =
+      client ??
       VesnaiApiClient(
         baseUrl: Uri.parse(saved!.baseUrl),
         token: saved.token,
@@ -92,18 +93,21 @@ Future<bool> runBackgroundNotificationPoll({
           payload: notePath != null && notePath.isNotEmpty
               ? critiquePayload(notePath)
               : null,
+          eventId: n['id'] as String?,
         );
       case 'chat_turn_ready':
         await notify.jobComplete(
           title?.isNotEmpty == true ? title! : l.notifVesnaiReplied,
           l.notifVesnaiRepliedBody,
           payload: 'chat',
+          eventId: n['id'] as String?,
         );
       case 'chat_image_ready':
         await notify.jobComplete(
           title?.isNotEmpty == true ? title! : l.notifChatImageReady,
           l.notifChatImageReadyBody,
           payload: 'chat',
+          eventId: n['id'] as String?,
         );
       case 'chat_turn_failed':
       case 'chat_image_failed':
@@ -116,10 +120,14 @@ Future<bool> runBackgroundNotificationPoll({
           payload: sourcePath != null && sourcePath.isNotEmpty
               ? notePayload(sourcePath)
               : null,
+          eventId: n['id'] as String?,
         );
     }
   }
-  final ids = items.map((e) => e['id']).whereType<String>().toList(growable: false);
+  final ids = items
+      .map((e) => e['id'])
+      .whereType<String>()
+      .toList(growable: false);
   if (ids.isNotEmpty) {
     try {
       await api.ackNotifications(ids);

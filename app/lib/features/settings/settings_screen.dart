@@ -16,6 +16,7 @@ import '../../providers.dart';
 import 'qr_scan_screen.dart';
 import 'secrets_screen.dart';
 import 'voice_service_screen.dart';
+import 'ai_controls.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -34,8 +35,9 @@ class SettingsScreen extends ConsumerWidget {
             key: const Key('connection-tile'),
             leading: const Icon(Icons.dns_outlined),
             title: Text(l.connection),
-            subtitle:
-                Text(conn.isPaired ? conn.baseUrl.toString() : l.notPairedShort),
+            subtitle: Text(
+              conn.isPaired ? conn.baseUrl.toString() : l.notPairedShort,
+            ),
             trailing: Icon(conn.isPaired ? Icons.link : Icons.qr_code_scanner),
             onTap: () => _showPairDialog(context, ref),
           ),
@@ -47,17 +49,30 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => _confirmUnpair(context, ref),
             ),
           _SectionHeader(l.sectionApp),
+          SwitchListTile(
+            title: Text(l.completionNotifications),
+            subtitle: Text(l.completionNotificationsExplanation),
+            value:
+                ref.watch(libraryPreferencesProvider)['notifications'] != false,
+            onChanged: (value) => ref
+                .read(libraryPreferencesProvider.notifier)
+                .set('notifications', value),
+          ),
           ListTile(
             leading: const Icon(Icons.palette_outlined),
             title: Text(l.appearance),
             trailing: DropdownButton<String>(
-              value: ref.watch(libraryPreferencesProvider)['theme'] as String? ?? 'system',
+              value:
+                  ref.watch(libraryPreferencesProvider)['theme'] as String? ??
+                  'system',
               items: [
                 DropdownMenuItem(value: 'system', child: Text(l.themeSystem)),
                 DropdownMenuItem(value: 'light', child: Text(l.themeLight)),
                 DropdownMenuItem(value: 'dark', child: Text(l.themeDark)),
               ],
-              onChanged: (value) => ref.read(libraryPreferencesProvider.notifier).set('theme', value),
+              onChanged: (value) => ref
+                  .read(libraryPreferencesProvider.notifier)
+                  .set('theme', value),
             ),
           ),
           ListTile(
@@ -88,6 +103,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           _SectionHeader(l.sectionAssistant),
+          const AiControls(),
           ListTile(
             key: const Key('assistant-language-tile'),
             leading: const Icon(Icons.translate_outlined),
@@ -104,44 +120,54 @@ class SettingsScreen extends ConsumerWidget {
             title: Text(l.voiceService),
             subtitle: Text(
               conn.isPaired
-                  ? ((settings.valueOrNull?['voice_configured'] as bool?) ?? false
-                      ? l.voiceServiceRegistered(
-                          '${settings.valueOrNull?['voice_provider'] ?? 'tts'}')
-                      : l.voiceServiceNotRegistered)
+                  ? ((settings.valueOrNull?['voice_configured'] as bool?) ??
+                            false
+                        ? l.voiceServiceRegistered(
+                            '${settings.valueOrNull?['voice_provider'] ?? 'tts'}',
+                          )
+                        : l.voiceServiceNotRegistered)
                   : l.voiceServicePairFirst,
             ),
             enabled: conn.isPaired,
             onTap: conn.isPaired
                 ? () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const VoiceServiceScreen()),
-                    )
+                    MaterialPageRoute(
+                      builder: (_) => const VoiceServiceScreen(),
+                    ),
+                  )
                 : null,
           ),
           ListTile(
             leading: const Icon(Icons.key_outlined),
             title: Text(l.externalApiKeys),
-            subtitle: Text(conn.isPaired
-                ? l.externalApiKeysSubtitle
-                : l.externalApiKeysPairFirst),
+            subtitle: Text(
+              conn.isPaired
+                  ? l.externalApiKeysSubtitle
+                  : l.externalApiKeysPairFirst,
+            ),
             enabled: conn.isPaired,
             onTap: conn.isPaired
                 ? () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const SecretsScreen()),
-                    )
+                    MaterialPageRoute(builder: (_) => const SecretsScreen()),
+                  )
                 : null,
           ),
           _SectionHeader(l.sectionModels),
           ListTile(
             leading: const Icon(Icons.smart_toy_outlined),
             title: Text(l.chatModel),
-            subtitle: Text(settings.valueOrNull?['default_chat_model']?.toString() ?? '-'),
+            subtitle: Text(
+              settings.valueOrNull?['default_chat_model']?.toString() ?? '-',
+            ),
           ),
           _SectionHeader(l.sectionSearch),
           ListTile(
             leading: const Icon(Icons.language_outlined),
             title: Text(l.languages),
             subtitle: Text(
-              (settings.valueOrNull?['search_languages'] as List?)?.join(', ') ??
+              (settings.valueOrNull?['search_languages'] as List?)?.join(
+                    ', ',
+                  ) ??
                   'English, Polski',
             ),
           ),
@@ -206,13 +232,21 @@ class SettingsScreen extends ConsumerWidget {
   Future<void> _backup(BuildContext context, WidgetRef ref) async {
     final l = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final passphrase = await _askPassphrase(context, l.backupPassphraseOptional);
+    final passphrase = await _askPassphrase(
+      context,
+      l.backupPassphraseOptional,
+    );
     final client = ref.read(apiClientProvider);
     if (client == null) return;
     try {
       final bytes = await client.backup(
-          passphrase: (passphrase != null && passphrase.isNotEmpty) ? passphrase : null);
-      final ext = (passphrase != null && passphrase.isNotEmpty) ? 'zip.enc' : 'zip';
+        passphrase: (passphrase != null && passphrase.isNotEmpty)
+            ? passphrase
+            : null,
+      );
+      final ext = (passphrase != null && passphrase.isNotEmpty)
+          ? 'zip.enc'
+          : 'zip';
       final dir = await getTemporaryDirectory();
       final file = File(p.join(dir.path, 'vesnai-backup.$ext'));
       await file.writeAsBytes(bytes);
@@ -234,9 +268,13 @@ class SettingsScreen extends ConsumerWidget {
     final client = ref.read(apiClientProvider);
     if (client == null) return;
     try {
-      await client.restore(await file.readAsBytes(),
-          filename: file.name,
-          passphrase: (passphrase != null && passphrase.isNotEmpty) ? passphrase : null);
+      await client.restore(
+        await file.readAsBytes(),
+        filename: file.name,
+        passphrase: (passphrase != null && passphrase.isNotEmpty)
+            ? passphrase
+            : null,
+      );
       await ref.read(notesProvider.notifier).sync();
       messenger.showSnackBar(SnackBar(content: Text(l.restoredFromBackup)));
     } catch (e) {
@@ -258,10 +296,13 @@ class SettingsScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, ''), child: Text(l.skip)),
+            onPressed: () => Navigator.pop(context, ''),
+            child: Text(l.skip),
+          ),
           FilledButton(
-              onPressed: () => Navigator.pop(context, controller.text),
-              child: Text(l.ok)),
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: Text(l.ok),
+          ),
         ],
       ),
     );
@@ -276,8 +317,9 @@ class SettingsScreen extends ConsumerWidget {
         content: Text(l.unpairExplanation),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(l.cancel)),
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l.cancel),
+          ),
           FilledButton(
             key: const Key('unpair-confirm'),
             onPressed: () => Navigator.pop(context, true),
@@ -291,7 +333,10 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _pickAssistantLanguage(BuildContext context, WidgetRef ref) async {
+  Future<void> _pickAssistantLanguage(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final l = AppLocalizations.of(context);
     final current = ref.read(assistantLanguageProvider);
     final picked = await showDialog<AssistantLanguage>(
@@ -353,9 +398,9 @@ class _PairDialogState extends State<_PairDialog> {
   String? _error;
 
   Future<void> _scan() async {
-    final raw = await Navigator.of(context).push<String>(
-      MaterialPageRoute(builder: (_) => const QrScanScreen()),
-    );
+    final raw = await Navigator.of(
+      context,
+    ).push<String>(MaterialPageRoute(builder: (_) => const QrScanScreen()));
     if (raw == null) return;
     try {
       final payload = jsonDecode(raw) as Map<String, dynamic>;
@@ -375,7 +420,9 @@ class _PairDialogState extends State<_PairDialog> {
     });
     try {
       final baseUrl = Uri.parse(widget.urlController.text.trim());
-      await widget.ref.read(serverConnectionProvider.notifier).pair(
+      await widget.ref
+          .read(serverConnectionProvider.notifier)
+          .pair(
             baseUrl: baseUrl,
             code: widget.codeController.text.trim(),
             deviceName: 'VesnAI app',
@@ -383,9 +430,9 @@ class _PairDialogState extends State<_PairDialog> {
       if (mounted) {
         final l = AppLocalizations.of(context);
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l.pairedWithServer)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l.pairedWithServer)));
       }
     } on PairingException {
       if (mounted) {
@@ -393,12 +440,18 @@ class _PairDialogState extends State<_PairDialog> {
       }
     } on FormatException {
       if (mounted) {
-        setState(() => _error = AppLocalizations.of(context).enterValidServerUrl);
+        setState(
+          () => _error = AppLocalizations.of(context).enterValidServerUrl,
+        );
       }
     } catch (e) {
       if (!mounted) return;
       setState(
-          () => _error = pairingConnectionErrorMessage(e, AppLocalizations.of(context)));
+        () => _error = pairingConnectionErrorMessage(
+          e,
+          AppLocalizations.of(context),
+        ),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -441,7 +494,10 @@ class _PairDialogState extends State<_PairDialog> {
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              child: Text(
+                _error!,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
             ),
         ],
       ),
@@ -455,7 +511,10 @@ class _PairDialogState extends State<_PairDialog> {
           onPressed: _busy ? null : _submit,
           child: _busy
               ? const SizedBox(
-                  width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
               : Text(l.pair),
         ),
       ],
@@ -523,9 +582,9 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              letterSpacing: 1.2,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          letterSpacing: 1.2,
+          color: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }

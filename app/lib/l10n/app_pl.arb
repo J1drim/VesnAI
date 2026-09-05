@@ -467,5 +467,17 @@
   "brokenLink": "Uszkodzony link do notatki",
   "applyTagChange": "Zastosuj zmianę tagu",
   "removeBrokenLink": "Usuń jawny link",
-  "cleanupChanged": "Notatka lub sugestia uległa zmianie. Sprawdź ponownie przed zastosowaniem."
+  "cleanupChanged": "Notatka lub sugestia uległa zmianie. Sprawdź ponownie przed zastosowaniem.",
+  "completionNotifications": "Powiadomienia o zakończeniu",
+  "completionNotificationsExplanation": "Powiadamiaj o zakończeniu zleconej pracy na tym urządzeniu. Wyłączenie nie zatrzymuje pracy w tle ani synchronizacji.",
+  "aiBehavior": "Działanie AI i dostępność",
+  "automaticImages": "Automatyczne obrazy notatek",
+  "automaticCritiques": "Automatyczne krytyki Mareny",
+  "serverManagedBehavior": "Kontrolowane przez konfigurację serwera. Opcjonalne wzbogacenie można też zlecić z menu notatki.",
+  "serviceDemo": "Dostawca demonstracyjny — nie jest usługą produkcyjną",
+  "serviceAvailable": "Dostępne podczas ostatniego sprawdzenia",
+  "serviceUnchecked": "Skonfigurowane — dostępność niesprawdzona",
+  "servicesUnavailable": "Niedostępne lub niezgłoszone przez ten serwer",
+  "checkServices": "Sprawdź czat i osadzenia",
+  "serviceCheckExplanation": "To wyśle jedno krótkie żądanie czatu i jedno żądanie osadzenia do skonfigurowanych dostawców i może wiązać się z ich zwykłymi kosztami. Sprawdzenie nigdy nie generuje obrazów, głosu ani krytyk."
 }

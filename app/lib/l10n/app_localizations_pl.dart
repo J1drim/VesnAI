@@ -1223,4 +1223,45 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get cleanupChanged =>
       'Notatka lub sugestia uległa zmianie. Sprawdź ponownie przed zastosowaniem.';
+
+  @override
+  String get completionNotifications => 'Powiadomienia o zakończeniu';
+
+  @override
+  String get completionNotificationsExplanation =>
+      'Powiadamiaj o zakończeniu zleconej pracy na tym urządzeniu. Wyłączenie nie zatrzymuje pracy w tle ani synchronizacji.';
+
+  @override
+  String get aiBehavior => 'Działanie AI i dostępność';
+
+  @override
+  String get automaticImages => 'Automatyczne obrazy notatek';
+
+  @override
+  String get automaticCritiques => 'Automatyczne krytyki Mareny';
+
+  @override
+  String get serverManagedBehavior =>
+      'Kontrolowane przez konfigurację serwera. Opcjonalne wzbogacenie można też zlecić z menu notatki.';
+
+  @override
+  String get serviceDemo =>
+      'Dostawca demonstracyjny — nie jest usługą produkcyjną';
+
+  @override
+  String get serviceAvailable => 'Dostępne podczas ostatniego sprawdzenia';
+
+  @override
+  String get serviceUnchecked => 'Skonfigurowane — dostępność niesprawdzona';
+
+  @override
+  String get servicesUnavailable =>
+      'Niedostępne lub niezgłoszone przez ten serwer';
+
+  @override
+  String get checkServices => 'Sprawdź czat i osadzenia';
+
+  @override
+  String get serviceCheckExplanation =>
+      'To wyśle jedno krótkie żądanie czatu i jedno żądanie osadzenia do skonfigurowanych dostawców i może wiązać się z ich zwykłymi kosztami. Sprawdzenie nigdy nie generuje obrazów, głosu ani krytyk.';
 }

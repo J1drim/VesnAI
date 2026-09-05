@@ -35,6 +35,7 @@ dependencies:
   flutter_riverpod: ^2.5.1
   http: ^1.2.0
   crypto: ^3.0.7
+  sqlite3: ^3.5.2
   # Native URLSession on Apple platforms (Cronet omitted — AGP 9 namespace clash).
   cupertino_http: ^3.0.2
   okf_dart:

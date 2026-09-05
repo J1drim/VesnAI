@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../l10n/l10n_outside_widgets.dart';
+import 'notification_delivery.dart';
 
 /// Well-known notification ids (scheduled notifications must be stable so
 /// re-scheduling replaces instead of stacking).
@@ -41,7 +46,12 @@ NotificationTarget? parseNotificationPayload(String? payload) {
 /// Thin wrapper over OS notifications, used to alert the user when a long
 /// background job finishes. Legacy reminder cancellation stays available for upgrades.
 abstract class JobNotifier {
-  Future<void> jobComplete(String title, String body, {String? payload});
+  Future<void> jobComplete(
+    String title,
+    String body, {
+    String? payload,
+    String? eventId,
+  });
 
   Future<void> cancelScheduled(int id);
 
@@ -54,11 +64,13 @@ class LocalNotifier implements JobNotifier {
       FlutterLocalNotificationsPlugin();
   bool _inited = false;
   bool _permissionsRequested = false;
+  Future<NotificationDelivery>? _delivery;
 
   /// Invoked when the user taps a notification while the app is running.
   final void Function(String payload)? onTap;
 
-  LocalNotifier({this.onTap});
+  LocalNotifier({this.onTap, NotificationDelivery? delivery})
+    : _delivery = delivery == null ? null : Future.value(delivery);
 
   Future<void> _init() async {
     if (_inited) return;
@@ -99,6 +111,7 @@ class LocalNotifier implements JobNotifier {
         l.channelBgJobs,
         channelDescription: l.channelBgJobsDesc,
         importance: Importance.defaultImportance,
+        onlyAlertOnce: true,
       ),
       iOS: const DarwinNotificationDetails(),
       macOS: const DarwinNotificationDetails(),
@@ -107,7 +120,32 @@ class LocalNotifier implements JobNotifier {
   }
 
   @override
-  Future<void> jobComplete(String title, String body, {String? payload}) async {
+  Future<void> jobComplete(
+    String title,
+    String body, {
+    String? payload,
+    String? eventId,
+  }) async {
+    final delivery = await (_delivery ??= NotificationDelivery.open());
+    final event =
+        eventId ??
+        'local-${DateTime.now().microsecondsSinceEpoch}-${Random.secure().nextInt(1 << 32)}';
+    await delivery.deliver(event, (id) async {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
+      final preferences =
+          jsonDecode(prefs.getString('library_preferences') ?? '{}') as Map;
+      if (preferences['notifications'] == false) return;
+      await _show(id, title, body, payload: payload);
+    });
+  }
+
+  Future<void> _show(
+    int id,
+    String title,
+    String body, {
+    String? payload,
+  }) async {
     await _init();
     if (!_permissionsRequested) {
       await _plugin
@@ -128,7 +166,7 @@ class LocalNotifier implements JobNotifier {
       _permissionsRequested = true;
     }
     await _plugin.show(
-      id: DateTime.now().millisecondsSinceEpoch ~/ 1000 % 100000,
+      id: id,
       title: title,
       body: body,
       notificationDetails: await _jobDetails(),
@@ -160,6 +198,7 @@ class NoopNotifier implements JobNotifier {
     String title,
     String body, {
     String? payload,
+    String? eventId,
   }) async {}
 
   @override

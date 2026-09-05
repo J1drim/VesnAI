@@ -232,6 +232,9 @@ class SettingsOut(BaseModel):
     voice_configured: bool = False
     voice_url: str | None = None
     voice_provider: str | None = None
+    auto_illustrate: bool = False
+    marena_enabled: bool = False
+    service_status: dict[str, str] = Field(default_factory=dict)
 
 
 class VoiceRegistrationIn(BaseModel):

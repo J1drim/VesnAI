@@ -58,6 +58,7 @@ from vesnai.api.schemas import (
     VoiceRegistrationOut,
 )
 from vesnai.app_state import AppState
+from vesnai.auth import Device
 from vesnai.notes import NoteInput
 from vesnai.observability import metrics
 from vesnai.okf.model import Concept, Origin
@@ -920,6 +921,8 @@ settings_router = APIRouter(prefix="/v1/settings", tags=["settings"])
 def get_settings_endpoint(
     state: AppState = Depends(get_state), _=Depends(require_device)
 ) -> SettingsOut:
+    from vesnai.api.services import configured_services
+
     s = state.settings
     voice = state.voice_registration.load()
     return SettingsOut(
@@ -932,6 +935,9 @@ def get_settings_endpoint(
         voice_configured=voice is not None,
         voice_url=voice.resolved_url() if voice else None,
         voice_provider=voice.provider if voice else None,
+        auto_illustrate=s.auto_illustrate,
+        marena_enabled=s.marena_enabled,
+        service_status=configured_services(state),
     )
 
 
@@ -1071,20 +1077,19 @@ def list_notifications(
     since: str | None = None,
     unread_only: bool = True,
     state: AppState = Depends(get_state),
-    _=Depends(require_device),
+    device: Device = Depends(require_device),
 ) -> list[NotificationOut]:
+    items = state.notifications.list_all(unread_only=unread_only, device=device.device_id)
     if since is not None:
-        items = state.notifications.since(since)
-    else:
-        items = state.notifications.list_all(unread_only=unread_only)
+        items = [item for item in items if item.ts > since]
     return [_notification_out(n) for n in items]
 
 
 @notifications_router.post("/ack")
 def ack_notifications(
-    req: NotificationAck, state: AppState = Depends(get_state), _=Depends(require_device)
+    req: NotificationAck, state: AppState = Depends(get_state), device: Device = Depends(require_device)
 ) -> dict:
-    return {"acked": state.notifications.ack(req.ids)}
+    return {"acked": state.notifications.ack(req.ids, device=device.device_id)}
 
 
 @notifications_router.get("/events")

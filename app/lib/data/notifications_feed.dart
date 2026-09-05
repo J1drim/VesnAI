@@ -59,30 +59,38 @@ class NotificationsService {
               savedNotePath = notePath;
             }
             if (n['pending_image'] == true && messageId != null) {
-              _ref.read(chatControllerProvider.notifier).markAwaitingImage(messageId);
+              _ref
+                  .read(chatControllerProvider.notifier)
+                  .markAwaitingImage(messageId);
             }
             await notifier.jobComplete(
               title?.isNotEmpty == true ? title! : _l10n.notifVesnaiReplied,
               _l10n.notifVesnaiRepliedBody,
               payload: 'chat',
+              eventId: n['id'] as String?,
             );
           } else if (kind == 'chat_image_ready') {
             await notifier.jobComplete(
               title?.isNotEmpty == true ? title! : _l10n.notifChatImageReady,
               _l10n.notifChatImageReadyBody,
               payload: 'chat',
+              eventId: n['id'] as String?,
             );
           } else if (kind == 'chat_image_failed') {
             final messageId = n['message_id'] as String?;
-            _ref.read(chatControllerProvider.notifier).markImageActionFailed(messageId);
+            _ref
+                .read(chatControllerProvider.notifier)
+                .markImageActionFailed(messageId);
             await notifier.jobComplete(
               title?.isNotEmpty == true ? title! : _l10n.imageGenerationFailed,
               _l10n.notifImageGenFailedBody,
+              eventId: n['id'] as String?,
             );
           } else if (kind == 'chat_turn_failed') {
             await notifier.jobComplete(
               title?.isNotEmpty == true ? title! : _l10n.notifChatReplyFailed,
               _l10n.notifChatReplyFailedBody,
+              eventId: n['id'] as String?,
             );
           }
         } else if (kind == 'critique_ready') {
@@ -94,6 +102,7 @@ class NotificationsService {
             payload: critiquePath != null && critiquePath.isNotEmpty
                 ? critiquePayload(critiquePath)
                 : null,
+            eventId: n['id'] as String?,
           );
         } else {
           refreshNotes = true;
@@ -104,6 +113,7 @@ class NotificationsService {
             payload: sourcePath != null && sourcePath.isNotEmpty
                 ? notePayload(sourcePath)
                 : null,
+            eventId: n['id'] as String?,
           );
         }
       }
@@ -141,5 +151,6 @@ class NotificationsService {
   }
 }
 
-final notificationsServiceProvider =
-    Provider<NotificationsService>((ref) => NotificationsService(ref));
+final notificationsServiceProvider = Provider<NotificationsService>(
+  (ref) => NotificationsService(ref),
+);

@@ -95,8 +95,7 @@ Dependency migration details and deferred SDK/major-version decisions are in
 
 - Dependency upgrades, CI/dependency automation, and service-image review.
 - Native sharing.
-- Notification delivery, AI controls,
-  performance measurements and remaining platform verification.
+- Final performance/platform verification and documentation.
 
 ## Capture drafts — implemented
 
@@ -140,3 +139,13 @@ Dependency migration details and deferred SDK/major-version decisions are in
   changes and stale-evidence checks. No automatic merge/delete or reminders.
 - Validation: 212 Flutter tests pass (3 benchmark skips); analyzer passes.
   Behavior: [GRAPH_AND_CLEANUP.md](GRAPH_AND_CLEANUP.md).
+
+## Completion delivery and AI visibility — implemented
+
+- Per-device server acknowledgements, atomic feed writes, legacy-read migration;
+  independent SQLite native delivery claims, stable burst-safe IDs and retries.
+- Device notification preference and explicit AI service checks; show automatic
+  server image/critique behavior and distinguish demo from real availability.
+- Validation: 215 Flutter tests pass (3 benchmark skips), 339 offline server
+  tests pass; analyzer/Ruff/mypy pass. [COMPLETION_DELIVERY.md](COMPLETION_DELIVERY.md)
+  documents delivery guarantees and remaining physical-device checks.
