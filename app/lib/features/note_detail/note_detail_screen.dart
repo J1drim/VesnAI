@@ -390,9 +390,9 @@ class _NoteDetailScreenState extends ConsumerState<NoteDetailScreen> {
           markdown: note.body,
           enabled: !_busy,
           onTaskToggle: _toggleTaskBody,
-          sizedImageBuilder: (config) => _AttachmentImage(
-            uri: config.uri,
-            alt: config.alt,
+          imageBuilder: (uri, title, alt) => _AttachmentImage(
+            uri: uri,
+            alt: alt,
             client: client,
             cache: cache,
             chatCache: chatCache,

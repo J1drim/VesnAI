@@ -1,0 +1,9 @@
+*
+!Dockerfile
+!pyproject.toml
+!uv.lock
+!README.md
+!vesnai/
+!vesnai/**
+**/__pycache__/
+**/*.pyc

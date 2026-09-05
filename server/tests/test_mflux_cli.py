@@ -41,6 +41,7 @@ def test_install_mflux_tool_treats_already_installed_as_success(monkeypatch):
     monkeypatch.setattr(mflux_cli.shutil, "which", lambda name: "uv")
 
     def fake_run(cmd, **kwargs):
+        assert cmd == ["uv", "tool", "install", "mflux==0.19.1"]
         return type(
             "Proc",
             (),

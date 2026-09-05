@@ -12,6 +12,10 @@ import shutil
 import subprocess
 from pathlib import Path
 
+# Match the reviewed image-extra resolution in uv.lock. Existing user-managed
+# installations are not forcibly replaced; new bootstrap installs are bounded.
+MFLUX_TOOL_SPEC = "mflux==0.19.1"
+
 
 def prepend_uv_tool_bin_to_path() -> None:
     """Ensure the default uv tool symlink dir is on PATH for this process."""
@@ -58,7 +62,9 @@ def install_mflux_tool() -> None:
     """Install or refresh the mflux uv tool (no-op if already present)."""
     if shutil.which("uv") is None:
         raise RuntimeError("uv is unavailable")
-    proc = subprocess.run(["uv", "tool", "install", "mflux"], capture_output=True, text=True)
+    proc = subprocess.run(
+        ["uv", "tool", "install", MFLUX_TOOL_SPEC], capture_output=True, text=True
+    )
     if proc.returncode == 0:
         return
     combined = f"{proc.stdout}\n{proc.stderr}".lower()

@@ -73,7 +73,7 @@ dependencies:
   flutter_local_notifications: ^22.0.1
   flutter_force_directed_graph: ^1.0.8
   shared_preferences: ^2.5.3
-  flutter_markdown: ^0.7.7+1
+  flutter_markdown_plus: ^1.0.12
   flutter_quill: ^11.5.1
   markdown: ^7.3.0
   markdown_quill: ^4.3.0

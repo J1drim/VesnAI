@@ -150,6 +150,15 @@ jobs:
         working-directory: app/android
         run: ./gradlew :app:testDebugUnitTest --no-daemon
 
+  container:
+    name: Locked container startup and persistence
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build -t vesnai/ci-smoke:${{ github.sha }} server
+      - run: python3 scripts/check_container.py vesnai/ci-smoke:${{ github.sha }}
+
   ios_build:
     name: iOS unsigned release (plugin and extension compatibility)
     runs-on: macos-15

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 
 import '../utils/external_url.dart';
 import '../utils/task_list_markdown.dart';
@@ -11,13 +11,13 @@ class NoteMarkdownView extends StatefulWidget {
     required this.markdown,
     required this.onTaskToggle,
     this.enabled = true,
-    this.sizedImageBuilder,
+    this.imageBuilder,
   });
 
   final String markdown;
   final Future<void> Function(String newBody) onTaskToggle;
   final bool enabled;
-  final MarkdownSizedImageBuilder? sizedImageBuilder;
+  final MarkdownImageBuilder? imageBuilder;
 
   @override
   State<NoteMarkdownView> createState() => _NoteMarkdownViewState();
@@ -42,10 +42,12 @@ class _NoteMarkdownViewState extends State<NoteMarkdownView> {
   @override
   Widget build(BuildContext context) {
     _checkboxIndex = 0;
-    final data = widget.markdown.isEmpty ? '_No content yet._' : widget.markdown;
+    final data = widget.markdown.isEmpty
+        ? '_No content yet._'
+        : widget.markdown;
     return MarkdownBody(
       data: data,
-      sizedImageBuilder: widget.sizedImageBuilder,
+      imageBuilder: widget.imageBuilder,
       onTapLink: (text, href, title) {
         if (href != null && isExternalUrl(href)) {
           openExternalUrl(href, context: context);
@@ -55,9 +57,7 @@ class _NoteMarkdownViewState extends State<NoteMarkdownView> {
         final index = _checkboxIndex++;
         return Checkbox(
           value: checked,
-          onChanged: widget.enabled && !_busy
-              ? (_) => _toggleAt(index)
-              : null,
+          onChanged: widget.enabled && !_busy ? (_) => _toggleAt(index) : null,
         );
       },
     );

@@ -52,7 +52,9 @@ services:
   #   docker compose --profile online up -d
   ollama:
     profiles: ["online"]
-    image: ollama/ollama:latest
+    # Development fallback only. Production releases must supply a validated
+    # tag@sha256 digest; model/hardware upgrades require a separate smoke test.
+    image: ${OLLAMA_IMAGE:-ollama/ollama:latest}
     volumes:
       - ollama-data:/root/.ollama
     expose:
