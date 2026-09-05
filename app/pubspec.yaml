@@ -69,7 +69,7 @@ dependencies:
     sdk: flutter
   intl: any
   geolocator: ^14.0.2
-  geocoding: ^4.0.0
+  geocoding: ^5.0.0
   flutter_local_notifications: ^22.0.1
   flutter_force_directed_graph: ^1.0.8
   shared_preferences: ^2.5.3
