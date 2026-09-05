@@ -131,7 +131,8 @@ uv run pytest
 
 ## Status
 
-All nine phases of the plan are implemented and tested:
+The original project phases are implemented, with automated coverage across the
+core offline workflows:
 
 | Phase | Area | Where |
 |---|---|---|
@@ -160,11 +161,23 @@ persisted sync cursor, note edit/delete + attachments (photo/file/sketch),
 web search, enrichment, voice chat (record + TTS), settings/secrets/voice service,
 backup/restore, filtered knowledge graph, i18n (en/pl), and OS notifications.
 
-**Test counts**: 79 server (pytest; 2 opt-in `ai`-extra tests skipped without
-local models) + 11 OKF Dart + 28 Flutter (incl. golden) — green with
-`ruff`/`mypy`/`dart analyze`/`flutter analyze` clean. Native widget tests
-(XCTest / Robolectric) and the Flutter `integration_test` e2e run in the
-nightly/platform CI suite.
+**September 2026 upgrades:** age-based note reminders are retired. The app now
+has conflict-safe sync, pins/archive/saved views, indexed offline and explicit
+semantic search, backlinks, durable capture drafts/templates, history/Trash,
+project-scoped questions, a mobile sharing inbox, focused graph navigation and
+reviewed cleanup suggestions. Visual refinements retain the existing spring
+palette and rounded cards. Dependencies, lockfiles and Dependabot coverage have
+been updated; see the [implementation log](docs/UPGRADE_PROGRESS.md).
+
+**Verified local tests:** 341 offline server tests (4 live tests excluded), 11
+OKF Dart tests, 217 Flutter tests (3 opt-in benchmarks skipped), and 11 Android
+native tests. Ruff/mypy pass; Dart/Flutter analyzers have no errors or warnings
+(informational migration notices remain). CI checks locked installs, public
+dependency advisories, core licenses, an Android release APK, an unsigned iOS
+release with Share extension, and isolated container startup/restart. Android
+offline-capture E2E runs on manual/scheduled workflows; live models require
+explicit opt-in. These checks do not claim physical-device or signed-release
+validation; see the [release checklist](docs/RELEASE_CHECKLIST.md).
 
 See [docs/](docs/): [GETTING_STARTED](docs/GETTING_STARTED.md) ·
 [OKF_PROFILE](docs/OKF_PROFILE.md) ·

@@ -59,8 +59,6 @@ Dependency migration details and deferred SDK/major-version decisions are in
   replay, partial rejection, in-flight edits, deletion races, metadata persistence
   and transaction rollback. Physical multi-device recovery is not yet exercised.
 
-## Remaining delivery (updated)
-
 ## Visual evolution — implemented
 
 - Shared lazy Notes list/grid with working desktop capture, clickable and
@@ -73,8 +71,6 @@ Dependency migration details and deferred SDK/major-version decisions are in
   representative images visually reviewed; see [VISUAL_REVIEW.md](VISUAL_REVIEW.md).
 - CI SDK drift found in remote checks and fixed separately by pinning Flutter
   3.44.0. Physical-device visual/native checks remain outstanding.
-
-## Remaining delivery
 
 ## Organize and discover — implemented
 
@@ -90,12 +86,6 @@ Dependency migration details and deferred SDK/major-version decisions are in
 - Reviewed Linux golden artifact and restored its exact platform-specific
   baseline; no assertion tolerance/skip was introduced. Final GitHub CI checks
   are still required after all remaining implementation.
-
-## Remaining delivery (updated)
-
-- Dependency upgrades, CI/dependency automation, and service-image review.
-- Native sharing.
-- Final performance/platform verification and documentation.
 
 ## Capture drafts — implemented
 
@@ -160,3 +150,35 @@ Dependency migration details and deferred SDK/major-version decisions are in
   11 Android native tests and a 94.7 MB release APK pass. Swift syntax, plist and
   Xcode project structure checks pass locally. The preceding iOS baseline build
   passed on GitHub; full extension compilation is gated by the new macOS CI job.
+
+## Final dependency and visual pass — implemented
+
+- Maintained Markdown renderer with migrated private-image callback and task-list
+  regression coverage; coroutines 1.11.0 and Robolectric 4.16.1 upgrades.
+- Digest-pinned Python/uv build, locked runtime, restricted build context, isolated
+  container startup/restart checks in CI, mflux lock-aligned bootstrap pin and
+  dependency-register consistency tests. Every Dependabot PR through #11 has a
+  recorded disposition; deferred SDK/sidecar work has a 2026-10-05 review date.
+- Final local validation: 217 Flutter tests (3 opt-in benchmark skips), 11 shared
+  Dart tests, 11 Android native tests and 341 offline Python tests (4 live excluded)
+  pass. Flutter analysis has informational migration notices but no warnings or
+  errors; Ruff/mypy, locked installs, core licenses and container smoke pass.
+- All 32 real-font visual fixtures refreshed after the completed feature set;
+  phone/wide, EN/PL, light/dark and large-text assertions pass. Representative
+  Notes, board, reader and chat images visually inspected. Android release APK
+  builds (94.7 MB). GitHub's full iOS extension build passed after correcting its
+  target to match the existing iOS 15 app baseline.
+
+## Delivery boundary and release validation
+
+All implementation milestones above are delivered. The plan's explicitly optional
+future refinements—adjacent desktop reader, automatic article extraction and SSE
+notification transport—are not introduced. No replacement reminder queue exists.
+Dependency updates are selected/tested upgrades, not an unreviewed move to every
+latest major. See [DEPENDENCY_UPDATES.md](DEPENDENCY_UPDATES.md) for follow-ups.
+
+Final GitHub CI must be checked for the delivered commit, including the manual
+Android offline-capture job. Physical-device signing, notification/reboot/permission
+checks, real two-device trials, Windows/macOS packaging, device frame-time measures
+and live model execution remain release-environment checks, not claimed successes.
+See [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) for exact procedures and limitations.

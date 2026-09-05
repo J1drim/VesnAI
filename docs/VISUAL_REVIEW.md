@@ -6,6 +6,11 @@ list/card switch. Cards are keyboard-activatable; lists and grids build lazily.
 Wide windows use a navigation rail. The note reader is capped at 860 logical
 pixels and chat bubbles at 760. Settings provides System/Light/Dark appearance.
 
+Final refresh on 2026-09-05 includes Inbox/cleanup/projects controls, saved-view
+filters, related-note actions and the maintained Markdown renderer. All 32
+fixture layouts and the large-text checks pass. Representative Polish phone
+Notes, English wide board, dark wide reader and Polish dark chat were inspected.
+
 `app/test/features/visual_layout_test.dart` checks Notes, reader, chat and board
 in English/Polish, light/dark, 390/1280-pixel windows, plus 1.8× text scale.
 It uses isolated fixture data and never opens the user's stored library.

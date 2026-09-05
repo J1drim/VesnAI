@@ -67,7 +67,7 @@ void handleWidgetAction(
 
 /// Routes a tapped notification (payload string) to the matching screen.
 /// `note:`/`critique:` payloads open the note detail; `chat` opens the chat
-/// tab; `due_review` opens the notes tab (which shows the due section).
+/// tab; legacy `due_review` opens Notes without restoring the retired review UI.
 void handleNotificationPayload(WidgetRefRead read, String payload) {
   final target = parseNotificationPayload(payload);
   if (target == null) return;
