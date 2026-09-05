@@ -9,6 +9,7 @@ import 'data/app_preferences.dart';
 import 'data/attachment_cache.dart';
 import 'data/chat_attachment_cache.dart';
 import 'data/capture_draft.dart';
+import 'data/shared_capture.dart';
 import 'data/chat_location_service.dart';
 import 'data/chat_store.dart';
 import 'data/drift/database.dart';
@@ -326,6 +327,23 @@ final captureDraftStoreProvider = Provider<CaptureDraftStore>(
   ),
 );
 
+final nativeShareBridgeProvider = Provider<NativeShareBridge>(
+  (ref) => NativeShareBridge(),
+);
+final pendingNativeSharesProvider =
+    FutureProvider.autoDispose<List<Map<String, dynamic>>>(
+      (ref) => ref.watch(nativeShareBridgeProvider).list(),
+    );
+final sharedCaptureServiceProvider = Provider<SharedCaptureService>(
+  (ref) => SharedCaptureService(
+    ref.watch(nativeShareBridgeProvider),
+    ref.watch(localStoreProvider),
+    ref.watch(captureDraftStoreProvider),
+    ref.watch(repositoryProvider),
+  ),
+);
+final sharedImportCountProvider = StateProvider<int>((ref) => 0);
+
 final repositoryProvider = Provider<NoteRepository>((ref) {
   return NoteRepository(
     store: ref.watch(localStoreProvider),
@@ -372,6 +390,18 @@ final noteByPathProvider = Provider.family<Note?, String>((ref, path) {
 });
 
 class NotesNotifier extends AsyncNotifier<List<Note>> {
+  Future<void> ingestSharedCaptures() async {
+    if (!ref.read(nativeShareBridgeProvider).supported) return;
+    try {
+      final count = await ref.read(sharedCaptureServiceProvider).ingest();
+      if (count > 0)
+        ref.read(sharedImportCountProvider.notifier).state += count;
+    } finally {
+      ref.invalidate(pendingNativeSharesProvider);
+      await reload();
+    }
+  }
+
   Future<void>? _syncInFlight;
   String? _lastPublishedEncoded;
 

@@ -15,6 +15,7 @@ import 'features/capture/capture_screen.dart';
 import 'features/chat/chat_sessions.dart';
 import 'features/graph/graph_screen.dart';
 import 'features/notes/notes_screen.dart';
+import 'features/notes/shared_inbox_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
 import 'features/settings/settings_screen.dart';
 import 'l10n/app_localizations.dart';
@@ -107,6 +108,7 @@ class _HomeShellState extends ConsumerState<HomeShell>
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_consumeWidgetDeepLinks());
+      unawaited(_ingestShares());
     });
   }
 
@@ -139,6 +141,19 @@ class _HomeShellState extends ConsumerState<HomeShell>
     }
   }
 
+  Future<void> _ingestShares() async {
+    try {
+      await ref.read(notesProvider.notifier).ingestSharedCaptures();
+    } catch (_) {
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).sharedImportRetry),
+          ),
+        );
+    }
+  }
+
   @override
   void dispose() {
     _feed?.stopPolling();
@@ -150,6 +165,7 @@ class _HomeShellState extends ConsumerState<HomeShell>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final feed = ref.read(notificationsServiceProvider);
     if (state == AppLifecycleState.resumed) {
+      unawaited(_ingestShares());
       unawaited(_onResume(feed));
       feed.startPolling();
     } else if (state == AppLifecycleState.paused) {
@@ -177,6 +193,22 @@ class _HomeShellState extends ConsumerState<HomeShell>
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    ref.listen(sharedImportCountProvider, (_, next) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l.sharedInbox),
+          action: SnackBarAction(
+            label: l.open,
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const SharedInboxScreen(),
+              ),
+            ),
+          ),
+        ),
+      );
+    });
     ref.listen<HomeTabRequest?>(homeTabRequestProvider, (prev, next) {
       if (next == null) return;
       WidgetsBinding.instance.addPostFrameCallback((_) {

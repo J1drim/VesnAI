@@ -146,6 +146,9 @@ jobs:
           if grep -E 'Swift Package Manager adoption|plugins that apply Kotlin Gradle Plugin' build.log; then
             echo "::warning::Known Flutter plugin compatibility warnings (workmanager); APK build succeeded"
           fi
+      - name: Android native share and widget tests
+        working-directory: app/android
+        run: ./gradlew :app:testDebugUnitTest --no-daemon
 
   ios_build:
     name: iOS unsigned release (plugin and extension compatibility)

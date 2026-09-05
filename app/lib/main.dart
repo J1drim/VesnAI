@@ -17,6 +17,7 @@ import 'data/local_store.dart';
 import 'data/library_preferences.dart';
 import 'data/notification_service.dart';
 import 'data/notifications_feed.dart';
+import 'data/shared_capture.dart';
 import 'data/shared_storage.dart';
 import 'data/voice_cache.dart';
 import 'data/widget_actions.dart';
@@ -48,14 +49,27 @@ Future<void> main() async {
       attachmentCacheProvider.overrideWith((ref) => attachmentCache),
       chatAttachmentCacheProvider.overrideWith((ref) => chatAttachmentCache),
       voiceCacheProvider.overrideWith((ref) => voiceCache),
-      localStoreProvider.overrideWith((ref) => DriftNoteStore(ref.watch(vesnaiDatabaseProvider))),
-      sharedWidgetStorageProvider.overrideWith((ref) => const PlatformSharedWidgetStorage()),
+      localStoreProvider.overrideWith(
+        (ref) => DriftNoteStore(ref.watch(vesnaiDatabaseProvider)),
+      ),
+      sharedWidgetStorageProvider.overrideWith(
+        (ref) => const PlatformSharedWidgetStorage(),
+      ),
       notifierProvider.overrideWith((ref) => localNotifier),
     ],
   );
   // Route home-screen widget taps (deep links) into the app.
   await retireLegacyReminder(localNotifier);
   registerWidgetActionHandler(container);
+  NativeShareBridge.channel.setMethodCallHandler((call) async {
+    if (call.method == 'available') {
+      try {
+        await container.read(notesProvider.notifier).ingestSharedCaptures();
+      } catch (_) {
+        // The native ready manifest is retained; launch/resume retries import.
+      }
+    }
+  });
   // Restore any saved pairing + onboarding flag before the first frame.
   await container.read(serverConnectionProvider.notifier).hydrate();
   await container.read(appLocaleProvider.notifier).hydrate();
@@ -67,7 +81,9 @@ Future<void> main() async {
   // Pull in any quick captures made from a home-screen widget while closed.
   await container.read(notesProvider.notifier).ingestQuickCaptures();
   // Eagerly hydrate chat from local Drift so widget gets both notes + chats.
-  await container.read(chatControllerProvider.notifier).publishWidgetFromLocalStore();
+  await container
+      .read(chatControllerProvider.notifier)
+      .publishWidgetFromLocalStore();
   await container.read(notesProvider.notifier).publishFullWidgetSnapshot();
   // Backfill the server catalog in the background when already paired, so
   // existing/AI-generated notes appear without waiting for a manual sync.
@@ -81,16 +97,15 @@ Future<void> main() async {
   }
   // If a notification tap launched the app (cold start), route it once the
   // first frame is up and the navigator exists.
-  unawaited(localNotifier.launchPayload().then((payload) {
-    if (payload == null) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      handleNotificationPayload(container.read, payload);
-    });
-  }));
+  unawaited(
+    localNotifier.launchPayload().then((payload) {
+      if (payload == null) return;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        handleNotificationPayload(container.read, payload);
+      });
+    }),
+  );
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const VesnaiApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const VesnaiApp()),
   );
 }

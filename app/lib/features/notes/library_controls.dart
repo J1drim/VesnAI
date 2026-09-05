@@ -8,6 +8,7 @@ import '../../providers.dart';
 import 'note_type_ui.dart';
 import 'projects_screen.dart';
 import 'cleanup_screen.dart';
+import 'shared_inbox_screen.dart';
 
 class LibraryControls extends ConsumerWidget {
   final String query;
@@ -37,6 +38,16 @@ class LibraryControls extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
+          IconButton(
+            tooltip: l.sharedInbox,
+            icon: const Icon(Icons.move_to_inbox_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (_) => const SharedInboxScreen(),
+              ),
+            ),
+          ),
           IconButton(
             tooltip: l.libraryCleanup,
             icon: const Icon(Icons.cleaning_services_outlined),

@@ -1264,4 +1264,32 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get serviceCheckExplanation =>
       'To wyśle jedno krótkie żądanie czatu i jedno żądanie osadzenia do skonfigurowanych dostawców i może wiązać się z ich zwykłymi kosztami. Sprawdzenie nigdy nie generuje obrazów, głosu ani krytyk.';
+
+  @override
+  String get sharedInbox => 'Skrzynka udostępnień';
+
+  @override
+  String get sharedInboxExplanation =>
+      'Udostępnione teksty, adresy URL i pliki są zapisywane tutaj offline bez zastępowania szkicu. Otwórz notatkę, aby ją przejrzeć lub edytować; Przenieś z odbiorczej usuwa tag inbox. Linki są zapisywane jako źródła, bez automatycznego pobierania.';
+
+  @override
+  String get fileAway => 'Przenieś z odbiorczej';
+
+  @override
+  String get possibleDuplicateSource =>
+      'To źródło zapisano wcześniej — otwórz poprzednią notatkę';
+
+  @override
+  String get sharedImportRetry =>
+      'Nie udało się zaimportować części udostępnionej treści. Pozostaje w skrzynce systemowej; otwórz aplikację ponownie, aby spróbować.';
+
+  @override
+  String get pendingSharedImport => 'Oczekuje na import';
+
+  @override
+  String get discardSharedImport => 'Odrzuć niezaimportowaną treść';
+
+  @override
+  String get discardSharedImportConfirm =>
+      'Odrzucić tę kopię w skrzynce systemowej? Oryginał w aplikacji źródłowej pozostanie bez zmian. Tej operacji nie można cofnąć.';
 }

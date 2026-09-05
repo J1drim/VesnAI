@@ -149,3 +149,14 @@ Dependency migration details and deferred SDK/major-version decisions are in
 - Validation: 215 Flutter tests pass (3 benchmark skips), 339 offline server
   tests pass; analyzer/Ruff/mypy pass. [COMPLETION_DELIVERY.md](COMPLETION_DELIVERY.md)
   documents delivery guarantees and remaining physical-device checks.
+
+## Native sharing — implemented
+
+- Durable Android Send/Send multiple and iOS Share extension entry points, bounded
+  file copies, offline Inbox import, source metadata and duplicate detection.
+- Retry-safe local save-before-acknowledgement, pending-copy retry/discard controls
+  and separate draft preservation. Setup and limits: [SHARING.md](SHARING.md).
+- Validation: 216 Flutter tests pass (3 opt-in benchmark skips), analyzer passes;
+  11 Android native tests and a 94.7 MB release APK pass. Swift syntax, plist and
+  Xcode project structure checks pass locally. The preceding iOS baseline build
+  passed on GitHub; full extension compilation is gated by the new macOS CI job.

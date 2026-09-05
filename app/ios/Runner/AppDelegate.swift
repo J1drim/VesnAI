@@ -81,5 +81,46 @@ import workmanager_apple
         result(FlutterMethodNotImplemented)
       }
     }
+    let sharesChannel = FlutterMethodChannel(name: "vesnai/shares", binaryMessenger: registrar.messenger())
+    let shareQueue = DispatchQueue(label: "ai.vesnai.shared-inbox")
+    sharesChannel.setMethodCallHandler { [weak self] call, result in
+      guard let self = self,
+        let group = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: self.appGroupId)
+      else { result(FlutterError(code: "share_group", message: "Shared app group unavailable", details: nil)); return }
+      shareQueue.async {
+        do {
+          let root = group.appendingPathComponent("shared_inbox")
+          try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+          if call.method == "list" {
+            var items: [[String: Any]] = []
+            for folder in try FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil) {
+              let manifest = folder.appendingPathComponent("ready.json")
+              guard FileManager.default.fileExists(atPath: manifest.path) else { continue }
+              guard var item = try JSONSerialization.jsonObject(with: Data(contentsOf: manifest)) as? [String: Any] else {
+                throw NSError(domain: "VesnAIShare", code: 2)
+              }
+              var files: [[String: String]] = []
+              for file in item["files"] as? [[String: String]] ?? [] {
+                var value = file
+                guard let path = file["path"] else { throw NSError(domain: "VesnAIShare", code: 2) }
+                value["path"] = folder.appendingPathComponent((path as NSString).lastPathComponent).path
+                files.append(value)
+              }
+              item["files"] = files
+              items.append(item)
+            }
+            let data = try JSONSerialization.data(withJSONObject: items)
+            DispatchQueue.main.async { result(String(data: data, encoding: .utf8)) }
+          } else if call.method == "ack" {
+            guard let id = call.arguments as? String,
+              id.range(of: "^[a-fA-F0-9-]{36}$", options: .regularExpression) != nil
+            else { throw NSError(domain: "VesnAIShare", code: 1) }
+            let folder = root.appendingPathComponent(id)
+            if FileManager.default.fileExists(atPath: folder.path) { try FileManager.default.removeItem(at: folder) }
+            DispatchQueue.main.async { result(nil) }
+          } else { DispatchQueue.main.async { result(FlutterMethodNotImplemented) } }
+        } catch { DispatchQueue.main.async { result(FlutterError(code: "share_failed", message: error.localizedDescription, details: nil)) } }
+      }
+    }
   }
 }

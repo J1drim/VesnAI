@@ -5,11 +5,13 @@ import ai.vesnai.vesnai_app.widget.WidgetUpdateCoordinator
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.widget.Toast
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.concurrent.Executors
 
 /// Bridges the Flutter `vesnai/widgets` channel to the shared prefs the Glance
 /// home-screen widget reads (see widget/VesnaiGlanceWidget.kt). Writing a
@@ -24,9 +26,26 @@ class MainActivity : FlutterActivity() {
     private var widgetChannel: MethodChannel? = null
     private var pendingWidgetAction: Map<String, String?>? = null
     private var lastWrittenSnapshot: String? = null
+    private var sharesChannel: MethodChannel? = null
+    private val shareExecutor = Executors.newSingleThreadExecutor()
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        sharesChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "vesnai/shares").also { channel ->
+            channel.setMethodCallHandler { call, result ->
+                shareExecutor.execute {
+                    try {
+                        val inbox = SharedInbox(applicationContext)
+                        val value = when (call.method) {
+                            "list" -> inbox.list()
+                            "ack" -> { inbox.acknowledge(call.arguments as String); null }
+                            else -> { runOnUiThread { result.notImplemented() }; return@execute }
+                        }
+                        runOnUiThread { result.success(value) }
+                    } catch (error: Exception) { runOnUiThread { result.error("share_failed", error.message, null) } }
+                }
+            }
+        }
         val widgetCh = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, widgetChannelName)
         widgetChannel = widgetCh
         widgetCh.setMethodCallHandler { call, result ->
@@ -74,6 +93,7 @@ class MainActivity : FlutterActivity() {
                 }
             }
         handleWidgetIntent(intent)
+        handleShareIntent(intent)
         drainPendingWidgetAction()
     }
 
@@ -81,6 +101,29 @@ class MainActivity : FlutterActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         handleWidgetIntent(intent)
+        handleShareIntent(intent)
+    }
+
+    private fun handleShareIntent(incoming: Intent?) {
+        if (incoming == null || (incoming.action != Intent.ACTION_SEND && incoming.action != Intent.ACTION_SEND_MULTIPLE)) return
+        // Copy streams while the OS grant is valid, off the UI thread. Only
+        // clear the action after the ready manifest is durably written.
+        val copy = Intent(incoming)
+        shareExecutor.execute {
+            try {
+                if (SharedInbox(applicationContext).receive(copy)) runOnUiThread {
+                    incoming.action = null
+                    if (!isDestroyed) sharesChannel?.invokeMethod("available", null)
+                }
+            } catch (error: Exception) { runOnUiThread {
+                Toast.makeText(applicationContext, "VesnAI: ${error.message}", Toast.LENGTH_LONG).show()
+            } }
+        }
+    }
+
+    override fun onDestroy() {
+        shareExecutor.shutdown()
+        super.onDestroy()
     }
 
     /// Forward a widget tap (open note / chat / new note) to Flutter once.

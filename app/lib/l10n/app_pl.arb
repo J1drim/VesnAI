@@ -479,5 +479,13 @@
   "serviceUnchecked": "Skonfigurowane — dostępność niesprawdzona",
   "servicesUnavailable": "Niedostępne lub niezgłoszone przez ten serwer",
   "checkServices": "Sprawdź czat i osadzenia",
-  "serviceCheckExplanation": "To wyśle jedno krótkie żądanie czatu i jedno żądanie osadzenia do skonfigurowanych dostawców i może wiązać się z ich zwykłymi kosztami. Sprawdzenie nigdy nie generuje obrazów, głosu ani krytyk."
+  "serviceCheckExplanation": "To wyśle jedno krótkie żądanie czatu i jedno żądanie osadzenia do skonfigurowanych dostawców i może wiązać się z ich zwykłymi kosztami. Sprawdzenie nigdy nie generuje obrazów, głosu ani krytyk.",
+  "sharedInbox": "Skrzynka udostępnień",
+  "sharedInboxExplanation": "Udostępnione teksty, adresy URL i pliki są zapisywane tutaj offline bez zastępowania szkicu. Otwórz notatkę, aby ją przejrzeć lub edytować; Przenieś z odbiorczej usuwa tag inbox. Linki są zapisywane jako źródła, bez automatycznego pobierania.",
+  "fileAway": "Przenieś z odbiorczej",
+  "possibleDuplicateSource": "To źródło zapisano wcześniej — otwórz poprzednią notatkę",
+  "sharedImportRetry": "Nie udało się zaimportować części udostępnionej treści. Pozostaje w skrzynce systemowej; otwórz aplikację ponownie, aby spróbować.",
+  "pendingSharedImport": "Oczekuje na import",
+  "discardSharedImport": "Odrzuć niezaimportowaną treść",
+  "discardSharedImportConfirm": "Odrzucić tę kopię w skrzynce systemowej? Oryginał w aplikacji źródłowej pozostanie bez zmian. Tej operacji nie można cofnąć."
 }
