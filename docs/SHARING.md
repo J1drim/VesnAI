@@ -25,6 +25,7 @@ The iOS Runner and ShareExtension targets both require provisioning for App Grou
 `group.ai.vesnai.shared`; select the appropriate signing team/profile in Xcode.
 The extension saves into the group container and completes the share sheet;
 open VesnAI normally to import it. It does not force the containing app to open.
+The extension targets iOS 15, matching the existing app deployment baseline.
 The unsigned CI build checks compilation, not provisioning or device behavior.
 
 Android only accepts granted content URIs, rejecting private file URIs and its
