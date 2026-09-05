@@ -67,7 +67,7 @@ dependencies:
   # Phase 7: i18n + completion notifications
   flutter_localizations:
     sdk: flutter
-  intl: any
+  intl: 0.20.3
   geolocator: ^14.0.2
   geocoding: ^4.0.0
   flutter_local_notifications: ^22.0.1
