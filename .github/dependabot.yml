@@ -51,3 +51,8 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 3
+    # pyproject.toml supports Python >=3.11,<3.13. Review with the SDK/runtime
+    # migration on 2026-10-05; do not propose a base the application rejects.
+    ignore:
+      - dependency-name: python
+        versions: [">=3.13"]

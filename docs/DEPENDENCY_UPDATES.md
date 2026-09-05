@@ -65,7 +65,7 @@ with regenerated locks, visual baselines and native builds in a dedicated SDK
 migration; do not remove lock enforcement to hide the mismatch. Review the
 3.47.x migration in the dedicated SDK follow-up on 2026-10-05.
 
-## Final backlog disposition (2026-09-05 snapshot)
+## Final backlog disposition (2026-09-05 snapshot, through PR #12)
 
 | Dependabot PR | Disposition |
 |---|---|
@@ -80,6 +80,7 @@ migration; do not remove lock enforcement to hide the mismatch. Review the
 | #9 Android library plugin 9.4 | Deferred to 2026-10-05 SDK migration: application/library plugins must move together with supported Gradle and Flutter built-in Kotlin/plugin compatibility, not just the library declaration. |
 | #10 Robolectric | Updated to 4.16.1; all 11 native share/widget tests pass. |
 | #11 Kotlin coroutines | Updated to 1.11.0; upstream Kotlin 2.2.20 metadata works with the project's 2.3.20 toolchain. Native tests and the release APK pass. |
+| #12 Python Docker 3.14 | Incompatible with declared `>=3.11,<3.13`; excluded from automated proposals until the Python/optional-model compatibility migration, next review 2026-10-05. The validated Python 3.12 base remains digest-updated. |
 
 The original PR branches are not merged on top of their newer replacements.
 Dispositions are recorded here; stale PRs can be closed without reverting the

@@ -157,7 +157,7 @@ Dependency migration details and deferred SDK/major-version decisions are in
   regression coverage; coroutines 1.11.0 and Robolectric 4.16.1 upgrades.
 - Digest-pinned Python/uv build, locked runtime, restricted build context, isolated
   container startup/restart checks in CI, mflux lock-aligned bootstrap pin and
-  dependency-register consistency tests. Every Dependabot PR through #11 has a
+  dependency-register consistency tests. Every Dependabot PR through #12 has a
   recorded disposition; deferred SDK/sidecar work has a 2026-10-05 review date.
 - Final local validation: 217 Flutter tests (3 opt-in benchmark skips), 11 shared
   Dart tests, 11 Android native tests and 341 offline Python tests (4 live excluded)
