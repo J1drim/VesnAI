@@ -5,16 +5,16 @@ resolution-markers = [
     "python_full_version >= '3.12' and sys_platform == 'darwin' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
     "python_full_version >= '3.12' and sys_platform == 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
     "python_full_version >= '3.12' and sys_platform != 'darwin' and sys_platform != 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
-    "python_full_version < '3.12' and sys_platform == 'darwin' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
-    "python_full_version < '3.12' and sys_platform == 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
-    "python_full_version < '3.12' and sys_platform != 'darwin' and sys_platform != 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
     "python_full_version >= '3.12' and sys_platform == 'win32' and extra == 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
     "python_full_version >= '3.12' and sys_platform == 'emscripten' and extra == 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
     "python_full_version >= '3.12' and sys_platform != 'emscripten' and sys_platform != 'win32' and extra == 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
+    "python_full_version >= '3.12' and extra != 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
+    "python_full_version < '3.12' and sys_platform == 'darwin' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
+    "python_full_version < '3.12' and sys_platform == 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
+    "python_full_version < '3.12' and sys_platform != 'darwin' and sys_platform != 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
     "python_full_version < '3.12' and sys_platform == 'win32' and extra == 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
     "python_full_version < '3.12' and sys_platform == 'emscripten' and extra == 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
     "python_full_version < '3.12' and sys_platform != 'emscripten' and sys_platform != 'win32' and extra == 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
-    "python_full_version >= '3.12' and extra != 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
     "python_full_version < '3.12' and extra != 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
 ]
 conflicts = [[
@@ -1334,7 +1334,7 @@ wheels = [
 
 [[package]]
 name = "mflux"
-version = "0.19.1"
+version = "0.19.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
@@ -1342,8 +1342,8 @@ dependencies = [
     { name = "hf-transfer" },
     { name = "huggingface-hub" },
     { name = "matplotlib" },
-    { name = "mlx", version = "0.31.1", source = { registry = "https://pypi.org/simple" }, extra = ["cuda13"], marker = "(sys_platform == 'linux' and extra == 'extra-13-vesnai-server-image') or (extra == 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image')" },
-    { name = "mlx", version = "0.32.2", source = { registry = "https://pypi.org/simple" }, marker = "(sys_platform == 'darwin' and extra == 'extra-13-vesnai-server-image') or (extra == 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image')" },
+    { name = "mlx", marker = "(sys_platform == 'darwin' and extra == 'extra-13-vesnai-server-image') or (sys_platform == 'linux' and extra == 'extra-13-vesnai-server-image') or (extra == 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image')" },
+    { name = "mlx", extra = ["cuda13"], marker = "(sys_platform == 'linux' and extra == 'extra-13-vesnai-server-image') or (extra == 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image')" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version < '3.12' and extra == 'extra-13-vesnai-server-image') or (extra == 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image')" },
     { name = "numpy", version = "2.5.2", source = { registry = "https://pypi.org/simple" }, marker = "(python_full_version >= '3.12' and extra == 'extra-13-vesnai-server-image') or (extra == 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image')" },
     { name = "opencv-python" },
@@ -1362,9 +1362,9 @@ dependencies = [
     { name = "transformers", version = "5.16.1", source = { registry = "https://pypi.org/simple" } },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5e/95/b4944c86a0e255ea292ce8172bbb5bd1a4e66a60d12a194ec553607a5408/mflux-0.19.1.tar.gz", hash = "sha256:f44577d4be2ec385c28f2107c41662eefc100f1c74df34e53f87fcd3dc217281", size = 969307, upload-time = "2026-08-26T01:54:06.018Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/5e/0ad310633d44267073f0c69f88b1b02c3782a0d63c2602c6035cde848511/mflux-0.19.2.tar.gz", hash = "sha256:94876782ad97c271c518c65ad2303e4f360b952fc3977287b195a838950a3245", size = 976736, upload-time = "2026-09-17T04:15:23.83Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ef/0e/b0c08a5867e744317cfa400d336f02f6b2b7e32031288994384c2cbca583/mflux-0.19.1-py3-none-any.whl", hash = "sha256:e56f1e28e2cbad1153272ad87d3077f82442015f60214cdbc9b322c6003db513", size = 1304907, upload-time = "2026-08-26T01:54:04.269Z" },
+    { url = "https://files.pythonhosted.org/packages/05/69/cf5e97481610acdd0ead50e4a0d2c630597f9e8ca8d5ca219c272bee9ef3/mflux-0.19.2-py3-none-any.whl", hash = "sha256:63f282af9dc787a037c0c97a9e364bceafc7e130cfda9e7fd4fb339a0be5c4c2", size = 1314382, upload-time = "2026-09-17T04:15:21.96Z" },
 ]
 
 [[package]]
@@ -1390,38 +1390,8 @@ wheels = [
 
 [[package]]
 name = "mlx"
-version = "0.31.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'linux'",
-    "python_full_version < '3.12' and sys_platform == 'linux'",
-]
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/75/32/25dc2eae1d6f867224ef2bca2c644e3e913fe8067991f8394c090b720e3e/mlx-0.31.1-cp311-cp311-macosx_14_0_arm64.whl", hash = "sha256:8863835fb36c7c4f65008b1426ddb9ff7931a13c975e0ef58a40002ae8048922", size = 574311, upload-time = "2026-03-12T02:16:02.651Z" },
-    { url = "https://files.pythonhosted.org/packages/9b/bf/c5aa1d1154f5a216139c8162cd3e6568b7eb427390d655f7f5ae3a1a61e7/mlx-0.31.1-cp311-cp311-macosx_15_0_arm64.whl", hash = "sha256:0de504c1f1fe73b32fc3cf457b8eac30d1f7ce22440ef075c1970f96712e6fff", size = 574312, upload-time = "2026-03-12T02:16:04.231Z" },
-    { url = "https://files.pythonhosted.org/packages/3a/88/ef57747552c9e9da0c28465d9266c05a0009b698d90fb0bc63eb81840b8d/mlx-0.31.1-cp311-cp311-macosx_26_0_arm64.whl", hash = "sha256:10715b895e1f3e984c2c54257b7db956ff8af1fa93255412794a3724fe2dd3b1", size = 574385, upload-time = "2026-03-12T02:16:05.528Z" },
-    { url = "https://files.pythonhosted.org/packages/ac/51/dbea4bbe7a2e4cd05226965b34198d49459cfaef8b9b37b72f006a9811ab/mlx-0.31.1-cp311-cp311-manylinux_2_35_aarch64.whl", hash = "sha256:d065625ab3101adcd7f5824297243fe40a0615099a06f5597ab67284483aa2f8", size = 641347, upload-time = "2026-03-12T02:16:07.013Z" },
-    { url = "https://files.pythonhosted.org/packages/c5/86/3db98e8805637fb56f078311d622e9500f5c9088f6d79a6e304ec8235b47/mlx-0.31.1-cp311-cp311-manylinux_2_35_x86_64.whl", hash = "sha256:b2cf8502d9d64dc6851034fcd4a656cbb26be20c36f190f2971f4ac0caed89cb", size = 674769, upload-time = "2026-03-12T02:16:08.51Z" },
-    { url = "https://files.pythonhosted.org/packages/38/29/71fe1f68756f515856e6930973c23245810d4aa3cd22fddd719d86a709dc/mlx-0.31.1-cp312-cp312-macosx_14_0_arm64.whl", hash = "sha256:8a63b31a398c9519f2bb0c81cf3865d9baca4ff573ffc31ead465d18286184e8", size = 574308, upload-time = "2026-03-12T02:16:10.256Z" },
-    { url = "https://files.pythonhosted.org/packages/21/be/70654a2cee0d71fd10bd237a50a79d06ae51679a194db6a3b16c0c84e6a5/mlx-0.31.1-cp312-cp312-macosx_15_0_arm64.whl", hash = "sha256:a7a9347df4dcc41f0d16ff70b65650820af4879f686534b233b16826a22afa00", size = 574309, upload-time = "2026-03-12T02:16:11.577Z" },
-    { url = "https://files.pythonhosted.org/packages/ad/69/c7bc7b04f76b0cbd678f328011d1634bd0bcfc2da45aba06e084cb031127/mlx-0.31.1-cp312-cp312-macosx_26_0_arm64.whl", hash = "sha256:6cdb797ea31787d1ce9e5be77991c4bd5cbf129ab15f7253b78e09737f535fce", size = 574289, upload-time = "2026-03-12T02:16:13.146Z" },
-    { url = "https://files.pythonhosted.org/packages/55/f7/dcc129228faab4d406041d91413c5999250ab79da6fe5417ac84f1616ff1/mlx-0.31.1-cp312-cp312-manylinux_2_35_aarch64.whl", hash = "sha256:1ed1991c8e39f841d5756c0c543beb819763a2f80fba3f4b150bc6cad4d973de", size = 626439, upload-time = "2026-03-12T02:16:14.741Z" },
-    { url = "https://files.pythonhosted.org/packages/90/1d/8b32e46ea98ab5c1c15cf1b37ac97af651977f84e72e1800412a700c51d9/mlx-0.31.1-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:195c5cb27328380287c0ffe9ef48f860ab75ec5d3dfce153d475dc2c99369708", size = 668679, upload-time = "2026-03-12T02:16:16.012Z" },
-]
-
-[package.optional-dependencies]
-cuda13 = [
-    { name = "mlx-cuda-13", marker = "sys_platform == 'linux'" },
-]
-
-[[package]]
-name = "mlx"
 version = "0.32.2"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'darwin'",
-    "python_full_version < '3.12' and sys_platform == 'darwin'",
-]
 dependencies = [
     { name = "mlx-metal", marker = "sys_platform == 'darwin'" },
 ]
@@ -1442,19 +1412,27 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/6d/54/4b8b690a5322a92271214e49480d083f253ab48c81825ade92473828846f/mlx-0.32.2-cp312-cp312-win_arm64.whl", hash = "sha256:65beb9ce75153072808ef18913ecca3d929b87be5d7c1f57d9df391c04b6f957", size = 607910, upload-time = "2026-08-25T10:31:53.269Z" },
 ]
 
+[package.optional-dependencies]
+cuda13 = [
+    { name = "mlx-cuda-13", marker = "sys_platform == 'linux'" },
+]
+
 [[package]]
 name = "mlx-cuda-13"
-version = "0.31.1"
+version = "0.32.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "nvidia-cublas", marker = "sys_platform == 'linux'" },
     { name = "nvidia-cuda-nvrtc", marker = "sys_platform == 'linux'" },
+    { name = "nvidia-cuda-runtime", marker = "sys_platform == 'linux'" },
     { name = "nvidia-cudnn-cu13", marker = "sys_platform == 'linux'" },
+    { name = "nvidia-cufft", marker = "sys_platform == 'linux'" },
     { name = "nvidia-nccl-cu13", marker = "sys_platform == 'linux'" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/aa/25/aed9ea8e12545ca041db7ed3f72320e02d72ca15f8ca1b8a4829c77ff249/mlx_cuda_13-0.31.1-py3-none-manylinux_2_35_aarch64.whl", hash = "sha256:fcbc4ac3764b5bfac7814f7fd8ad6369d9b5d1279d0b3b3bc62878b572e8580a", size = 68100167, upload-time = "2026-03-12T00:25:59.321Z" },
-    { url = "https://files.pythonhosted.org/packages/4c/ea/2afd41bf2edad64519f42ed8cb3de518ede7fed34723ac20fc99686ab1ef/mlx_cuda_13-0.31.1-py3-none-manylinux_2_35_x86_64.whl", hash = "sha256:21b71c3be67667ee966b603c5a7c77016c415af345477f05cb867b4f7e2d6060", size = 71020480, upload-time = "2026-03-12T00:26:03.873Z" },
+    { url = "https://files.pythonhosted.org/packages/ea/d2/38a801b9726d31c71dc7cbfb5f3bac22fbde5b66e7892f4c453a5e6069cf/mlx_cuda_13-0.32.2-py3-none-manylinux_2_35_aarch64.whl", hash = "sha256:49b1a25df9021f3b519a534fd39a32a5cdbf93a1b265a31e59671c2d9fc9f4a2", size = 84519215, upload-time = "2026-08-25T10:31:26.317Z" },
+    { url = "https://files.pythonhosted.org/packages/f1/59/5bcbee69a4425214bd25b7a4c102ddcbb91e9975a0b22613ddcac87de282/mlx_cuda_13-0.32.2-py3-none-manylinux_2_35_x86_64.whl", hash = "sha256:335094ccd1c0c6dc3e09c8caba207c8180602bacc0c38ba20c1d81e9456ab394", size = 87424146, upload-time = "2026-08-25T10:31:31.267Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/76/b44e8adfc883c6452c491346dd634c0408bf495c52b9fb36f409259febaf/mlx_cuda_13-0.32.2-py3-none-win_amd64.whl", hash = "sha256:7dcd71e30b8d6a1bc6543f8e94422f00de680f9713857a36c286a11b6135d5ee", size = 59082417, upload-time = "2026-08-25T10:31:35.854Z" },
 ]
 
 [[package]]
@@ -1778,7 +1756,7 @@ name = "nvidia-cudnn-cu12"
 version = "9.1.0.70"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu12" },
+    { name = "nvidia-cublas-cu12", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9f/fd/713452cd72343f682b1c7b9321e23829f00b842ceaedcda96e742ea0b0b3/nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl", hash = "sha256:165764f44ef8c61fcdfdfdbe769d687e06374059fbb388b6c89ecb0e28793a6f", size = 664752741, upload-time = "2024-04-22T15:24:15.253Z" },
@@ -1816,7 +1794,7 @@ name = "nvidia-cufft-cu12"
 version = "11.2.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12" },
+    { name = "nvidia-nvjitlink-cu12", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7a/8a/0e728f749baca3fbeffad762738276e5df60851958be7783af121a7221e7/nvidia_cufft_cu12-11.2.1.3-py3-none-manylinux2014_aarch64.whl", hash = "sha256:5dad8008fc7f92f5ddfa2101430917ce2ffacd86824914c82e28990ad7f00399", size = 211422548, upload-time = "2024-06-18T19:33:39.396Z" },
@@ -1873,9 +1851,9 @@ name = "nvidia-cusolver-cu12"
 version = "11.6.1.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu12" },
-    { name = "nvidia-cusparse-cu12" },
-    { name = "nvidia-nvjitlink-cu12" },
+    { name = "nvidia-cublas-cu12", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "nvidia-cusparse-cu12", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "nvidia-nvjitlink-cu12", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/46/6b/a5c33cf16af09166845345275c34ad2190944bcc6026797a39f8e0a282e0/nvidia_cusolver_cu12-11.6.1.9-py3-none-manylinux2014_aarch64.whl", hash = "sha256:d338f155f174f90724bbde3758b7ac375a70ce8e706d70b018dd3375545fc84e", size = 127634111, upload-time = "2024-06-18T19:35:01.793Z" },
@@ -1901,7 +1879,7 @@ name = "nvidia-cusparse-cu12"
 version = "12.3.1.170"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12" },
+    { name = "nvidia-nvjitlink-cu12", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/96/a9/c0d2f83a53d40a4a41be14cea6a0bf9e668ffcf8b004bd65633f433050c0/nvidia_cusparse_cu12-12.3.1.170-py3-none-manylinux2014_aarch64.whl", hash = "sha256:9d32f62896231ebe0480efd8a7f702e143c98cfaa0e8a76df3386c1ba2b54df3", size = 207381987, upload-time = "2024-06-18T19:35:32.989Z" },
@@ -3102,10 +3080,10 @@ resolution-markers = [
     "python_full_version >= '3.12' and sys_platform == 'darwin' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
     "python_full_version >= '3.12' and sys_platform == 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
     "python_full_version >= '3.12' and sys_platform != 'darwin' and sys_platform != 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
+    "python_full_version >= '3.12' and extra != 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
     "python_full_version < '3.12' and sys_platform == 'darwin' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
     "python_full_version < '3.12' and sys_platform == 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
     "python_full_version < '3.12' and sys_platform != 'darwin' and sys_platform != 'linux' and extra != 'extra-13-vesnai-server-chatterbox' and extra == 'extra-13-vesnai-server-image'",
-    "python_full_version >= '3.12' and extra != 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
     "python_full_version < '3.12' and extra != 'extra-13-vesnai-server-chatterbox' and extra != 'extra-13-vesnai-server-image'",
 ]
 dependencies = [
