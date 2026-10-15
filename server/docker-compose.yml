@@ -63,7 +63,7 @@ services:
 
   qdrant:
     # Pinned digest (v1.18.2, pulled 2026-07-01); see compose-images.lock.yaml + docs/DEPLOYMENT.md.
-    image: qdrant/qdrant@sha256:75eab8c4ba42096724fdcfde8b4de0b5713d529dde32f285a1f86fdcb2c9e50c
+    image: qdrant/qdrant@sha256:b7b0444c4c351c970b98e90a6f89c2ee4287c65b44e52b4cb503fa5b2aa927ad
     ports:
       - "127.0.0.1:6333:6333"
     volumes:
